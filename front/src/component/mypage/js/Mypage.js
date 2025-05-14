@@ -1,31 +1,30 @@
-import Header from "./header";
-import './mypage.css'
+import "../scss/Mypage.scss"
+import "../../header/js/Header"
+import Header from "../../header/js/Header";
 
 const Mypage= ()=> {
     return (
         <div className="App">
             <header className="App-header">
-                <Header/>
-
-                <div className="d-flex align-items-start" id="sidebar">
+              c  <div className="d-flex align-items-start" id="sidebar">
                     <div className="nav flex-column nav-pills me-3" id="v-pills-tab " role="tablist" aria-orientation="vertical">
                         <div className="sidebar">
-                        <button className="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-profile" type="button" role="tab"
-                                aria-controls="v-pills-profile" aria-selected="false">Profile
-                        </button>
-                        <button className="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-settings" type="button" role="tab"
-                                aria-controls="v-pills-settings" aria-selected="false">Bookmark
-                        </button>
-                        <button className="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-messages" type="button" role="tab"
-                                aria-controls="v-pills-messages" aria-selected="false">Messages
-                        </button>
-                        <button className="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
-                                data-bs-target="#v-pills-settings" type="button" role="tab"
-                                aria-controls="v-pills-settings" aria-selected="false">Settings
-                        </button>
+                            <button className="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
+                                    data-bs-target="#v-pills-profile" type="button" role="tab"
+                                    aria-controls="v-pills-profile" aria-selected="false">Profile
+                            </button>
+                            <button className="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
+                                    data-bs-target="#v-pills-settings" type="button" role="tab"
+                                    aria-controls="v-pills-settings" aria-selected="false">Bookmark
+                            </button>
+                            <button className="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill"
+                                    data-bs-target="#v-pills-messages" type="button" role="tab"
+                                    aria-controls="v-pills-messages" aria-selected="false">Messages
+                            </button>
+                            <button className="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
+                                    data-bs-target="#v-pills-settings" type="button" role="tab"
+                                    aria-controls="v-pills-settings" aria-selected="false">Settings
+                            </button>
                         </div>
                     </div>
 

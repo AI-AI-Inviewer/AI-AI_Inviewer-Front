@@ -1,16 +1,23 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Header from "./header";
-import Mypage from "./mypage";
-import React from "react";
+import "./App.css"
+import Header from "./component/header/js/Header"
+import Mypage from "./component/mypage/js/Mypage";
+import {BrowserRouter} from "react-router-dom";
+import {useState} from "react";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <Mypage />
-      </header>
-    </div>
-  );
+    const [CheckHeader, CheckChangeHeader] = useState("아직 안바뀜");
+    function ChangeEventHandler(text) {
+        CheckChangeHeader(text);
+    }
+    return (
+        <div className="App" style={{"overflow":"hidden"}}>
+            <BrowserRouter>
+                <Header CheckHeader={CheckHeader} ChangeEventHandler={ChangeEventHandler}/>
+                <Mypage />
+            </BrowserRouter>
+        </div>
+    );
 }
 
 export default App;
