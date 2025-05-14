@@ -1,7 +1,19 @@
-import "../scss/Header.scss"
-import React from "react";
+import "../scss/Header.scss";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";  // Link 컴포넌트 임포트
 
-const Header= ({CheckHeader, CheckChangeHeader})=> {
+const Header = ({ CheckHeader, ChangeEventHandler }) => {
+    function onClickEventHome() {
+        console.log(CheckHeader);
+    }
+
+    const [isCheckCaptCha, setIsCheckCaptCha] = useState("false");
+
+    function onclickCaptCha() {
+        ChangeEventHandler(isCheckCaptCha);
+        setIsCheckCaptCha("true");
+    }
+
     return (
         <nav className="navbar navbar-expand-lg bg-light">
             <div className="container-fluid">
@@ -14,10 +26,11 @@ const Header= ({CheckHeader, CheckChangeHeader})=> {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="#">Home</a>
+                            <a className="nav-link active" aria-current="page" href="/" onClick={onClickEventHome}>Home</a>
                         </li>
+                        {/* Link 컴포넌트로 변경 */}
                         <li className="nav-item">
-                            <a className="nav-link" href="#">ChapCha</a>
+                            <Link className="nav-link" to="/CaptCha" onClick={onclickCaptCha}>ChapCha</Link>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="#">CodeTool</a>
@@ -30,7 +43,6 @@ const Header= ({CheckHeader, CheckChangeHeader})=> {
                             <ul className="dropdown-menu">
                                 <li><a className="dropdown-item" href="#">Notice Board</a></li>
                                 <li><a className="dropdown-item" href="#">Feed Back</a></li>
-                                <li><a className="dropdown-item" href="#"></a></li>
                             </ul>
                         </li>
                     </ul>

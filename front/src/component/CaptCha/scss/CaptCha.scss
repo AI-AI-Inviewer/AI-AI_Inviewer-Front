@@ -1,0 +1,16 @@
+.captcha-container {
+  height: 100vh;
+  background-image: url('../../imgs/HOME.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: bold;
+}
