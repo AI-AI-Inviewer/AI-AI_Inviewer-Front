@@ -9,6 +9,25 @@
   margin-bottom: 15%;
 }
 
+#profileImg{
+  border-radius: 70%;
+  overflow: hidden;
+  height: 200px;
+  width: 200px;
+}
+
+.btn{
+  width: 100px;
+}
+
+#editbtn:active{
+  background-color: rgb(201, 201, 201);
+}
+
+#deletebtn:active{
+  background-color: rgb(255, 47, 47);
+}
+
 #sidebar{
   .sidebar{
     position: fixed;
@@ -19,7 +38,6 @@
   .nav-link{
     margin-bottom: 30%;
     font-size: 20px;
-    border: 1px solid black;
   }
 
 }
