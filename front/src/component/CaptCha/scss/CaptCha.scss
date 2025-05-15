@@ -1,16 +1,82 @@
-.captcha-container {
-  height: 100vh;
-  background-image: url('../../imgs/HOME.png');
-  background-size: cover;
-  background-position: center;
+.captcha-wrapper {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  text-align: center;
+  min-height: 100vh;
 }
 
-h2 {
-  font-size: 2rem;
-  font-weight: bold;
+.captcha-sidebar {
+  width: 220px;
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+  border-right: 1px solid #ddd;
+
+  h3 {
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    li {
+      margin-bottom: 0.8rem;
+      cursor: pointer;
+      &:hover {
+        font-weight: bold;
+        color: #007bff;
+      }
+    }
+  }
+}
+
+.captcha-main {
+  flex: 1;
+  padding: 2rem;
+  background-color: #fff;
+
+  h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+
+  .captcha-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  .captcha-box {
+    height: 120px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 16px;
+
+    // 예시 이미지 (각 박스마다 다른 이미지 처리하고 싶으면 nth-child 사용)
+    background-image: url('../../imgs/CC_4.png  ');
+  }
+}
+
+
+.captcha-box:nth-child(1) {
+  background-image: url('../../imgs/CC_1.png');
+}
+.captcha-box:nth-child(2) {
+  background-image: url('../../imgs/CC_2.png');
+}
+.captcha-box:nth-child(3) {
+  background-image: url('../../imgs/CC_3.jpg');
+}
+.captcha-box:nth-child(4) {
+  background-image: url('../../imgs/CC_4.png');
+}
+.captcha-box:nth-child(5) {
+  background-image: url('/');
+}
+.captcha-box:nth-child(6) {
+  background-image: url('/');
 }

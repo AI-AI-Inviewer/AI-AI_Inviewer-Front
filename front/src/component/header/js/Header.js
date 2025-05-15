@@ -1,23 +1,21 @@
 import "../scss/Header.scss";
-import React, { useState } from "react";
-import { Link } from "react-router-dom";  // Link 컴포넌트 임포트
+import React from "react";
+import { Link } from "react-router-dom";
 
-const Header = ({ CheckHeader, ChangeEventHandler }) => {
-    function onClickEventHome() {
-        console.log(CheckHeader);
+const Header = ({ isCheckHeader, ChangeEventHandler }) => {
+
+    function handleClickHome() {
+        ChangeEventHandler("home");
     }
 
-    const [isCheckCaptCha, setIsCheckCaptCha] = useState("false");
-
-    function onclickCaptCha() {
-        ChangeEventHandler(isCheckCaptCha);
-        setIsCheckCaptCha("true");
+    function handleClickCaptCha() {
+        ChangeEventHandler("captcha");
     }
 
     return (
         <nav className="navbar navbar-expand-lg bg-light">
             <div className="container-fluid">
-                <a className="navbar-brand" href="#">OPENCAPTCHA</a>
+                <Link className="navbar-brand" to="/">OPENCAPTCHA</Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -26,11 +24,10 @@ const Header = ({ CheckHeader, ChangeEventHandler }) => {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="/" onClick={onClickEventHome}>Home</a>
+                            <Link className="nav-link" to="/home" onClick={handleClickHome}>Home</Link>
                         </li>
-                        {/* Link 컴포넌트로 변경 */}
                         <li className="nav-item">
-                            <Link className="nav-link" to="/CaptCha" onClick={onclickCaptCha}>ChapCha</Link>
+                            <Link className="nav-link" to="/captcha" onClick={handleClickCaptCha}>CaptCha</Link>
                         </li>
                         <li className="nav-item">
                             <a className="nav-link" href="#">CodeTool</a>
@@ -47,11 +44,8 @@ const Header = ({ CheckHeader, ChangeEventHandler }) => {
                         </li>
                     </ul>
                     <ul className="navbar-nav" id="login">
-                        <li className="nav-item"><a className="nav-link" href="#">login</a>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="#">sign up</a>
-                        </li>
+                        <li className="nav-item"><a className="nav-link" href="#">login</a></li>
+                        <li className="nav-item"><a className="nav-link" href="#">sign up</a></li>
                     </ul>
                 </div>
             </div>
