@@ -1,4 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./App.css";
 import Header from "./component/header/js/Header";
 import CaptCha from "./component/CaptCha/js/CaptCha";
