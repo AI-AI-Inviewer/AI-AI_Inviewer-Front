@@ -1,21 +1,26 @@
 import "../scss/Header.scss";
 import React from "react";
 import { Link } from "react-router-dom";
+import {onDOMContentLoaded} from "bootstrap/js/src/util";
 
 const Header = ({ isCheckHeader, ChangeEventHandler }) => {
-
     function handleClickHome() {
         ChangeEventHandler("home");
+        console.log(isCheckHeader);
     }
-
     function handleClickCaptCha() {
         ChangeEventHandler("captcha");
+    }
+    function handleClickCodeTool() {
+        ChangeEventHandler("codetools");
+    }
+    function handleClickCommunity() {
+        ChangeEventHandler("community");
     }
 
     return (
         <nav className="navbar navbar-expand-lg bg-light">
             <div className="container-fluid">
-                <Link className="navbar-brand" to="/">OPENCAPTCHA</Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -30,13 +35,13 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                             <Link className="nav-link" to="/captcha" onClick={handleClickCaptCha}>CaptCha</Link>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="#">CodeTool</a>
+                            <Link className="nav-link" to="/codetools" onClick={handleClickCodeTool}>CodeTool</Link>
                         </li>
                         <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                               aria-expanded="false">
-                                COMMUNITY
-                            </a>
+                            <Link className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false" to="/community" onClick={handleClickCommunity}>
+                                Community
+                            </Link>
                             <ul className="dropdown-menu">
                                 <li><a className="dropdown-item" href="#">Notice Board</a></li>
                                 <li><a className="dropdown-item" href="#">Feed Back</a></li>
