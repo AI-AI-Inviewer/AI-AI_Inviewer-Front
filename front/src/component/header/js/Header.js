@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import {onDOMContentLoaded} from "bootstrap/js/src/util";
 
 const Header = ({ isCheckHeader, ChangeEventHandler }) => {
-    function handleClickHome() {
-        ChangeEventHandler("Home");
+    function handleClickMain() {
+        ChangeEventHandler("Main");
         console.log(isCheckHeader);
     }
     function handleClickCaptCha() {
@@ -20,6 +20,12 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickFeedBack() {
         ChangeEventHandler("FeedBack");
     }
+    function handleClickSignIn() {
+        ChangeEventHandler("SignIn");
+    }
+    function handleClickSignUp() {
+        ChangeEventHandler("SignUp");
+    }
 
     return (
         <nav className="navbar navbar-expand-lg bg-light">
@@ -32,7 +38,7 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/Home" onClick={handleClickHome}>Home</Link>
+                            <Link className="nav-link" to="/Main" onClick={handleClickMain}>Main</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/CaptCha" onClick={handleClickCaptCha}>CaptCha</Link>
@@ -52,8 +58,8 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                         </li>
                     </ul>
                     <ul className="navbar-nav" id="login">
-                        <li className="nav-item"><a className="nav-link" href="#">login</a></li>
-                        <li className="nav-item"><a className="nav-link" href="#">sign up</a></li>
+                        <li className="nav-item"><Link className="nav-link" to="/SignIn" onClick={handleClickSignIn}>Sign In</Link></li>
+                        <li className="nav-item"><Link className="nav-link" to="/SignUp" onClick={handleClickSignUp}>Sign up</Link></li>
                     </ul>
                 </div>
             </div>
