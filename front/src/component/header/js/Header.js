@@ -5,20 +5,20 @@ import {onDOMContentLoaded} from "bootstrap/js/src/util";
 
 const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickHome() {
-        ChangeEventHandler("home");
+        ChangeEventHandler("Home");
         console.log(isCheckHeader);
     }
     function handleClickCaptCha() {
-        ChangeEventHandler("captcha");
+        ChangeEventHandler("CaptCha");
     }
     function handleClickCodeTool() {
-        ChangeEventHandler("codetools");
+        ChangeEventHandler("CodeTool");
     }
     function handleClickNoticeBoard() {
-        ChangeEventHandler("noticeboard");
+        ChangeEventHandler("NoticeBoard");
     }
     function handleClickFeedBack() {
-        ChangeEventHandler("feedback");
+        ChangeEventHandler("FeedBack");
     }
 
     return (
@@ -32,13 +32,13 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/home" onClick={handleClickHome}>Home</Link>
+                            <Link className="nav-link" to="/Home" onClick={handleClickHome}>Home</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/captcha" onClick={handleClickCaptCha}>CaptCha</Link>
+                            <Link className="nav-link" to="/CaptCha" onClick={handleClickCaptCha}>CaptCha</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/codetools" onClick={handleClickCodeTool}>CodeTool</Link>
+                            <Link className="nav-link" to="/CodeTool" onClick={handleClickCodeTool}>CodeTool</Link>
                         </li>
                         <li className="nav-item dropdown">
                             <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
@@ -46,8 +46,8 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                                 Community
                             </a>
                             <ul className="dropdown-menu">
-                                <li><Link className="dropdown-item" to="/noticeboard" onClick={handleClickNoticeBoard}>Notice Board</Link></li>
-                                <li><Link className="dropdown-item" to="/feedback" onClick={handleClickFeedBack}>Feed Back</Link></li>
+                                <li><Link className="dropdown-item" to="/NoticeBoard" onClick={handleClickNoticeBoard}>Notice Board</Link></li>
+                                <li><Link className="dropdown-item" to="/FeedBack" onClick={handleClickFeedBack}>Feed Back</Link></li>
                             </ul>
                         </li>
                     </ul>
