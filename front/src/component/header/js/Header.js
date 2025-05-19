@@ -14,8 +14,11 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickCodeTool() {
         ChangeEventHandler("codetools");
     }
-    function handleClickCommunity() {
-        ChangeEventHandler("community");
+    function handleClickNoticeBoard() {
+        ChangeEventHandler("noticeboard");
+    }
+    function handleClickFeedBack() {
+        ChangeEventHandler("feedback");
     }
 
     return (
@@ -38,13 +41,13 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                             <Link className="nav-link" to="/codetools" onClick={handleClickCodeTool}>CodeTool</Link>
                         </li>
                         <li className="nav-item dropdown">
-                            <Link className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                               aria-expanded="false" to="/community" onClick={handleClickCommunity}>
+                            <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
                                 Community
-                            </Link>
+                            </a>
                             <ul className="dropdown-menu">
-                                <li><a className="dropdown-item" href="#">Notice Board</a></li>
-                                <li><a className="dropdown-item" href="#">Feed Back</a></li>
+                                <li><Link className="dropdown-item" to="/noticeboard" onClick={handleClickNoticeBoard}>Notice Board</Link></li>
+                                <li><Link className="dropdown-item" to="/feedback" onClick={handleClickFeedBack}>Feed Back</Link></li>
                             </ul>
                         </li>
                     </ul>

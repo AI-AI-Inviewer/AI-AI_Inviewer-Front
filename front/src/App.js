@@ -4,7 +4,7 @@ import "./App.css";
 import Header from "./component/header/js/Header";
 import Footer from "../src/component/footer/js/Footer"
 import CaptCha from "../src/component/captcha/js/CaptCha";
-//import CodeTool from "../src/component/codeTool/js/CodeTool";
+import CodeTool from '../src/component/codetool/js/CodeTool'
 //import Community from "./component/community/js/Community";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState } from "react";
@@ -24,6 +24,7 @@ function App() {
                 <Routes>
                     <Route path="Home" element={<Home isCheckHeader={isCheckHeader} />} />
                     <Route path="/CaptCha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
+                    <Route path="/CodeTool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
                 </Routes>
                 <Footer />
             </BrowserRouter>
@@ -32,5 +33,3 @@ function App() {
 }
 
 export default App;
-
-//<Route path="/CodeTool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
