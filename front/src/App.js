@@ -7,7 +7,7 @@ import Main from './component/main/js/Main';
 import SignIn from "./component/sign/js/SignIn";
 import SignUp from "./component/sign/js/SignUp";
 import CaptCha from "./component/captcha/js/CaptCha";
-import CodeTool from './component/codetool/js/CodeTool';
+import CodeTool from "./component/codetool/js/CodeTool";
 import NoticeBoard from './component/community/js/NoticeBoard';
 import FeedBack from './component/community/js/FeedBack';
 import { BrowserRouter, Route, Routes } from "react-router-dom";

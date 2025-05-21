@@ -1,4 +1,4 @@
-import React from 'react';
+//import React from 'react';
 import '../scss/SignUp.scss'
 
 const SignUp = () => {

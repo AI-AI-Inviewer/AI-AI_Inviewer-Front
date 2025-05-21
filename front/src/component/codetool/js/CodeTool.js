@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import '../scss/CodeTool.scss';
+import "../scss/CodeTool.scss";
+import { githubLight } from '@uiw/codemirror-theme-github';
 
 const CodeTool = () => {
     const [code, setCode] = useState('// 코드를 입력하세요');
@@ -19,8 +20,9 @@ const CodeTool = () => {
                     height="400px"
                     extensions={[javascript()]}
                     onChange={handleChange}
-                    theme="light"
+                    theme={githubLight}
                 />
+
             </div>
             <div className="preview">
                 <h3>코드 미리보기</h3>

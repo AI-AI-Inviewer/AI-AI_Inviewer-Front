@@ -1,7 +1,7 @@
 import "../scss/Header.scss";
 import React from "react";
 import { Link } from "react-router-dom";
-import {onDOMContentLoaded} from "bootstrap/js/src/util";
+//import {onDOMContentLoaded} from "bootstrap/js/src/util";
 
 const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickMain() {
