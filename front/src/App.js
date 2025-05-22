@@ -26,11 +26,11 @@ function App() {
                 <Routes>
                     <Route path="/Main" element={<Main isCheckHeader={isCheckHeader} />} />
                     <Route path="/CaptCha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
-                    <Route path="/Code Tool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
-                    <Route path="/Notice Board" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />
-                    <Route path="/Feed Back" element={<FeedBack isCheckHeader={isCheckHeader} />} />
-                    <Route path="/Sign In" element={<SignIn isCheckHeader={isCheckHeader} /> } />
-                    <Route path="/Sign Up" element={<SignUp isCheckHeader={isCheckHeader} />} />
+                    <Route path="/CodeTool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
+                    <Route path="/NoticeBoard" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />
+                    <Route path="/FeedBack" element={<FeedBack isCheckHeader={isCheckHeader} />} />
+                    <Route path="/SignIn" element={<SignIn isCheckHeader={isCheckHeader} /> } />
+                    <Route path="/SignUp" element={<SignUp isCheckHeader={isCheckHeader} />} />
                 </Routes>
                 <Footer />
             </BrowserRouter>
