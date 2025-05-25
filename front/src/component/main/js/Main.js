@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import "../scss/Main.scss";
 
-const Main = ({ isCheckHeader, ChangeSignHandler }) => {
+const Main = () => {
 
     return (
         <div className="homemain-container">
@@ -13,8 +13,8 @@ const Main = ({ isCheckHeader, ChangeSignHandler }) => {
                     Sign up or Sign In
                 </p>
                 <div className="auth-buttons">
-                    <Link to="/login" className="btn login-btn">로그인</Link>
-                    <Link to="/signup" className="btn signup-btn">회원가입</Link>
+                    <Link to="/SignIn" className="btn login-btn">로그인</Link>
+                    <Link to="/SignUp" className="btn signup-btn">회원가입</Link>
                 </div>
             </div>
         </div>

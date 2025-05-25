@@ -1,7 +1,7 @@
 import "../scss/Header.scss";
 import React from "react";
 import { Link } from "react-router-dom";
-import {onDOMContentLoaded} from "bootstrap/js/src/util";
+//import {onDOMContentLoaded} from "bootstrap/js/src/util";
 
 const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickMain() {
@@ -26,6 +26,7 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickSignUp() {
         ChangeEventHandler("SignUp");
     }
+
 
     return (
         <nav className="navbar navbar-expand-lg bg-light">
@@ -68,3 +69,5 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
 };
 
 export default Header;
+
+//<Link className="" to="" onClick={직접 만든 함수명}>
