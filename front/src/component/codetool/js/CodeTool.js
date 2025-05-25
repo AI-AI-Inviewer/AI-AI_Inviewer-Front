@@ -1,17 +1,3 @@
-<<<<<<< HEAD
-import React from 'react';
-import '../scss/CaptCha.scss';
-
-const CodeTool = () => {
-    return (
-        <div className="homemain-container">
-            <div className="homemainimg-container">
-                <h2>Home Page</h2>
-            </div>
-        </div>
-
-
-=======
 import React, { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
@@ -43,7 +29,6 @@ const CodeTool = () => {
                 <pre>{code}</pre>
             </div>
         </div>
->>>>>>> 23261227d6cafc1f0d58454ab719260e5a4625ae
     );
 };
 

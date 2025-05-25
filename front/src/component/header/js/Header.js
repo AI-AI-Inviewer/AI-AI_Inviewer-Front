@@ -1,4 +1,3 @@
-
 import "../scss/Header.scss";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -43,11 +42,8 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-<<<<<<< HEAD
                             <Link className="nav-link" to="/home" onClick={test}>Home</Link>
-=======
                             <Link className="nav-link" to="/Main" onClick={handleClickMain}>Main</Link>
->>>>>>> 23261227d6cafc1f0d58454ab719260e5a4625ae
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/CaptCha" onClick={handleClickCaptCha}>CaptCha</Link>
