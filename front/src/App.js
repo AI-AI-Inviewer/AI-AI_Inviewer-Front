@@ -6,6 +6,7 @@ import Footer from './component/footer/js/Footer';
 import Main from './component/main/js/Main';
 import SignIn from "./component/sign/js/SignIn";
 import SignUp from "./component/sign/js/SignUp";
+import Mypage from "./component/mypage/js/Mypage";
 import CaptCha from "./component/captcha/js/CaptCha";
 import CodeTool from "./component/codetool/js/CodeTool";
 import NoticeBoard from './component/community/js/NoticeBoard';
@@ -29,6 +30,7 @@ function App() {
                     <Route path="/CodeTool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
                     <Route path="/NoticeBoard" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />
                     <Route path="/FeedBack" element={<FeedBack isCheckHeader={isCheckHeader} />} />
+                    <Route path="/Mypage" element={<Mypage isCheckHeader={isCheckHeader} />} />
                     <Route path="/SignIn" element={<SignIn isCheckHeader={isCheckHeader} /> } />
                     <Route path="/SignUp" element={<SignUp isCheckHeader={isCheckHeader} />} />
                 </Routes>

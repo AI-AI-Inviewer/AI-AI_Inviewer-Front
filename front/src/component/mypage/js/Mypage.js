@@ -1,6 +1,5 @@
 import "../scss/Mypage.scss"
 import "../../header/js/Header"
-import Header from "../../header/js/Header";
 import pic from '../../imgs/profile.jpg'
 
 const Mypage= ()=> {
