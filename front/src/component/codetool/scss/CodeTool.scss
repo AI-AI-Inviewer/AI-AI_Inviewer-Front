@@ -1,0 +1,22 @@
+.CT {
+  padding: 20px;
+
+  h2 {
+    margin-bottom: 10px;
+  }
+
+  .code-editor {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+  }
+
+  .preview {
+    background-color: #f7f7f7;
+    padding: 10px;
+    border-radius: 5px;
+    pre {
+      white-space: pre-wrap;
+    }
+  }
+}
+

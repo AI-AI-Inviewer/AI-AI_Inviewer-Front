@@ -3,15 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.2.4",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "@uiw/codemirror-theme-github": "^4.23.12",
+    "@uiw/react-codemirror": "^4.23.12",
     "bootstrap": "^5.2.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",
     "react-scripts": "5.0.1",
+<<<<<<< HEAD
+=======
+    "sass": "^1.89.0",
+>>>>>>> 23261227d6cafc1f0d58454ab719260e5a4625ae
     "web-vitals": "^2.1.4"
   },
   "scripts": {

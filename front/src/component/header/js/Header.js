@@ -2,21 +2,30 @@
 import "../scss/Header.scss";
 import React from "react";
 import { Link } from "react-router-dom";
-import {onDOMContentLoaded} from "bootstrap/js/src/util";
+//import {onDOMContentLoaded} from "bootstrap/js/src/util";
 
 const Header = ({ isCheckHeader, ChangeEventHandler }) => {
-    function handleClickHome() {
-        ChangeEventHandler("home");
+    function handleClickMain() {
+        ChangeEventHandler("Main");
         console.log(isCheckHeader);
     }
     function handleClickCaptCha() {
-        ChangeEventHandler("captcha");
+        ChangeEventHandler("CaptCha");
     }
     function handleClickCodeTool() {
-        ChangeEventHandler("codetools");
+        ChangeEventHandler("CodeTool");
     }
-    function handleClickCommunity() {
-        ChangeEventHandler("community");
+    function handleClickNoticeBoard() {
+        ChangeEventHandler("NoticeBoard");
+    }
+    function handleClickFeedBack() {
+        ChangeEventHandler("FeedBack");
+    }
+    function handleClickSignIn() {
+        ChangeEventHandler("SignIn");
+    }
+    function handleClickSignUp() {
+        ChangeEventHandler("SignUp");
     }
     function test() {
         ChangeEventHandler("")
@@ -34,28 +43,32 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
+<<<<<<< HEAD
                             <Link className="nav-link" to="/home" onClick={test}>Home</Link>
+=======
+                            <Link className="nav-link" to="/Main" onClick={handleClickMain}>Main</Link>
+>>>>>>> 23261227d6cafc1f0d58454ab719260e5a4625ae
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/captcha" onClick={handleClickCaptCha}>CaptCha</Link>
+                            <Link className="nav-link" to="/CaptCha" onClick={handleClickCaptCha}>CaptCha</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/codetools" onClick={handleClickCodeTool}>CodeTool</Link>
+                            <Link className="nav-link" to="/CodeTool" onClick={handleClickCodeTool}>CodeTool</Link>
                         </li>
                         <li className="nav-item dropdown">
-                            <Link className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                               aria-expanded="false" to="/community" onClick={handleClickCommunity}>
+                            <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                               aria-expanded="false">
                                 Community
-                            </Link>
+                            </a>
                             <ul className="dropdown-menu">
-                                <li><a className="dropdown-item" href="#">Notice Board</a></li>
-                                <li><a className="dropdown-item" href="#">Feed Back</a></li>
+                                <li><Link className="dropdown-item" to="/NoticeBoard" onClick={handleClickNoticeBoard}>Notice Board</Link></li>
+                                <li><Link className="dropdown-item" to="/FeedBack" onClick={handleClickFeedBack}>Feed Back</Link></li>
                             </ul>
                         </li>
                     </ul>
                     <ul className="navbar-nav" id="login">
-                        <li className="nav-item"><a className="nav-link" href="#">login</a></li>
-                        <li className="nav-item"><a className="nav-link" href="#">sign up</a></li>
+                        <li className="nav-item"><Link className="nav-link" to="/SignIn" onClick={handleClickSignIn}>Sign In</Link></li>
+                        <li className="nav-item"><Link className="nav-link" to="/SignUp" onClick={handleClickSignUp}>Sign up</Link></li>
                     </ul>
                 </div>
             </div>

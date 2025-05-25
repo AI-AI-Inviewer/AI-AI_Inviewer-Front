@@ -70,7 +70,7 @@ function TypingEffect({ text, speed = 100 }) {
 const Home = () => {
     return (
         <main className="home-main">
-        
+
             <section className="hero-section">
                 <div className="overlay" />
                 <div className="typing-wrapper">
