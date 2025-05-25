@@ -17,6 +17,10 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickCommunity() {
         ChangeEventHandler("community");
     }
+    function test() {
+        ChangeEventHandler("")
+    }
+
 
     return (
         <nav className="navbar navbar-expand-lg bg-light">
@@ -29,7 +33,7 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/home" onClick={handleClickHome}>Home</Link>
+                            <Link className="nav-link" to="/home" onClick={test}>Home</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/captcha" onClick={handleClickCaptCha}>CaptCha</Link>
@@ -59,3 +63,5 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
 };
 
 export default Header;
+
+//<Link className="" to="" onClick={직접 만든 함수명}>
