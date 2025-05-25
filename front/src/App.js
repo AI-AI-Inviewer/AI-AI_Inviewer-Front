@@ -64,12 +64,11 @@ function App() {
                 <Header isCheckHeader={isCheckHeader} ChangeEventHandler={ChangeEventHandler} />
                 <main style={{ flex: 1 }}>
                     <Routes>
-                        <Route path="Main" element={<Main isCheckHeader={isCheckHeader} />} />
+                        <Route path="Home" element={<Main isCheckHeader={isCheckHeader} />} />
                         <Route path="/CaptCha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
                     </Routes>
                 </main>
                 <Routes>
-                    <Route path="/Main" element={<Main isCheckHeader={isCheckHeader} />} />
                     <Route path="/CaptCha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
                     <Route path="/CodeTool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
                     <Route path="/NoticeBoard" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />

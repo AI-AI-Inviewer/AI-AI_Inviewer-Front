@@ -26,9 +26,6 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickSignUp() {
         ChangeEventHandler("SignUp");
     }
-    function test() {
-        ChangeEventHandler("")
-    }
 
 
     return (
@@ -42,7 +39,6 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/home" onClick={test}>Home</Link>
                             <Link className="nav-link" to="/Main" onClick={handleClickMain}>Main</Link>
                         </li>
                         <li className="nav-item">
