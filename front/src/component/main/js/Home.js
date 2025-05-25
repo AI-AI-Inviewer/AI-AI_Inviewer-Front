@@ -1,12 +1,21 @@
+//
 // import React from 'react';
 // import "../scss/Home.scss";
 //
 // const Home = () => {
+//     const sampleCode = `
+// function example() {
+//   console.log("Hello OpenCaptcha!");
+// }
+//   `.trim();
+//
 //     return (
 //         <main className="home-main">
-//             {/* Hero Section: 배경 그림 + 오버레이만 */}
+//             {/* Hero Section: 배경 그림 + 중앙 박스 코드 */}
 //             <section className="hero-section">
-//                 <div className="overlay" />
+//                 <div className="hero-content">
+//                     <pre>{sampleCode}</pre>
+//                 </div>
 //             </section>
 //
 //             {/* Features Section */}
@@ -27,7 +36,6 @@
 //                     </div>
 //                 </div>
 //
-//                 {/* 주요 기능 밑 문구 */}
 //                 <div className="platform-description">
 //                     <p>개발자들이 함께 만들고, 개선하고, 공유하는 새로운 리캡차 시스템</p>
 //                 </div>
@@ -37,26 +45,40 @@
 // };
 //
 // export default Home;
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import "../scss/Home.scss";
 
-const Home = () => {
-    const sampleCode = `
-function example() {
-  console.log("Hello OpenCaptcha!");
-}
-  `.trim();
+function TypingEffect({ text, speed = 100 }) {
+    const [displayedText, setDisplayedText] = useState("");
 
+    useEffect(() => {
+        let index = 0;
+        const intervalId = setInterval(() => {
+            setDisplayedText((prev) => prev + text.charAt(index));
+            index++;
+            if (index >= text.length) {
+                clearInterval(intervalId);
+            }
+        }, speed);
+
+        return () => clearInterval(intervalId);
+    }, [text, speed]);
+
+    return <pre className="typing-effect">{displayedText}</pre>;
+}
+
+const Home = () => {
     return (
         <main className="home-main">
-            {/* Hero Section: 배경 그림 + 중앙 박스 코드 */}
+        
             <section className="hero-section">
-                <div className="hero-content">
-                    <pre>{sampleCode}</pre>
+                <div className="overlay" />
+                <div className="typing-wrapper">
+                    <TypingEffect text={`  "Hello OpenCaptcha!";\n`} speed={100} />
                 </div>
             </section>
 
-            {/* Features Section */}
+
             <section className="features-section">
                 <h2>주요 기능</h2>
                 <div className="features-grid">
@@ -73,6 +95,7 @@ function example() {
                         <p>새로운 리캡차 유형을 손쉽게 추가할 수 있도록 설계된 유연한 구조</p>
                     </div>
                 </div>
+
 
                 <div className="platform-description">
                     <p>개발자들이 함께 만들고, 개선하고, 공유하는 새로운 리캡차 시스템</p>
