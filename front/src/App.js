@@ -41,7 +41,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./App.css";
 import Header from './component/header/js/Header';
 import Footer from './component/footer/js/Footer';
-import Main from './component/main/js/Main';
+import Home from './component/main/js/Home';
 import SignIn from "./component/sign/js/SignIn";
 import SignUp from "./component/sign/js/SignUp";
 import Mypage from "./component/mypage/js/Mypage";
@@ -64,12 +64,11 @@ function App() {
                 <Header isCheckHeader={isCheckHeader} ChangeEventHandler={ChangeEventHandler} />
                 <main style={{ flex: 1 }}>
                     <Routes>
-                        <Route path="Home" element={<Main isCheckHeader={isCheckHeader} />} />
+                        <Route path="Home" element={<Home isCheckHeader={isCheckHeader} />} />
                         <Route path="/CaptCha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
                     </Routes>
                 </main>
                 <Routes>
-                    <Route path="/CaptCha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
                     <Route path="/CodeTool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
                     <Route path="/NoticeBoard" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />
                     <Route path="/FeedBack" element={<FeedBack isCheckHeader={isCheckHeader} />} />
