@@ -1,36 +1,90 @@
-.profile{
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.App-header {
+  padding-top: 80px;
+  min-height: 100vh;
+  background-color: #f8f9fa;
 }
-.profileItem{
-  margin-bottom: 15%;
+
+.d-flex.align-items-start {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 4rem;
+  padding: 2rem;
 }
-#profileImg{
+
+#sidebar {
+  .sidebar {
+    position: sticky;
+    top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    width: 160px;
+  }
+
+  .nav-link {
+    font-size: 1.1rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    color: #333;
+  }
+
+  .nav-link.active {
+    background-color: #6c63ff;
+    color: white;
+    border-radius: 5px;
+  }
+
+  .nav-link:hover {
+    background-color: #ececff;
+    border-radius: 5px;
+  }
+}
+
+.tab-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.profile {
+  width: 100%;
+  max-width: 550px;
+  background: #fff;
+  padding: 3rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profileItem {
+  margin-bottom: 2rem;
+}
+
+#profileImg {
   border-radius: 70%;
   overflow: hidden;
   height: 200px;
   width: 200px;
+  display: block;
+  margin: 0 auto 2rem auto;
 }
-.btn{
-  width: 100px;
+
+.btn {
+  width: 120px;
+  margin-right: 10px;
 }
-#editbtn:active{
+
+#editbtn:active {
   background-color: rgb(201, 201, 201);
 }
-#deletebtn:active{
+
+#deletebtn:active {
   background-color: rgb(255, 47, 47);
 }
-#sidebar {
-  .sidebar {
-    position: fixed;
-    top: 30%;
-    margin-left: 20px;
-  }
 
-  .nav-link {
-    margin-bottom: 30%;
-    font-size: 20px;
-  }
+input.form-control {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
 }
+
+

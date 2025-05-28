@@ -1,10 +1,29 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../scss/CaptCha.scss';
 
+const codes = [
+    "// 코드 1 예시",
+    "// 코드 2 예시",
+    "// 코드 3 예시",
+    "// 코드 4 예시",
+    "// 코드 5 예시",
+    "// 코드 6 예시",
+    "// 코드 7 예시",
+    "// 코드 8 예시",
+    "// 코드 9 예시",
+];
+
 const CaptCha = () => {
+    const navigate = useNavigate();
+
+    const handleBoxClick = (index) => {
+        // codes[index]를 state로 전달
+        navigate('/codetool', { state: { initialCode: codes[index], codeIndex: index } });
+    };
+
     return (
         <div className="captcha-wrapper">
-            {/* 왼쪽 메뉴 */}
             <aside className="captcha-sidebar">
                 <h3>메뉴</h3>
                 <ul>
@@ -14,13 +33,16 @@ const CaptCha = () => {
                 </ul>
             </aside>
 
-            {/* 오른쪽 박스 영역 */}
             <main className="captcha-main">
                 <h2>CaptCha Page</h2>
                 <div className="captcha-grid">
-                    {[...Array(9)].map((_, index) => (
-                        <div key={index} className="captcha-box">
-                            {/* SCSS에서 background로 이미지 설정 예정 */}
+                    {codes.map((_, index) => (
+                        <div
+                            key={index}
+                            className="captcha-box"
+                            onClick={() => handleBoxClick(index)}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <span>박스 {index + 1}</span>
                         </div>
                     ))}
@@ -31,3 +53,6 @@ const CaptCha = () => {
 };
 
 export default CaptCha;
+
+
+

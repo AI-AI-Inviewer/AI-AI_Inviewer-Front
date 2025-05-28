@@ -1,6 +1,7 @@
 .captcha-wrapper {
   display: flex;
   min-height: 100vh;
+  background-color: #f0f2f5;
 }
 
 .captcha-sidebar {
@@ -11,14 +12,19 @@
 
   h3 {
     margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: #333;
   }
 
   ul {
     list-style: none;
     padding: 0;
+
     li {
       margin-bottom: 0.8rem;
       cursor: pointer;
+      color: #555;
+
       &:hover {
         font-weight: bold;
         color: #007bff;
@@ -33,47 +39,69 @@
   background-color: #fff;
 
   h2 {
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     text-align: center;
+    color: #333;
   }
 
   .captcha-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
+    gap: 1.5rem;
+    justify-items: center;
   }
 
   .captcha-box {
+    width: 100%;
+    max-width: 300px;
     height: 250px;
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     border: 2px solid #ccc;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-weight: bold;
-    font-size: 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 
-    // 예시 이미지 (각 박스마다 다른 이미지 처리하고 싶으면 nth-child 사용)
-    background-image: url('/');
+    &:hover {
+      transform: scale(1.03);
+      border-color: #007bff;
+    }
+
+    &.selected {
+      border: 3px solid #007bff;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+    }
+  }
+
+  // 각 박스에 개별 이미지 적용
+  .captcha-box:nth-child(1) {
+    background-image: url('../../imgs/CC_1.png');
+  }
+  .captcha-box:nth-child(2) {
+    background-image: url('../../imgs/CC_2.png');
+  }
+  .captcha-box:nth-child(3) {
+    background-image: url('../../imgs/CC_3.jpg');
+  }
+  .captcha-box:nth-child(4) {
+    background-image: url('../../imgs/CC_4.png');
+  }
+  .captcha-box:nth-child(5) {
+    background-image: url('../../imgs/CC_5.png');
+  }
+  .captcha-box:nth-child(6) {
+    background-image: url('../../imgs/CC_1.png');
+  }
+  .captcha-box:nth-child(7) {
+    background-image: url('../../imgs/CC_2.png');
+  }
+  .captcha-box:nth-child(8) {
+    background-image: url('../../imgs/CC_3.jpg');
+  }
+  .captcha-box:nth-child(9) {
+    background-image: url('../../imgs/CC_4.png');
   }
 }
 
-
-.captcha-box:nth-child(1) {
-  background-image: url('../../imgs/CC_1.png');
-}
-.captcha-box:nth-child(2) {
-  background-image: url('../../imgs/CC_2.png');
-}
-.captcha-box:nth-child(3) {
-  background-image: url('../../imgs/CC_3.jpg');
-}
-.captcha-box:nth-child(4) {
-  background-image: url('../../imgs/CC_4.png');
-}
-.captcha-box:nth-child(5) {
-  background-image: url('../../imgs/CC_5.png');
-}

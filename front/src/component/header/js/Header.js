@@ -1,7 +1,6 @@
 import "../scss/Header.scss";
 import React from "react";
 import { Link } from "react-router-dom";
-//import {onDOMContentLoaded} from "bootstrap/js/src/util";
 
 const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickMain() {
@@ -26,7 +25,9 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickSignUp() {
         ChangeEventHandler("signup");
     }
-
+    function handleClickMypage() {
+        ChangeEventHandler("mypage");
+    }
 
     return (
         <nav className="navbar navbar-expand-lg bg-light">
@@ -59,8 +60,15 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                         </li>
                     </ul>
                     <ul className="navbar-nav" id="login">
-                        <li className="nav-item"><Link className="nav-link" to="/SignIn" onClick={handleClickSignIn}>Sign In</Link></li>
-                        <li className="nav-item"><Link className="nav-link" to="/SignUp" onClick={handleClickSignUp}>Sign up</Link></li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/signin" onClick={handleClickSignIn}>Sign In</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/signup" onClick={handleClickSignUp}>Sign up</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link" to="/mypage" onClick={handleClickMypage}>Mypage</Link>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -69,5 +77,6 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
 };
 
 export default Header;
+
 
 //<Link className="" to="" onClick={직접 만든 함수명}>

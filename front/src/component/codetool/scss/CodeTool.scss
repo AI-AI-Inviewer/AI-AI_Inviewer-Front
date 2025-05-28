@@ -18,5 +18,42 @@
       white-space: pre-wrap;
     }
   }
+
+  .buttons {
+    margin-top: 10px;
+  }
+
+  .save-btn {
+    background-color: #6c63ff;
+    color: white;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    &:hover {
+      background-color: #574fd6;
+    }
+  }
+
+  .cancel-btn {
+    background-color: #ccc;
+    color: #333;
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: 10px;
+
+    &:hover {
+      background-color: #aaa;
+    }
+  }
 }
+
+
 
