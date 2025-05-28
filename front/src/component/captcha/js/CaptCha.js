@@ -8,9 +8,9 @@ const CaptCha = () => {
             <aside className="captcha-sidebar">
                 <h3>메뉴</h3>
                 <ul>
-                    <li>항목 1</li>
-                    <li>항목 2</li>
-                    <li>항목 3</li>
+                    <li>카테고리</li>
+                    <li>북마크</li>
+                    <li>MyCAPTCHA</li>
                 </ul>
             </aside>
 

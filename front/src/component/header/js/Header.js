@@ -5,26 +5,26 @@ import { Link } from "react-router-dom";
 
 const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickMain() {
-        ChangeEventHandler("Home");
-        console.log(isCheckHeader);
+        ChangeEventHandler("/");
+        console.log("isCheckHeader : ", isCheckHeader, "")
     }
     function handleClickCaptCha() {
-        ChangeEventHandler("CaptCha");
+        ChangeEventHandler("captcha");
     }
     function handleClickCodeTool() {
-        ChangeEventHandler("CodeTool");
+        ChangeEventHandler("codetool");
     }
     function handleClickNoticeBoard() {
-        ChangeEventHandler("NoticeBoard");
+        ChangeEventHandler("noticeboard");
     }
     function handleClickFeedBack() {
-        ChangeEventHandler("FeedBack");
+        ChangeEventHandler("feedback");
     }
     function handleClickSignIn() {
-        ChangeEventHandler("SignIn");
+        ChangeEventHandler("signin");
     }
     function handleClickSignUp() {
-        ChangeEventHandler("SignUp");
+        ChangeEventHandler("signup");
     }
 
 
@@ -42,10 +42,10 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                             <Link className="nav-link" to="/" onClick={handleClickMain}>Home</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/CaptCha" onClick={handleClickCaptCha}>CaptCha</Link>
+                            <Link className="nav-link" to="/captcha" onClick={handleClickCaptCha}>CaptCha</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/CodeTool" onClick={handleClickCodeTool}>CodeTool</Link>
+                            <Link className="nav-link" to="/codetool" onClick={handleClickCodeTool}>CodeTool</Link>
                         </li>
                         <li className="nav-item dropdown">
                             <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
@@ -53,8 +53,8 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                                 Community
                             </a>
                             <ul className="dropdown-menu">
-                                <li><Link className="dropdown-item" to="/NoticeBoard" onClick={handleClickNoticeBoard}>Notice Board</Link></li>
-                                <li><Link className="dropdown-item" to="/FeedBack" onClick={handleClickFeedBack}>Feed Back</Link></li>
+                                <li><Link className="dropdown-item" to="/noticeboard" onClick={handleClickNoticeBoard}>Notice Board</Link></li>
+                                <li><Link className="dropdown-item" to="/feedback" onClick={handleClickFeedBack}>Feed Back</Link></li>
                             </ul>
                         </li>
                     </ul>

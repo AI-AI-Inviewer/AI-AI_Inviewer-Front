@@ -54,27 +54,31 @@ import {useState} from "react"
 
 function App() {
     const [isCheckHeader, setIsCheckHeader] = useState("True");
+
     function ChangeEventHandler(text) {
         setIsCheckHeader(text);
     }
 
     return (
-        <div className="App">
+        <div className="App" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <BrowserRouter>
                 <Header isCheckHeader={isCheckHeader} ChangeEventHandler={ChangeEventHandler} />
-                <Routes>
-                    <Route path="/" element={<Home isCheckHeader={isCheckHeader} />} />
-                    <Route path="/captcha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
-                    <Route path="/coetool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
-                    <Route path="/noticeboard" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />
-                    <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />
-                    <Route path="/mypage" element={<Mypage isCheckHeader={isCheckHeader} />} />
-                    <Route path="/signin" element={<SignIn isCheckHeader={isCheckHeader} /> } />
-                    <Route path="/signup" element={<SignUp isCheckHeader={isCheckHeader} />} />
-                </Routes>
+                <main style={{ flex: 1 }}>
+                    <Routes>
+                        <Route path="/" element={<Home isCheckHeader={isCheckHeader} />} />
+                        <Route path="/captcha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
+                        <Route path="/codetool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
+                        <Route path="/noticeboard" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />
+                        <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />
+                        <Route path="/mypage" element={<Mypage isCheckHeader={isCheckHeader} />} />
+                        <Route path="/signin" element={<SignIn isCheckHeader={isCheckHeader} />} />
+                        <Route path="/signup" element={<SignUp isCheckHeader={isCheckHeader} />} />
+                    </Routes>
+                </main>
                 <Footer />
             </BrowserRouter>
         </div>
     );
 }
+
 export default App;

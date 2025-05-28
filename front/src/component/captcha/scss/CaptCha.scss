@@ -44,8 +44,8 @@
   }
 
   .captcha-box {
-    height: 120px;
-    background-size: cover;
+    height: 250px;
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
     border: 2px solid #ccc;
@@ -57,7 +57,7 @@
     font-size: 16px;
 
     // 예시 이미지 (각 박스마다 다른 이미지 처리하고 싶으면 nth-child 사용)
-    background-image: url('../../imgs/CC_4.png  ');
+    background-image: url('/');
   }
 }
 
@@ -75,8 +75,5 @@
   background-image: url('../../imgs/CC_4.png');
 }
 .captcha-box:nth-child(5) {
-  background-image: url('/');
-}
-.captcha-box:nth-child(6) {
-  background-image: url('/');
+  background-image: url('../../imgs/CC_5.png');
 }
