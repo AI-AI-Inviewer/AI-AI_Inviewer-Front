@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickMain() {
-        ChangeEventHandler("Main");
+        ChangeEventHandler("Home");
         console.log(isCheckHeader);
     }
     function handleClickCaptCha() {
@@ -39,7 +39,7 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/Home" onClick={handleClickMain}>Home</Link>
+                            <Link className="nav-link" to="/" onClick={handleClickMain}>Home</Link>
                         </li>
                         <li className="nav-item">
                             <Link className="nav-link" to="/CaptCha" onClick={handleClickCaptCha}>CaptCha</Link>

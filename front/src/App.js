@@ -62,19 +62,15 @@ function App() {
         <div className="App">
             <BrowserRouter>
                 <Header isCheckHeader={isCheckHeader} ChangeEventHandler={ChangeEventHandler} />
-                <main style={{ flex: 1 }}>
-                    <Routes>
-                        <Route path="Home" element={<Home isCheckHeader={isCheckHeader} />} />
-                        <Route path="/CaptCha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
-                    </Routes>
-                </main>
                 <Routes>
-                    <Route path="/CodeTool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
-                    <Route path="/NoticeBoard" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />
-                    <Route path="/FeedBack" element={<FeedBack isCheckHeader={isCheckHeader} />} />
-                    <Route path="/Mypage" element={<Mypage isCheckHeader={isCheckHeader} />} />
-                    <Route path="/SignIn" element={<SignIn isCheckHeader={isCheckHeader} /> } />
-                    <Route path="/SignUp" element={<SignUp isCheckHeader={isCheckHeader} />} />
+                    <Route path="/" element={<Home isCheckHeader={isCheckHeader} />} />
+                    <Route path="/captcha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
+                    <Route path="/coetool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
+                    <Route path="/noticeboard" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />
+                    <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />
+                    <Route path="/mypage" element={<Mypage isCheckHeader={isCheckHeader} />} />
+                    <Route path="/signin" element={<SignIn isCheckHeader={isCheckHeader} /> } />
+                    <Route path="/signup" element={<SignUp isCheckHeader={isCheckHeader} />} />
                 </Routes>
                 <Footer />
             </BrowserRouter>
