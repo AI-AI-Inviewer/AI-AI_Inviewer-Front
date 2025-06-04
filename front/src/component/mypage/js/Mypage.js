@@ -16,11 +16,7 @@ const Mypage= ()=> {
                             </button>
                             <button className="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-pills-bookmark" type="button" role="tab"
-                                    aria-controls="v-pills-bookmark" aria-selected="false">Bookmark
-                            </button>
-                            <button className="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-pills-messages" type="button" role="tab"
-                                    aria-controls="v-pills-messages" aria-selected="false">Messages
+                                    aria-controls="v-pills-bookmark" aria-selected="false">즐찾
                             </button>
                             <button className="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
                                     data-bs-target="#v-pills-settings" type="button" role="tab"

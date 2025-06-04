@@ -31,7 +31,7 @@ const CodeTool = () => {
 
     // 취소 버튼 클릭 시 CaptCha 페이지로 이동
     const handleCancel = () => {
-        navigate('/captcha');
+        navigate('/codetool');
     };
 
     return (

@@ -40,22 +40,22 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                 <div className="collapse navbar-collapse justify-content-between" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link className="nav-link" to="/" onClick={handleClickMain}>Home</Link>
+                            <Link className="nav-link" to="/" onClick={handleClickMain}>홈</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/captcha" onClick={handleClickCaptCha}>CaptCha</Link>
+                            <Link className="nav-link" to="/captcha" onClick={handleClickCaptCha}>AI 면접연습</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/codetool" onClick={handleClickCodeTool}>CodeTool</Link>
+                            <Link className="nav-link" to="/codetool" onClick={handleClickCodeTool}>자소서</Link>
                         </li>
                         <li className="nav-item dropdown">
                             <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
                                aria-expanded="false">
-                                Community
+                                전체 게시판
                             </a>
                             <ul className="dropdown-menu">
-                                <li><Link className="dropdown-item" to="/noticeboard" onClick={handleClickNoticeBoard}>Notice Board</Link></li>
-                                <li><Link className="dropdown-item" to="/feedback" onClick={handleClickFeedBack}>Feed Back</Link></li>
+                                <li><Link className="dropdown-item" to="/noticeboard" onClick={handleClickNoticeBoard}>피드백</Link></li>
+                                <li><Link className="dropdown-item" to="/feedback" onClick={handleClickFeedBack}>후기</Link></li>
                             </ul>
                         </li>
                     </ul>
