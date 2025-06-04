@@ -71,9 +71,9 @@ import { Link } from 'react-router-dom';
 
 const FeedBack = () => {
     const feedback = [
-        { id: 1, title: "피드백1", date: "2025-05-28" },
-        { id: 2, title: "피드백2", date: "2025-06-01" },
-        { id: 3, title: "피드백3", date: "2025-06-10" },
+        { id: 1, title: "피드백1", content: "asdasdasd", date: "2025-05-28", writer: "gptuser"},
+        { id: 2, title: "피드백2", content: "zxczxcxzc", date: "2025-06-01", writer: "gptuser"},
+        { id: 3, title: "피드백3", content: "qweqweqwe", date: "2025-06-10", writer: "gptuser"},
     ];
 
     return (
@@ -82,8 +82,10 @@ const FeedBack = () => {
             <ul className="feedback-list">
                 {feedback.map(feedback => (
                     <li key={feedback.id} className="feedback-item">
+                        <Link to={`/feedback/${feedback.id}`} state={feedback} className="feedback-title-link">
                         <div className="feedback-title">{feedback.title}</div>
                         <div className="feedback-date">{feedback.date}</div>
+                        </Link>
                     </li>
                 ))}
             </ul>

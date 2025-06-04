@@ -50,6 +50,7 @@ import CaptCha from "./component/captcha/js/CaptCha";
 import CodeTool from "./component/codetool/js/CodeTool";
 import FeedBack from "./component/community/js/FeedBack";
 import FeedBackWrite from "./component/community/js/FeedBack-write";
+import FeedBackDetail from "./component/community/js/FeedBackDetail";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {useState} from "react"
 
@@ -71,6 +72,7 @@ function App() {
                         <Route path="/codetool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
                         <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />
                         <Route path="/feedback/write" element={<FeedBackWrite />} />
+                        <Route path="/feedback/:id" element={<FeedBackDetail />} />
                         <Route path="/mypage" element={<Mypage isCheckHeader={isCheckHeader} />} />
                         <Route path="/mypage-edit" element={<MypageEdit />} />
                         <Route path="/signin" element={<SignIn isCheckHeader={isCheckHeader} />} />
