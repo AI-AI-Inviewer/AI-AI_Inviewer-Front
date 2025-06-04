@@ -54,8 +54,8 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                                 전체 게시판
                             </a>
                             <ul className="dropdown-menu">
-                                <li><Link className="dropdown-item" to="/noticeboard" onClick={handleClickNoticeBoard}>피드백</Link></li>
-                                <li><Link className="dropdown-item" to="/feedback" onClick={handleClickFeedBack}>후기</Link></li>
+                                <li><Link className="dropdown-item" to="/feedback" onClick={handleClickNoticeBoard}>피드백</Link></li>
+                                <li><Link className="dropdown-item" to="/noticeboard" onClick={handleClickFeedBack}>면접 후기</Link></li>
                             </ul>
                         </li>
                     </ul>

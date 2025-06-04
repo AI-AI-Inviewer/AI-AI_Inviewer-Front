@@ -1,7 +1,4 @@
-import React, { useState } from 'react';
-import '../scss/FeedBack.scss';
-
-const FeedBack = () => {
+/*const FeedBack = () => {
     const [form, setForm] = useState({
         name: '',
         email: '',
@@ -65,6 +62,36 @@ const FeedBack = () => {
 
                 <button type="submit">보내기</button>
             </form>
+        </div>
+    );
+};*/
+import React, { useState } from 'react';
+import '../scss/FeedBack.scss';
+import { Link } from 'react-router-dom';
+
+const FeedBack = () => {
+    const feedback = [
+        { id: 1, title: "피드백1", date: "2025-05-28" },
+        { id: 2, title: "피드백2", date: "2025-06-01" },
+        { id: 3, title: "피드백3", date: "2025-06-10" },
+    ];
+
+    return (
+        <div className="feedback-container">
+            <h2>피드백 게시판</h2>
+            <ul className="feedback-list">
+                {feedback.map(feedback => (
+                    <li key={feedback.id} className="feedback-item">
+                        <div className="feedback-title">{feedback.title}</div>
+                        <div className="feedback-date">{feedback.date}</div>
+                    </li>
+                ))}
+            </ul>
+            <div className="feedback-btn-wrapper bottom">
+                <Link to="/feedback/write" className="btn amado-btn" style={{ marginBottom: '1rem', display: 'inline-block' }}>
+                    글쓰기
+                </Link>
+            </div>
         </div>
     );
 };

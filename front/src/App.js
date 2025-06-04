@@ -48,8 +48,8 @@ import Mypage from "./component/mypage/js/Mypage";
 import MypageEdit from "./component/mypage-edit/js/Mypage-edit";
 import CaptCha from "./component/captcha/js/CaptCha";
 import CodeTool from "./component/codetool/js/CodeTool";
-import NoticeBoard from './component/community/js/NoticeBoard';
-import FeedBack from './component/community/js/FeedBack';
+import FeedBack from "./component/community/js/FeedBack";
+import FeedBackWrite from "./component/community/js/FeedBack-write";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {useState} from "react"
 
@@ -69,8 +69,8 @@ function App() {
                         <Route path="/" element={<Home isCheckHeader={isCheckHeader} />} />
                         <Route path="/captcha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
                         <Route path="/codetool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
-                        <Route path="/noticeboard" element={<NoticeBoard isCheckHeader={isCheckHeader} />} />
                         <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />
+                        <Route path="/feedback/write" element={<FeedBackWrite />} />
                         <Route path="/mypage" element={<Mypage isCheckHeader={isCheckHeader} />} />
                         <Route path="/mypage-edit" element={<MypageEdit />} />
                         <Route path="/signin" element={<SignIn isCheckHeader={isCheckHeader} />} />

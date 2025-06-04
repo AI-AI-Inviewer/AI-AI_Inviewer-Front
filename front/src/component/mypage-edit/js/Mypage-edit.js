@@ -13,9 +13,11 @@ const MypageEdit= ()=> {
     const [phone, setPhone] = useState("");
 
     const handleSave = () => {
-        console.log("저장됨:", { name, password, email, phone });
-        alert("수정된 정보를 저장했습니다.");
+        alert("수정된 정보를 저장했습니다.")
+        navigate('/mypage');
+    };
 
+    const handleCancle = () => {
         navigate('/mypage');
     };
 
@@ -72,7 +74,9 @@ const MypageEdit= ()=> {
                                     <button id="editbtn" className="btn amado-btn" onClick={handleSave}>
                                         저장
                                     </button>
-                                    <a id="deletebtn" href="#" className="btn amado-btn">취소하기</a>
+                                    <button id="calcleebtn" className="btn amado-btn" onClick={handleCancle}>
+                                        취소하기
+                                    </button>
                                 </div>
                             </div>
                         </div>
