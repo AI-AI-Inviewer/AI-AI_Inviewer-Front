@@ -1,14 +1,22 @@
-import "../scss/Mypage.scss"
+import "../scss/Mypage-edit.scss"
 import "../../header/js/Header"
 import pic from '../../imgs/profile.jpg'
+import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 
-const Mypage= ()=> {
-
+const MypageEdit= ()=> {
     const navigate = useNavigate();
 
-    const goToEditPage = () => {
-        navigate('/mypage-edit');
+    const [name, setName] = useState("");
+    const [password, setPassword] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+
+    const handleSave = () => {
+        console.log("저장됨:", { name, password, email, phone });
+        alert("수정된 정보를 저장했습니다.");
+
+        navigate('/mypage');
     };
 
     return (
@@ -38,52 +46,35 @@ const Mypage= ()=> {
                              aria-labelledby="v-pills-profile-tab" tabIndex="0">
                             <div className="profile">
                                 <div className="profileItem">
-                                    <img src={pic} alt='프로필 이미지' id="profileImg"/>
+                                    <img src={pic} alt='프로필 이미지 수정' id="profileImg" />
                                 </div>
                                 <div className="profileItem">
                                     <small>사용자명</small>
-                                    <input type="text" className="form-control" id="txtName" value=""
-                                           placeholder="사용자명 입력"/>
-                                </div>
-                                <div className="profileItem">
-                                    <small>아이디</small>
-                                    <input type="text" className="form-control" id="txtId" value=""
-                                           placeholder="아이디 입력"/>
+                                    <input type="text" className="form-control" id="txtName" placeholder="사용자명 수정" value={name}
+                                        onChange={(e) => setName(e.target.value)}/>
                                 </div>
                                 <div className="profileItem">
                                     <small>비밀번호</small>
-                                    <input type="password" className="form-control" id="txtPwd" value=""
-                                           placeholder="비밀번호 입력" required/>
+                                    <input type="password" className="form-control" id="txtPwd" placeholder="비밀번호 수정" value={password}
+                                        onChange={(e) => setPassword(e.target.value)}/>
                                 </div>
                                 <div className="profileItem">
                                     <small>이메일</small>
-                                    <input type="email" className="form-control" id="txtMail" placeholder="이메일 입력"
-                                           value=""/>
+                                    <input type="email" className="form-control" id="txtMail" placeholder="이메일 수정" value={email}
+                                        onChange={(e) => setEmail(e.target.value)}/>
                                 </div>
                                 <div className="profileItem">
                                     <small>전화번호</small>
-                                    <input type="tel" className="form-control" id="txtPhone" placeholder="전화번호 입력"
-                                           value=""/>
+                                    <input type="tel" className="form-control" id="txtPhone" placeholder="전화번호 수정" value={phone}
+                                        onChange={(e) => setPhone(e.target.value)}/>
                                 </div>
                                 <div className="profileItem">
-                                    <button id="editbtn" className="btn amado-btn" onClick={goToEditPage}>
-                                        정보 수정
+                                    <button id="editbtn" className="btn amado-btn" onClick={handleSave}>
+                                        저장
                                     </button>
-                                    <a id="deletebtn" href="#" className="btn amado-btn">회원 탈퇴</a>
+                                    <a id="deletebtn" href="#" className="btn amado-btn">취소하기</a>
                                 </div>
                             </div>
-                        </div>
-                        <div className="tab-pane fade" id="v-pills-bookmark" role="tabpanel"
-                             aria-labelledby="v-pills-bookmark-tab" tabIndex="0">
-                            <h1>북마크 페이지</h1>
-                        </div>
-                        <div className="tab-pane fade" id="v-pills-messages" role="tabpanel"
-                             aria-labelledby="v-pills-messages-tab" tabIndex="0">
-                            <h1>메시지 페이지</h1>
-                        </div>
-                        <div className="tab-pane fade" id="v-pills-settings" role="tabpanel"
-                             aria-labelledby="v-pills-settings-tab" tabIndex="0">
-                            <h1>설정 페이지</h1>
                         </div>
                     </div>
                 </div>
@@ -92,4 +83,4 @@ const Mypage= ()=> {
     );
 }
 
-export default Mypage;
+export default MypageEdit;

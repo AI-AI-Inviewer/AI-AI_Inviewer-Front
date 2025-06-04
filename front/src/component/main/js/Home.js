@@ -6,10 +6,11 @@ const Home = () => {
     return (
         <div className="homemain-container">
             <section className="intro-section">
-                <h1>Welcome OpenCaptCha</h1>
+                <h1>Welcome AI-Inviewer</h1>
                 <p>
-                    OpenCaptCha는 오픈소스 CAPTCHA 플랫폼입니다.<br />
-                    다양한 인증 방식과 간편한 접근성을 통해 더 나은 사용자 경험을 제공합니다.
+                    AI-Inviewer는 AI 면접 플랫폼입니다.<br/>
+                    AI를 사용한 면접과 편리한 인터페이스, 사용자 간의 면접 피드백을 <br/>
+                    통해 다양한 정보를 제공합니다.
                 </p>
             </section>
 
