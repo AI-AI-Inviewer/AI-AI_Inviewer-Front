@@ -51,6 +51,9 @@ import CodeTool from "./component/codetool/js/CodeTool";
 import FeedBack from "./component/community/js/FeedBack";
 import FeedBackWrite from "./component/community/js/FeedBack-write";
 import FeedBackDetail from "./component/community/js/FeedBackDetail";
+import PostScript from "./component/community/js/PostScript";
+import PostScriptWrite from "./component/community/js/PostScript-write";
+import PostScriptDetail from "./component/community/js/PostScriptDetail";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {useState} from "react"
 
@@ -73,6 +76,9 @@ function App() {
                         <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />
                         <Route path="/feedback/write" element={<FeedBackWrite />} />
                         <Route path="/feedback/:id" element={<FeedBackDetail />} />
+                        <Route path="/postscript" element={<PostScript />} />
+                        <Route path="/postscript/write" element={<PostScriptWrite />} />
+                        <Route path="/postscript/:id" element={<PostScriptDetail />} />
                         <Route path="/mypage" element={<Mypage isCheckHeader={isCheckHeader} />} />
                         <Route path="/mypage-edit" element={<MypageEdit />} />
                         <Route path="/signin" element={<SignIn isCheckHeader={isCheckHeader} />} />

@@ -55,7 +55,7 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                             </a>
                             <ul className="dropdown-menu">
                                 <li><Link className="dropdown-item" to="/feedback" onClick={handleClickNoticeBoard}>피드백</Link></li>
-                                <li><Link className="dropdown-item" to="/noticeboard" onClick={handleClickFeedBack}>면접 후기</Link></li>
+                                <li><Link className="dropdown-item" to="/postscript" onClick={handleClickFeedBack}>면접 후기</Link></li>
                             </ul>
                         </li>
                     </ul>
