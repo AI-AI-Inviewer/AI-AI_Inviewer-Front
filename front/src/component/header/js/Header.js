@@ -46,7 +46,7 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                             <Link className="nav-link" to="/captcha" onClick={handleClickCaptCha}>AI 면접연습</Link>
                         </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/codetool" onClick={handleClickCodeTool}>자소서</Link>
+                            <Link className="nav-link" to="/cl" onClick={handleClickCodeTool}>자소서</Link>
                         </li>
                         <li className="nav-item dropdown">
                             <a className="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"

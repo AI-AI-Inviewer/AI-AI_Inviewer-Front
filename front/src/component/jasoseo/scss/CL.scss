@@ -1,0 +1,54 @@
+.cl-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #fefeff;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #333;
+  }
+
+  .cl-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    .cl-item {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1rem;
+      transition: box-shadow 0.2s ease;
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      }
+
+      .cl-title-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-decoration: none;
+        color: #333;
+
+        .cl-title {
+          font-size: 1.2rem;
+          font-weight: 600;
+        }
+
+        .cl-date {
+          font-size: 0.9rem;
+          color: #888;
+        }
+      }
+    }
+  }
+}

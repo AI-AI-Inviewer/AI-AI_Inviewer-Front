@@ -47,7 +47,8 @@ import SignUp from "./component/sign/js/SignUp";
 import Mypage from "./component/mypage/js/Mypage";
 import MypageEdit from "./component/mypage-edit/js/Mypage-edit";
 import CaptCha from "./component/captcha/js/CaptCha";
-import CodeTool from "./component/codetool/js/CodeTool";
+import CL from "./component/jasoseo/js/CL";
+import CLDetail from "./component/jasoseo/js/CLDetail";
 import FeedBack from "./component/community/js/FeedBack";
 import FeedBackWrite from "./component/community/js/FeedBack-write";
 import FeedBackDetail from "./component/community/js/FeedBackDetail";
@@ -72,7 +73,8 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Home isCheckHeader={isCheckHeader} />} />
                         <Route path="/captcha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
-                        <Route path="/codetool" element={<CodeTool isCheckHeader={isCheckHeader} />} />
+                        <Route path="/cl" element={<CL isCheckHeader={isCheckHeader} />} />
+                        <Route path="/clDetail/:id" element={<CLDetail />} />
                         <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />
                         <Route path="/feedback/write" element={<FeedBackWrite />} />
                         <Route path="/feedback/:id" element={<FeedBackDetail />} />
