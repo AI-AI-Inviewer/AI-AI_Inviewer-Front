@@ -2,9 +2,9 @@
   max-width: 800px;
   margin: 3rem auto;
   padding: 2rem;
-  background-color: #fefeff;
+  background-color: #fdfdff;
   border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
 
   h2 {
     font-size: 2rem;
@@ -20,16 +20,17 @@
     margin: 0;
 
     .cl-item {
-      background-color: white;
-      border: 1px solid #ddd;
+      background: #fff;
+      border: 1px solid #e5e5ee;
       border-radius: 12px;
-      padding: 1.2rem 1.5rem;
+      padding: 1.2rem 1.6rem;
       margin-bottom: 1rem;
-      transition: box-shadow 0.2s ease;
+      transition: box-shadow 0.2s ease, transform 0.2s ease;
       cursor: pointer;
 
       &:hover {
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
       }
 
       .cl-title-link {
@@ -40,7 +41,7 @@
         color: #333;
 
         .cl-title {
-          font-size: 1.2rem;
+          font-size: 1.1rem;
           font-weight: 600;
         }
 

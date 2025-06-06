@@ -1,3 +1,4 @@
+// src/component/cl/js/CLDetail.js
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import '../scss/CLDetail.scss';
@@ -24,18 +25,16 @@ const CLDetail = () => {
 
             <div className="cl-detail-content">{cl.content}</div>
 
-            {/* ✅ 이미지 미리보기 */}
-            {/*{cl.image && (
+            {cl.image && (
                 <div className="cl-preview">
                     <img src={cl.image} alt="자기소개서 미리보기" />
                 </div>
-            )}*/}
+            )}
 
-            {/* ✅ 파일 다운로드 */}
             {cl.file && (
                 <div className="cl-download">
-                    <a href={cl.file} download className="btn download-btn">
-                        자기소개서 파일 다운로드
+                    <a href={`/${cl.file}`} download className="btn download-btn">
+                        다운로드
                     </a>
                 </div>
             )}

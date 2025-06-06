@@ -74,7 +74,7 @@ function App() {
                         <Route path="/" element={<Home isCheckHeader={isCheckHeader} />} />
                         <Route path="/captcha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
                         <Route path="/cl" element={<CL isCheckHeader={isCheckHeader} />} />
-                        <Route path="/clDetail/:id" element={<CLDetail />} />
+                        <Route path="/cl/:id" element={<CLDetail />} />
                         <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />
                         <Route path="/feedback/write" element={<FeedBackWrite />} />
                         <Route path="/feedback/:id" element={<FeedBackDetail />} />
