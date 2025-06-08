@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../scss/FeedBack-write.scss';
 import { useNavigate } from 'react-router-dom';
+import { createFeedback } from '../../../api/feedback';  // 🔥 추가
 
 const FeedBackWrite = () => {
     const [form, setForm] = useState({ name: '', message: '' });
@@ -11,16 +12,25 @@ const FeedBackWrite = () => {
         setForm(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!form.name || !form.message) {
             alert('모든 필드를 입력해 주세요.');
             return;
         }
-        alert(`감사합니다, ${form.name}님! 피드백이 등록되었습니다.`);
-        setForm({ name: '', message: '' });
-        
-        navigate('/feedback');
+
+        try {
+            await createFeedback({
+                name: form.name,
+                message: form.message
+            });
+            alert(`감사합니다, ${form.name}님! 피드백이 등록되었습니다.`);
+            setForm({ name: '', message: '' });
+            navigate('/feedback');
+        } catch (error) {
+            console.error('피드백 등록 오류:', error);
+            alert('피드백 등록에 실패했습니다.');
+        }
     };
 
     return (

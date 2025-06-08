@@ -1,25 +1,34 @@
 import React, { useState } from 'react';
 import '../scss/SignUp.scss';
+import { registerUser } from '../../../api/user';
+
 
 const SignUp = () => {
     const [form, setForm] = useState({
-        name: '',
-        email: '',
+        userId: '',
         password: '',
         confirmPassword: '',
+        email: '',
+        name: '',
+        nickname: '',
+        profileImage: null,
     });
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        const { name, value, files } = e.target;
+        if (name === 'profileImage') {
+            setForm(prev => ({ ...prev, profileImage: files[0] }));
+        } else {
+            setForm(prev => ({ ...prev, [name]: value }));
+        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const { name, email, password, confirmPassword } = form;
+        const { userId, password, confirmPassword, email, name, nickname } = form;
 
-        if (!name || !email || !password || !confirmPassword) {
+        if (!userId || !password || !confirmPassword || !email || !name || !nickname) {
             alert('모든 필드를 입력해 주세요.');
             return;
         }
@@ -29,16 +38,38 @@ const SignUp = () => {
             return;
         }
 
-        // 여기서 실제 회원가입 API 호출을 할 수 있습니다.
-
-        alert(`${name}님, 회원가입이 완료되었습니다!`);
-        setForm({ name: '', email: '', password: '', confirmPassword: '' });
+        try {
+            await registerUser(form);
+            alert(`${userId}님, 회원가입이 완료되었습니다!`);
+            setForm({
+                userId: '',
+                password: '',
+                confirmPassword: '',
+                email: '',
+                name: '',
+                nickname: '',
+                profileImage: null,
+            });
+        } catch (error) {
+            console.error('[회원가입 오류]', error);
+            alert('회원가입에 실패했습니다.');
+        }
     };
 
     return (
         <div className="signup-container">
             <h2>회원가입</h2>
             <form className="signup-form" onSubmit={handleSubmit}>
+                <label>
+                    아이디
+                    <input
+                        type="text"
+                        name="userId"
+                        value={form.userId}
+                        onChange={handleChange}
+                        placeholder="아이디를 입력하세요"
+                    />
+                </label>
                 <label>
                     이름
                     <input
@@ -82,7 +113,16 @@ const SignUp = () => {
                         placeholder="비밀번호를 다시 입력하세요"
                     />
                 </label>
-
+                <label>
+                    닉네임
+                    <input
+                        type="text"
+                        name="nickname"
+                        value={form.nickname}
+                        onChange={handleChange}
+                        placeholder="닉네임을 입력하세요"
+                    />
+                </label>
                 <button type="submit">회원가입</button>
             </form>
         </div>
