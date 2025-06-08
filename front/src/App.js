@@ -3,7 +3,7 @@
 // import "./App.css";
 // import Header from "./component/header/js/Header";
 // import Footer from "../src/component/footer/js/Footer"
-// import CaptCha from "../src/component/captcha/js/CaptCha";
+// import AiInviewer from "../src/component/captcha/js/AiInviewer";
 // //import CodeTool from "../src/component/codeTool/js/CodeTool";
 // //import Community from "./component/community/js/Community";
 // import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -23,7 +23,7 @@
 //                 <Header isCheckHeader={isCheckHeader} ChangeEventHandler={ChangeEventHandler} />
 //                 <Routes>
 //                     <Route path="Home" element={<Home isCheckHeader={isCheckHeader} />} />
-//                     <Route path="/CaptCha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
+//                     <Route path="/AiInviewer" element={<AiInviewer isCheckHeader={isCheckHeader} />} />
 //
 //                 </Routes>
 //                 <Footer />
@@ -46,7 +46,7 @@ import SignIn from "./component/sign/js/SignIn";
 import SignUp from "./component/sign/js/SignUp";
 import Mypage from "./component/mypage/js/Mypage";
 import MypageEdit from "./component/mypage-edit/js/Mypage-edit";
-import CaptCha from "./component/captcha/js/CaptCha";
+import AiInviewer from "./component/AIInviewer/js/AiInviewer";
 import CL from "./component/jasoseo/js/CL";
 import CLDetail from "./component/jasoseo/js/CLDetail";
 import FeedBack from "./component/community/js/FeedBack";
@@ -72,7 +72,7 @@ function App() {
                 <main style={{ flex: 1 }}>
                     <Routes>
                         <Route path="/" element={<Home isCheckHeader={isCheckHeader} />} />
-                        <Route path="/captcha" element={<CaptCha isCheckHeader={isCheckHeader} />} />
+                        <Route path="/captcha" element={<AiInviewer isCheckHeader={isCheckHeader} />} />
                         <Route path="/cl" element={<CL isCheckHeader={isCheckHeader} />} />
                         <Route path="/cl/:id" element={<CLDetail />} />
                         <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />

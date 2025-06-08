@@ -29,7 +29,7 @@ const CodeTool = () => {
         }
     };
 
-    // 취소 버튼 클릭 시 CaptCha 페이지로 이동
+    // 취소 버튼 클릭 시 AiInviewer 페이지로 이동
     const handleCancel = () => {
         navigate('/codetool');
     };
