@@ -72,12 +72,12 @@ const Header = ({ isCheckHeader, ChangeEventHandler, isLoggedIn, userNickname, o
                             <>
                                 <li className="nav-item">
                                     <Link className="nav-link" to="/mypage" onClick={handleClickMypage}>
-                                        {userNickname}님
+                                        {userNickname}
                                     </Link>
                                 </li>
                                 <li className="nav-item">
                                     <button className="btn btn-link nav-link" onClick={handleClickLogout}>
-                                        로그아웃
+                                        Logout
                                     </button>
                                 </li>
                             </>

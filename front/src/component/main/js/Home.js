@@ -25,7 +25,7 @@ const Home = ({ isLoggedIn, ChangeEventHandler }) => {
                             AI 면접을 바로 시작해보세요.
                         </p>
                         <div className="auth-buttons">
-                            <Link to="/captcha" onClick={handleClickCaptCha} className="btn signup-btn">
+                            <Link to="/captcha" className="btn signup-btn">
                                 AI 면접 바로가기
                             </Link>
                         </div>

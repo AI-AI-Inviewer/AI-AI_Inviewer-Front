@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../scss/SignUp.scss';
 import { registerUser } from '../../../api/user';
+import {useNavigate} from "react-router-dom";
 
 
 const SignUp = () => {
@@ -22,25 +23,70 @@ const SignUp = () => {
             setForm(prev => ({ ...prev, [name]: value }));
         }
     };
-
+    const navigate = useNavigate();
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const { userId, password, confirmPassword, email, name, nickname } = form;
 
-        if (!userId || !password || !confirmPassword || !email || !name || !nickname) {
-            alert('모든 필드를 입력해 주세요.');
+        // input 엘리먼트 찾기
+        const userIdInput = document.getElementById('userId');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const emailInput = document.getElementById('email');
+        const nameInput = document.getElementById('name');
+        const nicknameInput = document.getElementById('nickname');
+
+        // 아이디 검사
+        if (!userId) {
+            alert('아이디를 입력해 주세요.');
+            if (userIdInput) userIdInput.focus();
             return;
         }
 
+        if (!name) {
+            alert('이름을 입력해 주세요.');
+            if (nameInput) nameInput.focus();
+            return;
+
+        }
+
+        if (!email) {
+            alert('이메일을 입력해 주세요.');
+            if (emailInput) emailInput.focus();
+
+            return;
+
+        }
+
+        if (!password) {
+            alert('비밀번호를 입력해 주세요.');
+            if (passwordInput) passwordInput.focus();
+
+            return;
+        }
+        // 비밀번호 확인 검사
+        if (!confirmPassword) {
+            alert('비밀번호 확인을 입력해 주세요.');
+            if (confirmPasswordInput) confirmPasswordInput.focus();
+            return;
+        }
+
+        if (!nickname) {
+            alert('닉네임을 입력해 주세요.');
+            if (nicknameInput) nicknameInput.focus();
+            return;
+        }
         if (password !== confirmPassword) {
             alert('비밀번호가 일치하지 않습니다.');
+            if (confirmPasswordInput) confirmPasswordInput.focus();
             return;
         }
 
         try {
             await registerUser(form);
             alert(`${userId}님, 회원가입이 완료되었습니다!`);
+            navigate('/');
             setForm({
                 userId: '',
                 password: '',
@@ -50,6 +96,7 @@ const SignUp = () => {
                 nickname: '',
                 profileImage: null,
             });
+
         } catch (error) {
             console.error('[회원가입 오류]', error);
             alert('회원가입에 실패했습니다.');
