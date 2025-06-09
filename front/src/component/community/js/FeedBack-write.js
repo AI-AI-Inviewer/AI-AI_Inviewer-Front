@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import '../scss/FeedBack-write.scss';
 import { useNavigate } from 'react-router-dom';
-import { createFeedback } from '../../../api/feedback';  // 🔥 추가
+import axios from 'axios';
 
 const FeedBackWrite = () => {
-    const [form, setForm] = useState({ name: '', message: '' });
+    const [form, setForm] = useState({ title: '', content: '' });
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -14,22 +14,21 @@ const FeedBackWrite = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.message) {
+        if (!form.title || !form.content) {
             alert('모든 필드를 입력해 주세요.');
             return;
         }
 
         try {
-            await createFeedback({
-                name: form.name,
-                message: form.message
+            const token = localStorage.getItem('jwtToken');
+            await axios.post('http://localhost:10000/api/community', form, {
+                headers: { Authorization: `Bearer ${token}` }
             });
-            alert(`감사합니다, ${form.name}님! 피드백이 등록되었습니다.`);
-            setForm({ name: '', message: '' });
+            alert('게시글이 등록되었습니다.');
             navigate('/feedback');
         } catch (error) {
-            console.error('피드백 등록 오류:', error);
-            alert('피드백 등록에 실패했습니다.');
+            console.error('게시글 등록 오류:', error);
+            alert('게시글 등록에 실패했습니다.');
         }
     };
 
@@ -38,12 +37,12 @@ const FeedBackWrite = () => {
             <h2>피드백 작성</h2>
             <form onSubmit={handleSubmit} className="feedback-form">
                 <label>
-                    이름
-                    <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="이름을 입력하세요"/>
+                    제목
+                    <input type="text" name="title" value={form.title} onChange={handleChange} placeholder="제목을 입력하세요"/>
                 </label>
                 <label>
-                    피드백 내용
-                    <textarea name="message" value={form.message} onChange={handleChange} placeholder="피드백 내용을 입력하세요" rows="6"/>
+                    내용
+                    <textarea name="content" value={form.content} onChange={handleChange} placeholder="내용을 입력하세요" rows="6"/>
                 </label>
                 <button type="submit">등록</button>
             </form>

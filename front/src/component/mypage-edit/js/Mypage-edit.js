@@ -1,23 +1,52 @@
-import "../scss/Mypage-edit.scss"
-import "../../header/js/Header"
-import pic from '../../imgs/profile.jpg'
-import { useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import "../scss/Mypage-edit.scss";
+import pic from '../../imgs/profile.jpg';
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const MypageEdit= ()=> {
+const MypageEdit = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const userInfo = location.state?.userInfo || {};
 
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
-    const [email, setEmail] = useState("");
-    const [phone, setPhone] = useState("");
+    const [userName, setUserName] = useState("");
+    const [userNickname, setUserNickname] = useState("");
+    const [userEmail, setUserEmail] = useState("");
 
-    const handleSave = () => {
-        alert("수정된 정보를 저장했습니다.")
-        navigate('/mypage');
+    useEffect(() => {
+        setUserName(userInfo.userName || "");
+        setUserNickname(userInfo.userNickname || "");
+        setUserEmail(userInfo.userEmail || "");
+    }, [userInfo]);
+
+    const handleSave = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const updatedUser = {
+                userName,
+                userNickname,
+                userEmail
+            };
+
+            await axios.put(
+                'http://localhost:10000/api/user/me',  // 포트 번호 반영!
+                updatedUser,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            alert("사용자 정보가 수정되었습니다.");
+            navigate('/mypage');
+        } catch (error) {
+            console.error("사용자 정보 업데이트 실패:", error);
+            alert("정보 수정에 실패했습니다.");
+        }
     };
 
-    const handleCancle = () => {
+    const handleCancel = () => {
         navigate('/mypage');
     };
 
@@ -25,57 +54,45 @@ const MypageEdit= ()=> {
         <div className="App">
             <header className="App-header">
                 <div className="d-flex align-items-start" id="sidebar">
-                    <div className="nav flex-column nav-pills me-3" id="v-pills-tab " role="tablist"
-                         aria-orientation="vertical">
-                        <div className="sidebar">
-                            <button className="nav-link active" id="v-pills-profile-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-pills-profile" type="button" role="tab"
-                                    aria-controls="v-pills-profile" aria-selected="true">Profile
-                            </button>
-                            <button className="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-pills-bookmark" type="button" role="tab"
-                                    aria-controls="v-pills-bookmark" aria-selected="false">즐찾
-                            </button>
-                            <button className="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill"
-                                    data-bs-target="#v-pills-settings" type="button" role="tab"
-                                    aria-controls="v-pills-settings" aria-selected="false">Settings
-                            </button>
-                        </div>
-                    </div>
-
                     <div className="tab-content" id="v-pills-tabContent">
-                        <div className="tab-pane fade show active" id="v-pills-profile" role="tabpanel"
-                             aria-labelledby="v-pills-profile-tab" tabIndex="0">
+                        <div className="tab-pane fade show active" id="v-pills-profile">
                             <div className="profile">
                                 <div className="profileItem">
                                     <img src={pic} alt='프로필 이미지 수정' id="profileImg" />
                                 </div>
                                 <div className="profileItem">
                                     <small>사용자명</small>
-                                    <input type="text" className="form-control" id="txtName" placeholder="사용자명 수정" value={name}
-                                        onChange={(e) => setName(e.target.value)}/>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={userName}
+                                        onChange={(e) => setUserName(e.target.value)}
+                                    />
                                 </div>
                                 <div className="profileItem">
-                                    <small>비밀번호</small>
-                                    <input type="password" className="form-control" id="txtPwd" placeholder="비밀번호 수정" value={password}
-                                        onChange={(e) => setPassword(e.target.value)}/>
+                                    <small>닉네임</small>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={userNickname}
+                                        onChange={(e) => setUserNickname(e.target.value)}
+                                    />
                                 </div>
                                 <div className="profileItem">
                                     <small>이메일</small>
-                                    <input type="email" className="form-control" id="txtMail" placeholder="이메일 수정" value={email}
-                                        onChange={(e) => setEmail(e.target.value)}/>
-                                </div>
-                                <div className="profileItem">
-                                    <small>전화번호</small>
-                                    <input type="tel" className="form-control" id="txtPhone" placeholder="전화번호 수정" value={phone}
-                                        onChange={(e) => setPhone(e.target.value)}/>
+                                    <input
+                                        type="email"
+                                        className="form-control"
+                                        value={userEmail}
+                                        onChange={(e) => setUserEmail(e.target.value)}
+                                    />
                                 </div>
                                 <div className="profileItem">
                                     <button id="editbtn" className="btn amado-btn" onClick={handleSave}>
                                         저장
                                     </button>
-                                    <button id="calcleebtn" className="btn amado-btn" onClick={handleCancle}>
-                                        취소하기
+                                    <button id="cancelbtn" className="btn amado-btn" onClick={handleCancel}>
+                                        취소
                                     </button>
                                 </div>
                             </div>
@@ -85,6 +102,6 @@ const MypageEdit= ()=> {
             </header>
         </div>
     );
-}
+};
 
 export default MypageEdit;

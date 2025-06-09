@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:10000/api/user';
 
+// ✅ 회원가입
 export const registerUser = async (form) => {
     const formData = new FormData();
     formData.append('userId', form.userId);
@@ -13,15 +14,44 @@ export const registerUser = async (form) => {
         formData.append('profileImage', form.profileImage);
     }
 
-    if (form.profileImage) {
-        formData.append('profileImage', form.profileImage);
-    }
-
     const response = await axios.post(`${API_BASE_URL}/register`, formData, {
         headers: {
             'Content-Type': 'multipart/form-data'
         }
     });
 
+    return response.data;
+};
+
+// ✅ 사용자 정보 조회
+export const getMyInfo = async () => {
+    const token = localStorage.getItem('jwtToken');
+    console.log('Stored Token:', token);
+
+    if (!token) {
+        throw new Error('로그인이 필요합니다.');
+    }
+
+    const response = await axios.get('http://localhost:10000/api/user/me', {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+
+    return response.data;
+};
+
+// ✅ 사용자 정보 수정
+export const updateUser = async (userData) => {
+    const token = localStorage.getItem('jwtToken');
+    console.log('Stored Token:', token);
+
+    if (!token) {
+        throw new Error('로그인이 필요합니다.');
+    }
+
+    const response = await axios.put(`${API_BASE_URL}/update`, userData, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    });
     return response.data;
 };

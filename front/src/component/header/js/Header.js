@@ -1,11 +1,12 @@
 import "../scss/Header.scss";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const Header = ({ isCheckHeader, ChangeEventHandler }) => {
+
+const Header = ({ isCheckHeader, ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
+
     function handleClickMain() {
         ChangeEventHandler("/");
-        console.log("isCheckHeader : ", isCheckHeader, "")
     }
     function handleClickCaptCha() {
         ChangeEventHandler("captcha");
@@ -28,6 +29,13 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
     function handleClickMypage() {
         ChangeEventHandler("mypage");
     }
+    const navigate = useNavigate();
+    function handleClickLogout() {
+        onLogout(); // App.js에서 넘어온 logout 함수 호출
+        alert("로그아웃 되었습니다.");
+        navigate("/"); // 홈으로 리다이렉트
+    }
+
 
     return (
         <nav className="navbar navbar-expand-lg bg-light">
@@ -60,15 +68,29 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
                         </li>
                     </ul>
                     <ul className="navbar-nav" id="login">
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/signin" onClick={handleClickSignIn}>Sign In</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/signup" onClick={handleClickSignUp}>Sign up</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/mypage" onClick={handleClickMypage}>Mypage</Link>
-                        </li>
+                        {isLoggedIn ? (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/mypage" onClick={handleClickMypage}>
+                                        {userNickname}님
+                                    </Link>
+                                </li>
+                                <li className="nav-item">
+                                    <button className="btn btn-link nav-link" onClick={handleClickLogout}>
+                                        로그아웃
+                                    </button>
+                                </li>
+                            </>
+                        ) : (
+                            <>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/signin" onClick={handleClickSignIn}>Sign In</Link>
+                                </li>
+                                <li className="nav-item">
+                                    <Link className="nav-link" to="/signup" onClick={handleClickSignUp}>Sign Up</Link>
+                                </li>
+                            </>
+                        )}
                     </ul>
                 </div>
             </div>
@@ -77,6 +99,3 @@ const Header = ({ isCheckHeader, ChangeEventHandler }) => {
 };
 
 export default Header;
-
-
-//<Link className="" to="" onClick={직접 만든 함수명}>
