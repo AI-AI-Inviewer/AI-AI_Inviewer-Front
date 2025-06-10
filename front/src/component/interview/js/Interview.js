@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import '../scss/Interview.scss';
 
 const Interview = () => {
-    const [resumeText, setResumeText] = useState("제가 지원한 이유는 창의적인 환경에서 문제를 해결하는 것을 좋아하기 때문입니다.");
+    const location = useLocation();
+    const { resumeSummary = "기본 자기소개서", company } = location.state || {};
+
+    const [resumeText, setResumeText] = useState(resumeSummary);
     const [chat, setChat] = useState([
-        { role: 'system', content: 'AI 면접관입니다. 자기소개서를 기반으로 질문을 드립니다.' }
+        { role: 'system', content: `AI 면접관입니다. ${company || ''} 회사 자기소개서를 기반으로 질문을 드립니다.` }
     ]);
     const [userInput, setUserInput] = useState('');
     const [loading, setLoading] = useState(false);
@@ -60,11 +64,11 @@ const Interview = () => {
                     )}
                 </div>
                 <div className="input-area">
-          <textarea
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder="답변을 입력하세요"
-          ></textarea>
+                    <textarea
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        placeholder="답변을 입력하세요"
+                    ></textarea>
                     <button onClick={handleSend}>전송</button>
                 </div>
             </div>
@@ -73,3 +77,4 @@ const Interview = () => {
 };
 
 export default Interview;
+
