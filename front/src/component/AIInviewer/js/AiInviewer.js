@@ -74,10 +74,10 @@ const AiInviewer = () => {
 
     const handleStartInterview = () => {
         if (selectedCompany) {
-            navigate('/codetool', {
+            navigate('/interview', {
                 state: {
                     initialCode: selectedCompany.code,
-                    codeIndex: companies.indexOf(selectedCompany),
+                    codeIndex: companies.indexOf    (selectedCompany),
                 },
             });
         }
