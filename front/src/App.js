@@ -19,6 +19,7 @@ import MypageEdit from "./component/mypage-edit/js/Mypage-edit";
 
 // ✅ AI 면접
 import AiInviewer from "./component/AIInviewer/js/AiInviewer"; // 경로 주의!
+import Interview from "./component/interview/js/Interview";
 
 // ✅ 자기소개서
 import CL from "./component/jasoseo/js/CL";
@@ -83,6 +84,7 @@ function App() {
                             }
                         />
                         <Route path="/signup" element={<SignUp isCheckHeader={isCheckHeader} />} />
+                        <Route path="/interview" element={<Interview />} />
                     </Routes>
                 </main>
                 <Footer />
