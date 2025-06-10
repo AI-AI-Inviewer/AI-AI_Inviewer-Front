@@ -14,10 +14,13 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:10000/api/community/${communityNum}`);
+                const token = localStorage.getItem('jwtToken');
+                const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+                const res = await axios.get(`http://localhost:10000/api/community/${communityNum}`, { headers });
                 setFeedback(res.data);
 
-                const commentRes = await axios.get(`http://localhost:10000/api/comments/${communityNum}`);
+                const commentRes = await axios.get(`http://localhost:10000/api/comments/${communityNum}`, { headers });
                 setComments(commentRes.data);
             } catch (err) {
                 console.error('게시글/댓글 불러오기 오류:', err);
@@ -48,35 +51,67 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         try {
             await axios.post(
                 'http://localhost:10000/api/comments',
-                null,  // Request Body가 아니라 Query Params 사용 중
                 {
-                    params: {
-                        userId: currentUser.userId,
-                        communityNum: communityNum,
-                        content: input
-                    },
-                    headers: { Authorization: `Bearer ${token}` }
+                    communityNum: communityNum,
+                    content: input
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
                 }
             );
-            const res = await axios.get(`http://localhost:10000/api/comments/${communityNum}`);
+
+            const res = await axios.get(
+                `http://localhost:10000/api/comments/${communityNum}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
             setComments(res.data);
             setInput('');
         } catch (err) {
-            console.error('댓글 등록 실패:', err);
-            if (err.response && err.response.status === 403) {
-                alert('권한이 없습니다. 로그인 후 다시 시도해 주세요.');
-                navigate('/signin');
+            // 전체 에러 로그 구조 확인
+            console.error('댓글 등록 실패 (전체 에러 구조):', err);
+
+            // axios의 response 안에 에러 메시지가 들어있으면 로그 출력
+            if (err.response) {
+                console.error('에러 response:', err.response);
+                console.error('에러 status:', err.response.status);
+                console.error('에러 data:', err.response.data);
+                alert(`댓글 등록 실패: ${err.response.data?.message || '서버 오류'}`);
+            } else if (err.request) {
+                // 요청이 서버에 도달했으나 응답이 없을 때
+                console.error('에러 request:', err.request);
+                alert('서버로부터 응답이 없습니다.');
             } else {
-                alert('댓글 등록에 실패했습니다.');
+                // 그 외 에러
+                console.error('에러 message:', err.message);
+                alert(`요청 실패: ${err.message}`);
             }
         }
     };
 
-
     const handleDelete = async (commentNum) => {
+        const token = localStorage.getItem('jwtToken');
+        if (!token) {
+            alert('로그인이 필요합니다.');
+            navigate('/signin');
+            return;
+        }
+
         if (window.confirm('댓글을 삭제하시겠습니까?')) {
             try {
-                await axios.delete(`http://localhost:10000/api/comments/${commentNum}`);
+                await axios.delete(
+                    `http://localhost:10000/api/comments/${commentNum}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
                 setComments(comments.filter(c => c.commentNum !== commentNum));
             } catch (err) {
                 console.error('댓글 삭제 실패:', err);
@@ -89,7 +124,9 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         return (
             <div className="feedback-detail-container">
                 <p className="not-found-msg">게시글을 불러오는 중입니다...</p>
-                <Link to="/feedback" className="btn back-btn">← 목록으로</Link>
+                <div className="btn-wrapper">
+                    <Link to="/feedback" className="btn back-btn">← 목록으로</Link>
+                </div>
             </div>
         );
     }
@@ -105,21 +142,25 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
             <div className="comment-section">
                 <h3>댓글</h3>
 
-                {/* 댓글 작성 폼 */}
                 {isLoggedIn ? (
                     <div className="comment-input">
-                        <textarea
-                            placeholder="댓글을 입력하세요"
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                        />
+            <textarea
+                placeholder="댓글을 입력하세요"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleAddComment();
+                    }
+                }}
+            />
                         <button onClick={handleAddComment}>등록</button>
                     </div>
                 ) : (
                     <p className="login-alert">로그인 후 댓글을 작성할 수 있습니다.</p>
                 )}
 
-                {/* 댓글 리스트 */}
                 <ul className="comment-list">
                     {comments.map((c) => (
                         <li key={c.commentNum} className="comment-item">
