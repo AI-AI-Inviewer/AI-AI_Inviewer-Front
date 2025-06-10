@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import '../scss/SignUp.scss';
-import { registerUser } from '../../../api/user';
-import {useNavigate} from "react-router-dom";
-
+import { registerUser, checkUserId, checkNickname } from '../../../api/user';  // 중복 검사 API 추가
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
     const [form, setForm] = useState({
@@ -15,71 +14,110 @@ const SignUp = () => {
         profileImage: null,
     });
 
+    const [isUserIdChecked, setIsUserIdChecked] = useState(false);
+    const [isNicknameChecked, setIsNicknameChecked] = useState(false);
+
+    const navigate = useNavigate();
+
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        if (name === 'profileImage') {
-            setForm(prev => ({ ...prev, profileImage: files[0] }));
-        } else {
-            setForm(prev => ({ ...prev, [name]: value }));
+        setForm((prev) => ({
+            ...prev,
+            [name]: name === 'profileImage' ? files[0] : value
+        }));
+
+        // 입력 변경 시 중복 검사 플래그 리셋
+        if (name === 'userId') setIsUserIdChecked(false);
+        if (name === 'nickname') setIsNicknameChecked(false);
+    };
+
+    const handleUserIdCheck = async () => {
+        if (!form.userId) {
+            alert('아이디를 입력해 주세요.');
+            return;
+        }
+        try {
+            const res = await checkUserId(form.userId);
+            if (res.data.available) {
+                alert('사용 가능한 아이디입니다.');
+                setIsUserIdChecked(true);
+            } else {
+                alert('이미 사용 중인 아이디입니다.');
+                setIsUserIdChecked(false);
+            }
+        } catch (err) {
+            console.error('[아이디 중복 검사 오류]', err);
+            alert('아이디 중복 검사에 실패했습니다.');
         }
     };
-    const navigate = useNavigate();
+
+    const handleNicknameCheck = async () => {
+        if (!form.nickname) {
+            alert('닉네임을 입력해 주세요.');
+            return;
+        }
+        try {
+            const res = await checkNickname(form.nickname);
+            if (res.data.available) {
+                alert('사용 가능한 닉네임입니다.');
+                setIsNicknameChecked(true);
+            } else {
+                alert('이미 사용 중인 닉네임입니다.');
+                setIsNicknameChecked(false);
+            }
+        } catch (err) {
+            console.error('[닉네임 중복 검사 오류]', err);
+            alert('닉네임 중복 검사에 실패했습니다.');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         const { userId, password, confirmPassword, email, name, nickname } = form;
 
-        // input 엘리먼트 찾기
-        const userIdInput = document.getElementById('userId');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirmPassword');
-        const emailInput = document.getElementById('email');
-        const nameInput = document.getElementById('name');
-        const nicknameInput = document.getElementById('nickname');
-
-        // 아이디 검사
         if (!userId) {
             alert('아이디를 입력해 주세요.');
-            if (userIdInput) userIdInput.focus();
+            return;
+        }
+
+        if (!isUserIdChecked) {
+            alert('아이디 중복 검사를 완료해 주세요.');
             return;
         }
 
         if (!name) {
             alert('이름을 입력해 주세요.');
-            if (nameInput) nameInput.focus();
             return;
-
         }
 
         if (!email) {
             alert('이메일을 입력해 주세요.');
-            if (emailInput) emailInput.focus();
-
             return;
-
         }
 
         if (!password) {
             alert('비밀번호를 입력해 주세요.');
-            if (passwordInput) passwordInput.focus();
-
             return;
         }
-        // 비밀번호 확인 검사
+
         if (!confirmPassword) {
             alert('비밀번호 확인을 입력해 주세요.');
-            if (confirmPasswordInput) confirmPasswordInput.focus();
             return;
         }
 
         if (!nickname) {
             alert('닉네임을 입력해 주세요.');
-            if (nicknameInput) nicknameInput.focus();
             return;
         }
+
+        if (!isNicknameChecked) {
+            alert('닉네임 중복 검사를 완료해 주세요.');
+            return;
+        }
+
         if (password !== confirmPassword) {
             alert('비밀번호가 일치하지 않습니다.');
-            if (confirmPasswordInput) confirmPasswordInput.focus();
             return;
         }
 
@@ -96,7 +134,6 @@ const SignUp = () => {
                 nickname: '',
                 profileImage: null,
             });
-
         } catch (error) {
             console.error('[회원가입 오류]', error);
             alert('회원가입에 실패했습니다.');
@@ -109,13 +146,17 @@ const SignUp = () => {
             <form className="signup-form" onSubmit={handleSubmit}>
                 <label>
                     아이디
-                    <input
-                        type="text"
-                        name="userId"
-                        value={form.userId}
-                        onChange={handleChange}
-                        placeholder="아이디를 입력하세요"
-                    />
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <input
+                            type="text"
+                            name="userId"
+                            value={form.userId}
+                            onChange={handleChange}
+                            placeholder="아이디를 입력하세요"
+                            id="userId"
+                        />
+                        <button type="button" onClick={handleUserIdCheck}>중복검사</button>
+                    </div>
                 </label>
                 <label>
                     이름
@@ -125,9 +166,9 @@ const SignUp = () => {
                         value={form.name}
                         onChange={handleChange}
                         placeholder="이름을 입력하세요"
+                        id="name"
                     />
                 </label>
-
                 <label>
                     이메일
                     <input
@@ -136,9 +177,9 @@ const SignUp = () => {
                         value={form.email}
                         onChange={handleChange}
                         placeholder="이메일을 입력하세요"
+                        id="email"
                     />
                 </label>
-
                 <label>
                     비밀번호
                     <input
@@ -147,9 +188,9 @@ const SignUp = () => {
                         value={form.password}
                         onChange={handleChange}
                         placeholder="비밀번호를 입력하세요"
+                        id="password"
                     />
                 </label>
-
                 <label>
                     비밀번호 확인
                     <input
@@ -158,17 +199,22 @@ const SignUp = () => {
                         value={form.confirmPassword}
                         onChange={handleChange}
                         placeholder="비밀번호를 다시 입력하세요"
+                        id="confirmPassword"
                     />
                 </label>
                 <label>
                     닉네임
-                    <input
-                        type="text"
-                        name="nickname"
-                        value={form.nickname}
-                        onChange={handleChange}
-                        placeholder="닉네임을 입력하세요"
-                    />
+                    <div style={{ display: 'flex', gap: '8px' }}>
+                        <input
+                            type="text"
+                            name="nickname"
+                            value={form.nickname}
+                            onChange={handleChange}
+                            placeholder="닉네임을 입력하세요"
+                            id="nickname"
+                        />
+                        <button type="button" onClick={handleNicknameCheck}>중복검사</button>
+                    </div>
                 </label>
                 <button type="submit">회원가입</button>
             </form>

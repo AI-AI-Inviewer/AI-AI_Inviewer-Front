@@ -20,8 +20,12 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
         e.preventDefault();
         const { userId, password } = form;
 
-        if (!userId || !password) {
-            alert('아이디와 비밀번호를 모두 입력해주세요.');
+        if (!userId ) {
+            alert('아이디를 입력해주세요.');
+            return;
+        }
+        if (!password) {
+            alert('비밀번호를 입력해주세요.');
             return;
         }
 
@@ -40,7 +44,7 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
             setForm({ userId: '', password: '' });
         } catch (error) {
             console.error('로그인 실패:', error);
-            alert('로그인에 실패했습니다.');
+            alert('아이디와 비밀번호를 확인해주세요');
         }
     };
 
