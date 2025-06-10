@@ -43,6 +43,7 @@ function App() {
     function ChangeEventHandler(text) {
         setIsCheckHeader(text);
     }
+
     function handleLogout() {
         localStorage.removeItem("token");
         setIsLoggedIn(false);
@@ -65,9 +66,33 @@ function App() {
                         <Route path="/captcha" element={<AiInviewer isCheckHeader={isCheckHeader} />} />
                         <Route path="/cl" element={<CL isCheckHeader={isCheckHeader} />} />
                         <Route path="/cl/:id" element={<CLDetail />} />
-                        <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} />} />
-                        <Route path="/feedback/write" element={<FeedBackWrite />} />
-                        <Route path="/feedback/:id" element={<FeedBackDetail />} />
+                        <Route
+                            path="/feedback"
+                            element={
+                                <FeedBack
+                                    isCheckHeader={isCheckHeader}
+                                    isLoggedIn={isLoggedIn}
+                                />
+                            }
+                        />
+                        <Route
+                            path="/feedback/write"
+                            element={
+                                <FeedBackWrite
+                                    isLoggedIn={isLoggedIn}
+                                    userNickname={userNickname}
+                                />
+                            }
+                        />
+                        <Route
+                            path="/feedback/:communityNum"
+                            element={
+                                <FeedBackDetail
+                                    isLoggedIn={isLoggedIn}
+                                    userNickname={userNickname}
+                                />
+                            }
+                        />
                         <Route path="/postscript" element={<PostScript />} />
                         <Route path="/postscript/write" element={<PostScriptWrite />} />
                         <Route path="/postscript/:id" element={<PostScriptDetail />} />
