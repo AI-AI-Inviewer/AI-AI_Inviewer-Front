@@ -1,0 +1,366 @@
+[33mcommit 3d9eb64bccb0493a594c3c4f53b091609459a9be[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mSOPS[m[33m)[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed Jun 11 13:47:31 2025 +0900
+
+    AI면접 페이지
+
+[33mcommit 6d9fac056eabbaa1b0ba8fd7668ecb5639b10d0a[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed Jun 11 13:43:35 2025 +0900
+
+    AI면접페이지
+
+[33mcommit 23245bc51714f24b1bd0fb5eee4785974529f86e[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed Jun 11 13:43:00 2025 +0900
+
+    AI면접페이지
+
+[33mcommit aac40b31594e7e04fdc17e1fce2c52823ba51b85[m
+Merge: 0b5caef6 c28b30a8
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed Jun 11 13:41:19 2025 +0900
+
+    Merge branch 'SOPS' of https://github.com/OC-OpenCaptCha/OC-OpenCaptCha-Front into SOPS
+
+[33mcommit 0b5caef6754dce4257d90e8649acb960ba215960[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed Jun 11 13:40:57 2025 +0900
+
+    인터뷰페이지
+
+[33mcommit c28b30a83d51136bb11d6d04fc0c864680ed384b[m[33m ([m[1;31morigin/SOPS[m[33m)[m
+Author: kwung0206 <kgj0199kgj0199@gmail.com>
+Date:   Wed Jun 11 02:38:15 2025 +0900
+
+    comment complete
+
+[33mcommit 351dcdec93b55adb499746700c8d4d6c43d99361[m
+Merge: 6120ae56 f6a693fd
+Author: kwung0206 <kgj0199kgj0199@gmail.com>
+Date:   Wed Jun 11 01:01:56 2025 +0900
+
+    Merge branch 'SOPS' of https://github.com/AI-AI-Inviewer/AI-AI_Inviewer-Front into SOPS
+
+[33mcommit 6120ae5657bd1df22a1be4dd9e79976c0e7394e2[m
+Author: kwung0206 <kgj0199kgj0199@gmail.com>
+Date:   Wed Jun 11 01:01:31 2025 +0900
+
+    feedback complete
+
+[33mcommit f6a693fd9f64cc2ed5b5082acd0b8448f96f11df[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Tue Jun 10 21:34:51 2025 +0900
+
+    면접버튼 이동
+
+[33mcommit d1e368b978c45c250b32af1294ab7d8ae9e998ec[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Tue Jun 10 15:25:26 2025 +0900
+
+    면접 대화 페이지 구현
+
+[33mcommit 4477e36762f8ad39bea53b4639b8d69c187f8c44[m
+Author: kwung0206 <kgj0199kgj0199@gmail.com>
+Date:   Mon Jun 9 22:32:53 2025 +0900
+
+    sign out fixed
+
+[33mcommit 69511e4344b629592286b8575817619400a51b4a[m
+Author: kwung0206 <kgj0199kgj0199@gmail.com>
+Date:   Mon Jun 9 22:12:53 2025 +0900
+
+    ~
+
+[33mcommit 84f57dab20b89a741a4803d9170f16f0627ca51c[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Sun Jun 8 17:39:47 2025 +0900
+
+    AI면접페이지
+
+[33mcommit 2f96a9580914f52b42fe4f517783638dc255823f[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Sun Jun 8 17:16:45 2025 +0900
+
+    AI면접 페이지
+
+[33mcommit 7370b4ef34ff0dab32f163adc08f3c4568db1d25[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Sun Jun 8 17:04:47 2025 +0900
+
+    AI \Page
+
+[33mcommit 0d58d88ae5aff6a76d8dd8a45d3d13bc6527e7a5[m
+Author: kwung0206 <kgj0199kgj0199@gmail.com>
+Date:   Sun Jun 8 16:30:50 2025 +0900
+
+    0608 login
+
+[33mcommit 1c08eef4f8389912f37475e28163ebf62004f84d[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Fri Jun 6 13:48:08 2025 +0900
+
+    자소서 페이지 구현 완성
+
+[33mcommit f29b93f135d6cd2ae5f57e066e10bcaf3d5670d7[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Thu Jun 5 20:57:37 2025 +0900
+
+    자소서 페이지 게시판만 구현
+
+[33mcommit 5a0a01367765f849d876b487c7a22c815a9fdd8f[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Thu Jun 5 13:31:53 2025 +0900
+
+    면접 후기 구현
+
+[33mcommit 7fb9cb19ae8deeb4594cf78ac75dafc82a083ca2[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Thu Jun 5 05:52:55 2025 +0900
+
+    피드백 게시글
+
+[33mcommit e05f8ea25a764bf543af176757443ec41fe287b3[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Thu Jun 5 01:54:25 2025 +0900
+
+    피드백 게시판 및 글작성
+
+[33mcommit 411216153c3b6652b96e2d55536711da7d492f82[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Wed Jun 4 23:10:56 2025 +0900
+
+    마이페이지 정보 수정 페이지 제작
+
+[33mcommit 3c0f7c9d0d1843ce5cd1888651b431a64cbc2682[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed Jun 4 18:08:56 2025 +0900
+
+    rename
+
+[33mcommit 92c020bd1940c2034eadfa983ddf0c8f8c7a327e[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 28 15:10:48 2025 +0900
+
+    주제 변경
+
+[33mcommit 7a37e0e6d6bbd35cd944d88465ab2ec3eca021dd[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 28 14:23:21 2025 +0900
+
+    페이지 틀 전부 완성
+
+[33mcommit ff191374c4db616861b31d564cc95813bca23d70[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 28 14:15:53 2025 +0900
+
+    페이지 다 만듬
+
+[33mcommit 4047b5cb5b909f2336dd5ef05690b1c615371beb[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 28 13:45:12 2025 +0900
+
+    Home
+
+[33mcommit d22b725d4b80121bfffce9f43a86400f137ce733[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 28 13:29:00 2025 +0900
+
+    현준
+
+[33mcommit 80d9ab55618339deb5922861cffaf60e1170c540[m[33m ([m[1;31morigin/OPS[m[33m, [m[1;32mOPS[m[33m)[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Sun May 25 20:06:30 2025 +0900
+
+    Mypage.scss
+
+[33mcommit 90029868100de94609332387cbdcd95009da59cb[m
+Merge: 07443bac 9f6ff2aa
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Sun May 25 19:56:09 2025 +0900
+
+    이종석
+
+[33mcommit 07443bac39dadab429cf9dd65da7ee5652d3571f[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Sun May 25 19:55:09 2025 +0900
+
+    이종석
+
+[33mcommit 9f6ff2aa7f9c6a596c20c9b8740d58cb36f8064d[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Sun May 25 19:40:58 2025 +0900
+
+    현준
+
+[33mcommit 01bbbe6aaeeaed056aca112a0b2b68152cb5d63c[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Sun May 25 19:21:58 2025 +0900
+
+    현준
+
+[33mcommit 69648ce6df938e16b95e4bffe50ccff7abe0b9b8[m
+Merge: 24a9f457 f620ce82
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Sun May 25 19:08:38 2025 +0900
+
+    Merge branch 'OPS' of https://github.com/OC-OpenCaptCha/OC-OpenCaptCha-Front into OPS
+
+[33mcommit 24a9f457c954a1cd4d0275d692f60ba124dc05ba[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Sun May 25 19:08:25 2025 +0900
+
+    현준
+
+[33mcommit f620ce828e933ea9d3b337b94d021d26becfa9df[m
+Merge: b4b466c4 23261227
+Author: hyeong5769 <hyeong5769@gmail.com>
+Date:   Sun May 25 19:05:16 2025 +0900
+
+    재형
+
+[33mcommit b4b466c48bd10886f0b89e01ad4981b14ef7955d[m
+Author: hyeong5769 <hyeong5769@gmail.com>
+Date:   Sun May 25 16:02:15 2025 +0900
+
+    재형
+
+[33mcommit 877b81c63fc7530070f7b68b7299e8ed84267c06[m
+Author: hyeong5769 <hyeong5769@gmail.com>
+Date:   Sun May 25 15:22:49 2025 +0900
+
+    재형
+
+[33mcommit 23261227d6cafc1f0d58454ab719260e5a4625ae[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Thu May 22 13:14:35 2025 +0900
+
+    전가요?
+
+[33mcommit cf8508e8d7e9b3c58f8e8230e6a6c369a757498a[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 21 11:00:18 2025 +0900
+
+    error
+
+[33mcommit e157d185667e5386357c1f85ef8e09a947cd9ff4[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Mon May 19 12:08:18 2025 +0900
+
+    조현준
+
+[33mcommit 0c95042a82fd071ca68c71f548c5f4642f350c22[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Mon May 19 10:45:04 2025 +0900
+
+    SCSS edit
+
+[33mcommit f6095e8a438cdb68e30557bb081126aca120baec[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Mon May 19 10:08:31 2025 +0900
+
+    community 페이지 반응
+
+[33mcommit 7783f9e625b4f4e4f9fc83a9c9a31f38b7827488[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Mon May 19 09:41:46 2025 +0900
+
+    현준
+
+[33mcommit 8544392e2ab9289a4c3e38ce84e42b027c9b4e9c[m
+Merge: 80d2805f 0c47f04a
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Fri May 16 17:07:02 2025 +0900
+
+    Merge branch 'OPS' of https://github.com/OC-OpenCaptCha/OC-OpenCaptCha-Front into OPS
+
+[33mcommit 80d2805f1879b9c97c70dfdaae4e2a702a328032[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Fri May 16 17:06:49 2025 +0900
+
+    푸터 에러
+
+[33mcommit 0c47f04a76a3181cddad0aa49f72e9a6286b08f5[m
+Author: hyeong5769 <hyeong5769@gmail.com>
+Date:   Fri May 16 17:06:06 2025 +0900
+
+    재형
+
+[33mcommit eb160dcef54dff7ee8921d63910e35bc59e8df92[m
+Merge: 55bb382f 61a905b5
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Thu May 15 13:33:48 2025 +0900
+
+    Merge branch 'OPS' of https://github.com/OC-OpenCaptCha/OC-OpenCaptCha-Front into OPS
+
+[33mcommit 55bb382f80741854a678978645480303ae13d16d[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Thu May 15 13:18:07 2025 +0900
+
+    3 commit
+
+[33mcommit 61a905b5cbcc519d52023f923f92da2554c3b2ba[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Wed May 14 22:51:49 2025 +0900
+
+    마이페이지 기능 수정
+
+[33mcommit 6fe41e23e4b8f2919a90ffaaccce1a0c787c1d8e[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 14 15:48:46 2025 +0900
+
+    CaptCha page
+
+[33mcommit e1b764a16aa6ecd43e5fd330223b479993da6a10[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 14 14:28:49 2025 +0900
+
+    React
+
+[33mcommit 97258a09b9852f528b675aab3c0335d197254a43[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 14 13:13:33 2025 +0900
+
+    check
+
+[33mcommit 4b6520c6b35169609ef6d46366eb6d4ac6ceec86[m
+Author: llillilli97 <jseok040210@gmail.com>
+Date:   Sun May 11 23:31:07 2025 +0900
+
+    마이페이지
+
+[33mcommit 27cfe39ff2beeb83dd7ad3963c888144699a5646[m
+Author: hyeong5769 <hyeong5769@gmail.com>
+Date:   Sun May 11 21:21:08 2025 +0900
+
+    김재형
+
+[33mcommit 82b2e7da10585eca764c04c6ef4d5f2d0bbe9101[m
+Author: hyeong5769 <hyeong5769@gmail.com>
+Date:   Sun May 11 19:29:00 2025 +0900
+
+    hello
+
+[33mcommit da5ab35cf620c0ba990d919cf5b41aa38614bfde[m
+Author: hyeong5769 <hyeong5769@gmail.com>
+Date:   Fri May 9 23:09:15 2025 +0900
+
+    testtest
+
+[33mcommit 932d3d0d4c114b50caa1ccae43afb311481fb337[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Thu May 8 09:53:13 2025 +0900
+
+    TEST
+
+[33mcommit a4f9c13e9e208ea88341257b22bc28173bf2fa2c[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Thu May 8 00:14:30 2025 +0900
+
+    edit
+
+[33mcommit f4ccfae368dcb4e4789a27560fbf5cecee9708e8[m
+Author: H4YI3R <whguswns1977@gmail.com>
+Date:   Wed May 7 23:47:48 2025 +0900
+
+    First Commit
