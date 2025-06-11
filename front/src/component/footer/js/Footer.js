@@ -8,7 +8,7 @@ function Footer() {
                 <div className="footer-section company">
                     <h3>소개</h3>
                     <p>
-                        OpenCaptCha<br />
+                        AI Inviewer<br />
                     </p>
                 </div>
                 <div className="footer-section links">
