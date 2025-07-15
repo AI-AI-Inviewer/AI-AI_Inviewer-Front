@@ -21,7 +21,7 @@ const Mypage = () => {
                 const response = await axios.get('http://localhost:10000/api/user/me', {  // ✅ 수정
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                setUserInfo(response.data);
+                   setUserInfo(response.data);
             } catch (error) {
                 console.error('사용자 정보 불러오기 오류:', error);
                 alert(`사용자 정보를 불러오는데 실패했습니다. (${error.response?.status || '네트워크 오류'})`);
