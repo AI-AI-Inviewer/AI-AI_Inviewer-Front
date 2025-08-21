@@ -18,7 +18,7 @@ import Mypage from "./component/mypage/js/Mypage";
 import MypageEdit from "./component/mypage-edit/js/Mypage-edit";
 
 // ✅ AI 면접
-import AiInviewer from "./component/AIInviewer/js/AiInviewer"; // 경로 주의!
+import AiInviewer from "./component/AIInviewer/js/AiInviewer";
 import Interview from "./component/interview/js/Interview";
 
 // ✅ 자기소개서
