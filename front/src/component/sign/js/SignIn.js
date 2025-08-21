@@ -4,51 +4,45 @@ import axios from 'axios';
 import '../scss/SignIn.scss';
 
 const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
-    const [form, setForm] = useState({
-        userId: '',
-        password: '',
-    });
-
+    const [form, setForm] = useState({ userId: '', password: '' });
+    const [showPassword, setShowPassword] = useState(false);
+    const [saveId, setSaveId] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
     const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm(prev => ({ ...prev, [name]: value }));
+        setErrorMsg('');
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const { userId, password } = form;
 
-        if (!userId ) {
-            alert('아이디를 입력해주세요.');
-            return;
-        }
-        if (!password) {
-            alert('비밀번호를 입력해주세요.');
-            return;
-        }
+        if (!userId) return setErrorMsg('아이디를 입력해주세요.');
+        if (!password) return setErrorMsg('비밀번호를 입력해주세요.');
 
         try {
             const response = await axios.post('http://localhost:10000/api/user/login', {
                 userId,
                 userPassword: password
             });
-            const token = response.data;
-            localStorage.setItem('jwtToken', token);  // ✅ 수정 완료
 
-            alert(`${userId}님, 환영합니다`);
+            const token = response.data;
+            localStorage.setItem('jwtToken', token);
+
+            if (saveId) localStorage.setItem('savedUserId', userId);
+            else localStorage.removeItem('savedUserId');
+
             setIsLoggedIn(true);
-            setUserNickname(userId);  // 아이디 기반 닉네임 설정
+            setUserNickname(userId);
             navigate('/');
             setForm({ userId: '', password: '' });
         } catch (error) {
-            console.error('로그인 실패:', error);
-            alert('아이디와 비밀번호를 확인해주세요');
+            setErrorMsg('아이디와 비밀번호를 확인해주세요');
         }
     };
-
-
 
     return (
         <div className="signin-container">
@@ -64,16 +58,36 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
                         placeholder="아이디를 입력하세요"
                     />
                 </label>
+
                 <label>
                     비밀번호
-                    <input
-                        type="password"
-                        name="password"
-                        value={form.password}
-                        onChange={handleChange}
-                        placeholder="비밀번호를 입력하세요"
-                    />
+                    <div className="password-wrapper">
+                        <input
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={form.password}
+                            onChange={handleChange}
+                            placeholder="비밀번호를 입력하세요"
+                        />
+                        <button
+                            type="button"
+                            className="toggle-password"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            {showPassword ? 'O' : 'X️'}
+                        </button>
+                    </div>
                 </label>
+
+                <div className="options">
+                    <label className="save-id">
+                        <input type="checkbox" checked={saveId} onChange={() => setSaveId(!saveId)} />
+                        아이디 저장
+                    </label>
+                </div>
+
+                {errorMsg && <p className="error-msg">{errorMsg}</p>}
+
                 <button type="submit">로그인</button>
             </form>
         </div>

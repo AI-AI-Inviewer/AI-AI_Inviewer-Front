@@ -1,4 +1,3 @@
-// src/component/cl/js/CLDetail.js
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import '../scss/CLDetail.scss';
@@ -33,14 +32,14 @@ const CLDetail = () => {
 
             {cl.file && (
                 <div className="cl-download">
-                    <a href={`/${cl.file}`} download className="btn download-btn">
+                    <a href={`/${cl.file}`} download className="download-btn">
                         다운로드
                     </a>
                 </div>
             )}
 
             <div className="btn-wrapper">
-                <Link to="/cl" className="btn back-btn">← 목록으로</Link>
+                <Link to="/cl" className="back-btn">← 목록으로</Link>
             </div>
         </div>
     );

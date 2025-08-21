@@ -2,14 +2,12 @@
   max-width: 800px;
   margin: 3rem auto;
   padding: 2rem;
-  background-color: #fdfdff;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  font-family: "Noto Sans KR", sans-serif;
 
   h2 {
+    text-align: center;
     font-size: 2rem;
     font-weight: 700;
-    text-align: center;
     margin-bottom: 2rem;
     color: #333;
   }
@@ -20,29 +18,28 @@
     margin: 0;
 
     .cl-item {
-      background: #fff;
-      border: 1px solid #e5e5ee;
-      border-radius: 12px;
-      padding: 1.2rem 1.6rem;
       margin-bottom: 1rem;
-      transition: box-shadow 0.2s ease, transform 0.2s ease;
-      cursor: pointer;
 
-      &:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-        transform: translateY(-2px);
-      }
-
-      .cl-title-link {
+      .cl-card {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 1rem 1.5rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
         text-decoration: none;
         color: #333;
+        transition: all 0.2s ease;
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 8px 22px rgba(0,0,0,0.1);
+        }
 
         .cl-title {
-          font-size: 1.1rem;
           font-weight: 600;
+          font-size: 1.1rem;
         }
 
         .cl-date {

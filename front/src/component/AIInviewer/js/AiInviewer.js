@@ -66,20 +66,39 @@ const companies = [
 const AiInviewer = () => {
     const navigate = useNavigate();
     const [selectedCategory, setSelectedCategory] = useState('전체');
+    const [searchText, setSearchText] = useState('');
     const [selectedCompany, setSelectedCompany] = useState(null);
+    const [bookmarkActive, setBookmarkActive] = useState(false);
+    const [bookmarks, setBookmarks] = useState([]);
 
-    const filteredCompanies = selectedCategory === '전체'
-        ? companies
-        : companies.filter((c) => c.category === selectedCategory);
+    // 필터링: 카테고리 + 검색 + 즐겨찾기
+    const filteredCompanies = companies.filter((company) => {
+        const categoryMatch = selectedCategory === '전체' || company.category === selectedCategory;
+        const searchMatch = company.name.toLowerCase().includes(searchText.toLowerCase());
+        const bookmarkMatch = !bookmarkActive || bookmarks.includes(company.name);
+        return categoryMatch && searchMatch && bookmarkMatch;
+    });
 
     const handleStartInterview = () => {
         if (selectedCompany) {
             navigate('/interview', {
                 state: {
                     initialCode: selectedCompany.code,
-                    codeIndex: companies.indexOf    (selectedCompany),
+                    codeIndex: companies.indexOf(selectedCompany),
                 },
             });
+        }
+    };
+
+    const toggleBookmark = () => {
+        setBookmarkActive(!bookmarkActive);
+    };
+
+    const toggleCompanyBookmark = (companyName) => {
+        if (bookmarks.includes(companyName)) {
+            setBookmarks(bookmarks.filter((name) => name !== companyName));
+        } else {
+            setBookmarks([...bookmarks, companyName]);
         }
     };
 
@@ -90,6 +109,8 @@ const AiInviewer = () => {
                     type="text"
                     placeholder="회사 검색"
                     className="sidebar-search"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
                 />
 
                 <div className="category-select">
@@ -105,20 +126,31 @@ const AiInviewer = () => {
                     </select>
                 </div>
 
-                <button className="bookmark-btn">⭐ 즐겨찾기</button>
+                <button className={`bookmark-btn ${bookmarkActive ? 'active' : ''}`} onClick={toggleBookmark}>
+                    {bookmarkActive ? '★ 즐겨찾기만 보기' : '⭐ 즐겨찾기'}
+                </button>
             </aside>
 
             <main className="aiinviewer-main">
                 <h2>AI 면접 기업 목록</h2>
                 <div className="company-grid">
-                    {filteredCompanies.map((company, index) => (
+                    {filteredCompanies.map((company) => (
                         <div
-                            key={index}
+                            key={company.name}
                             className="company-box"
                             onClick={() => setSelectedCompany(company)}
                         >
                             <img src={company.logo} alt={company.name} className="company-logo" />
                             <span>{company.name}</span>
+                            <button
+                                className={`bookmark-toggle ${bookmarks.includes(company.name) ? 'bookmarked' : ''}`}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    toggleCompanyBookmark(company.name);
+                                }}
+                            >
+                                {bookmarks.includes(company.name) ? '★' : '☆'}
+                            </button>
                         </div>
                     ))}
                 </div>
@@ -140,4 +172,3 @@ const AiInviewer = () => {
 };
 
 export default AiInviewer;
-
