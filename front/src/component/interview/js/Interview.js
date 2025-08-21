@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/Interview.scss';
 
+// 환경 변수에서 OpenAI 키 가져오기
 const API_KEYS = [
-    ''
+    process.env.REACT_APP_OPENAI_KEY
 ];
 
 // fetch 타임아웃 적용
@@ -79,7 +80,7 @@ const Interview = () => {
             });
 
             if (response.status === 429) {
-                const delay = Math.min(60000, 1000 * Math.pow(2, attempt)); // 최대 60초까지 지연
+                const delay = Math.min(60000, 1000 * Math.pow(2, attempt));
                 console.warn(`429 오류 - ${delay / 1000}s 후 재시도`);
                 await new Promise(r => setTimeout(r, delay));
                 return await callOpenAI(messages, attempt + 1);
