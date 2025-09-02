@@ -1,221 +1,255 @@
+// src/component/cl/scss/AiInviewer.scss
+
+// -------------------------------
+// Global Variables
+// -------------------------------
+$color-primary: #4f46e5;   // 인디고 블루
+$color-secondary: #6366f1; // 보라빛 블루
+$color-accent: #10b981;    // 에메랄드
+$color-bg: #f9fafb;
+$color-card: #ffffff;
+$color-border: #e5e7eb;
+$color-text: #111827;
+$color-text-light: #6b7280;
+$radius-lg: 0.75rem;
+$shadow-base: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+// -------------------------------
+// Wrapper
+// -------------------------------
 .aiinviewer-wrapper {
   display: flex;
-  height: 100vh;
-  font-family: 'Noto Sans KR', sans-serif;
+  gap: 2rem;
+  padding: 2rem;
+  background: $color-bg;
+  min-height: 100vh;
 }
 
+// -------------------------------
+// Sidebar
+// -------------------------------
 .aiinviewer-sidebar {
-  width: 250px;
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-right: 1px solid #ddd;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+  flex: 0 0 260px;
+  background: $color-card;
+  border: 1px solid $color-border;
+  border-radius: $radius-lg;
+  padding: 1.5rem;
+  box-shadow: $shadow-base;
+  height: fit-content; // 스크롤 따라오지 않고 내용까지만
+  margin-top: 70px; // ✅ 헤더 높이만큼 내려줌 (헤더 높이에 맞게 조정)
 
   .sidebar-search {
-    padding: 10px 12px;
-    font-size: 14px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    outline: none;
-    transition: border 0.3s;
+    width: 100%;
+    padding: 0.7rem 1rem;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    font-size: 0.95rem;
+    margin-bottom: 1.2rem;
 
     &:focus {
-      border-color: #007bff;
+      border-color: $color-primary;
+      outline: none;
+      box-shadow: 0 0 0 2px rgba($color-primary, 0.3);
     }
   }
 
   .category-select {
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 1.2rem;
 
     label {
-      font-size: 14px;
-      margin-bottom: 4px;
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: $color-text;
     }
 
     select {
       width: 100%;
-      padding: 8px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      background-color: #fff;
-      cursor: pointer;
-      transition: border 0.3s;
+      padding: 0.6rem 1rem;
+      border: 1px solid $color-border;
+      border-radius: $radius-lg;
+      font-size: 0.95rem;
 
       &:focus {
-        border-color: #007bff;
+        border-color: $color-primary;
+        outline: none;
       }
     }
   }
 
   .bookmark-btn {
-    margin-top: auto;
-    padding: 12px;
-    background-color: #ffd700;
+    width: 100%;
+    padding: 0.7rem 1rem;
     border: none;
-    border-radius: 8px;
+    border-radius: $radius-lg;
+    background: $color-bg;
+    font-weight: 600;
     cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.2s, box-shadow 0.2s;
+    transition: 0.2s;
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background: lighten($color-primary, 42%);
     }
 
     &.active {
-      background-color: #ff8c00;
+      background: $color-primary;
       color: #fff;
     }
   }
 }
 
+
+// -------------------------------
+// Main Content
+// -------------------------------
 .aiinviewer-main {
   flex: 1;
-  padding: 30px;
-  overflow-y: auto;
 
   h2 {
-    margin-bottom: 20px;
-    color: #333;
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    color: $color-text;
   }
 
   .company-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1.2rem;
   }
 
   .company-box {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 16px;
+    background: $color-card;
+    border: 1px solid $color-border;
+    border-radius: $radius-lg;
+    padding: 1rem;
     text-align: center;
+    box-shadow: $shadow-base;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    transition: 0.2s;
     position: relative;
 
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+      border-color: $color-primary;
     }
 
     .company-logo {
-      height: 60px;
       width: 60px;
+      height: 60px;
       object-fit: contain;
-      margin-bottom: 10px;
+      margin-bottom: 0.8rem;
+    }
+
+    span {
+      display: block;
+      font-weight: 600;
+      color: $color-text;
+      margin-bottom: 0.5rem;
     }
 
     .bookmark-toggle {
-      margin-top: 8px;
+      position: absolute;
+      top: 0.6rem;
+      right: 0.6rem;
       background: transparent;
       border: none;
-      font-size: 18px;
+      font-size: 1.2rem;
       cursor: pointer;
-      color: #ffd700;
-      transition: transform 0.2s;
+      transition: 0.2s;
 
       &.bookmarked {
-        color: #ff8c00;
-      }
-
-      &:hover {
-        transform: scale(1.2);
+        color: gold;
       }
     }
   }
 }
 
+// -------------------------------
+// Modal
+// -------------------------------
 .company-modal {
   position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.4);
+  inset: 0;
+  background: rgba(17, 24, 39, 0.6);
   display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 100;
+  justify-content: center;
+  z-index: 50;
 
   .modal-content {
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    width: 400px;
-    max-width: 90%;
+    background: $color-card;
+    padding: 2rem;
+    border-radius: $radius-lg;
+    max-width: 500px;
+    width: 100%;
     text-align: center;
-    position: relative;
+    box-shadow: $shadow-base;
+    animation: fadeIn 0.3s ease;
 
     .modal-logo {
-      height: 60px;
-      width: 60px;
+      width: 80px;
+      height: 80px;
       object-fit: contain;
-      margin-bottom: 16px;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+      color: $color-text;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: $color-text-light;
+      margin-bottom: 1.5rem;
     }
 
     .interview-btn {
-      background-color: #007bff;
-      color: white;
+      width: 100%;
+      padding: 0.8rem;
       border: none;
-      padding: 12px 20px;
-      border-radius: 8px;
-      margin-top: 16px;
+      border-radius: $radius-lg;
+      background: $color-primary;
+      color: #fff;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: 0.2s;
 
       &:hover {
-        background-color: #0056b3;
+        background: darken($color-primary, 5%);
       }
     }
 
     .close-btn {
-      margin-top: 10px;
-      background: transparent;
-      border: none;
-      color: #888;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      border: 1px solid $color-border;
+      border-radius: $radius-lg;
+      background: $color-bg;
       cursor: pointer;
+      font-weight: 600;
 
       &:hover {
-        color: #333;
+        background: $color-border;
       }
     }
   }
 }
 
-// 반응형
-@media (max-width: 1024px) {
-  .aiinviewer-wrapper {
-    flex-direction: column;
+// -------------------------------
+// Animation
+// -------------------------------
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
-
-  .aiinviewer-sidebar {
-    width: 100%;
-    flex-direction: row;
-    justify-content: space-between;
-    padding: 10px 20px;
-    border-right: none;
-    border-bottom: 1px solid #ddd;
-  }
-
-  .aiinviewer-main {
-    padding: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .company-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 16px;
-  }
-
-  .modal-content {
-    padding: 20px;
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

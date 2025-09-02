@@ -13,6 +13,35 @@ const Home = () => {
                 </div>
             </header>
 
+            {/* How-It-Works Section */}
+            <section className="how-it-works">
+                <h2>3단계로 시작하는 AI 면접 연습</h2>
+                <div className="steps-grid">
+                    <div className="step-card">
+                        <div className="step-number">1</div>
+                        <h3>회원가입 및 로그인</h3>
+                        <p>간단한 정보만으로 AI Inviewer의 모든 기능을 시작할 수 있습니다.</p>
+                    </div>
+                    <div className="step-card">
+                        <div className="step-number">2</div>
+                        <h3>모의면접 시작</h3>
+                        <p>원하는 직무와 난이도를 선택해 실제 면접처럼 연습하세요.</p>
+                    </div>
+                    <div className="step-card">
+                        <div className="step-number">3</div>
+                        <h3>피드백 확인 및 반복</h3>
+                        <p>AI가 분석한 상세 피드백을 바탕으로 부족한 점을 보완합니다.</p>
+                    </div>
+                </div>
+            </section>
+
+            {/* Join Us Section */}
+            <section className="join-us">
+                <h2>지금 바로 당신의 면접을 업그레이드하세요</h2>
+                <p>AI Inviewer와 함께라면 합격의 문이 더 가까워집니다.</p>
+                <button className="btn-join">무료로 시작하기</button>
+            </section>
+
             {/* Features Section */}
             <section className="features">
                 <h2>주요 기능</h2>
@@ -50,10 +79,8 @@ const Home = () => {
                 </div>
             </section>
 
+
             {/* Footer */}
-            <footer className="footer">
-                <p>© 2025 AI Interview Platform. All rights reserved.</p>
-            </footer>
         </div>
     );
 };
