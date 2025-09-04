@@ -1,52 +1,190 @@
-.cl-container {
-  max-width: 800px;
-  margin: 3rem auto;
-  padding: 2rem;
-  font-family: "Noto Sans KR", sans-serif;
+$primary-color: #5a67d8;
+$border-color: #e2e8f0;
+$text-color: #2d3748;
+$text-light: #718096;
+$background-color: #f7fafc;
+$card-background: #ffffff;
+$bookmark-color: #f6e05e;
+$font-family: "Noto Sans KR", sans-serif;
 
-  h2 {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: 700;
-    margin-bottom: 2rem;
-    color: #333;
+.cl-wrapper {
+  display: flex;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+  padding-top: 50px;
+  font-family: $font-family;
+}
+
+.cl-sidebar {
+  flex: 0 0 240px;
+
+  .sidebar-search {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid $border-color;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+
+    &:focus {
+      outline: none;
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+    }
   }
 
-  .cl-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  .category-select {
+    margin-bottom: 1.5rem;
 
-    .cl-item {
-      margin-bottom: 1rem;
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: $text-color;
+    }
 
-      .cl-card {
+    select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid $border-color;
+      background-color: $card-background;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  }
+
+  .bookmark-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid $border-color;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: $card-background;
+    color: $text-color;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: $primary-color;
+      color: $primary-color;
+    }
+
+    &.active {
+      background-color: $bookmark-color;
+      border-color: $bookmark-color;
+      color: $text-color;
+      font-weight: 700;
+    }
+  }
+}
+
+.cl-main {
+  flex: 1;
+
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-top: 0;
+    margin-bottom: 2rem;
+    color: $text-color;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid $border-color;
+  }
+
+  .cl-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .cl-card-wrapper {
+    position: relative;
+
+    .cl-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      padding: 1.5rem;
+      background: $card-background;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      text-decoration: none;
+      color: $text-color;
+      transition: all 0.2s ease-in-out;
+      border: 1px solid transparent;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        border-color: $primary-color;
+      }
+
+      .cl-card-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+        line-height: 1.4;
+      }
+
+      .cl-card-info {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem 1.5rem;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-        text-decoration: none;
-        color: #333;
-        transition: all 0.2s ease;
+        font-size: 0.85rem;
+        color: $text-light;
 
-        &:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 8px 22px rgba(0,0,0,0.1);
-        }
-
-        .cl-title {
-          font-weight: 600;
-          font-size: 1.1rem;
-        }
-
-        .cl-date {
-          font-size: 0.9rem;
-          color: #888;
+        span:first-child {
+          background-color: #ebf4ff;
+          color: #3182ce;
+          padding: 4px 10px;
+          border-radius: 20px;
+          font-weight: 500;
         }
       }
+    }
+
+    .bookmark-toggle {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 1.6rem;
+      cursor: pointer;
+      color: #cbd5e0;
+      transition: all 0.2s ease;
+      padding: 5px;
+      line-height: 1;
+
+      &:hover {
+        transform: scale(1.2);
+        color: $bookmark-color;
+      }
+
+      &.bookmarked {
+        color: $bookmark-color;
+      }
+    }
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: $text-light;
+    background-color: #fdfdfd;
+    border: 1px dashed $border-color;
+    border-radius: 12px;
+
+    p {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 500;
     }
   }
 }

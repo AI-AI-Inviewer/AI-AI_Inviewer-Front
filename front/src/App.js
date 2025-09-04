@@ -1,31 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./App.css";
-
-// ✅ 헤더와 푸터
 import Header from './component/header/js/Header';
 import Footer from './component/footer/js/Footer';
-
-// ✅ 홈 페이지
 import Home from './component/main/js/Home';
-
-// ✅ 로그인 & 회원가입
 import SignIn from "./component/sign/js/SignIn";
 import SignUp from "./component/sign/js/SignUp";
-
-// ✅ 마이페이지
 import Mypage from "./component/mypage/js/Mypage";
 import MypageEdit from "./component/mypage-edit/js/Mypage-edit";
-
-// ✅ AI 면접
 import AiInviewer from "./component/AIInviewer/js/AiInviewer";
 import Interview from "./component/interview/js/Interview";
-
-// ✅ 자기소개서
 import CL from "./component/jasoseo/js/CL";
 import CLDetail from "./component/jasoseo/js/CLDetail";
-
-// ✅ 커뮤니티
 import FeedBack from "./component/community/js/FeedBack";
 import FeedBackWrite from "./component/community/js/FeedBack-write";
 import FeedBackDetail from "./component/community/js/FeedBackDetail";

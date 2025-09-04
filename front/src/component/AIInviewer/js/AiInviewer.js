@@ -31,28 +31,12 @@ const companies = [
         logo: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg',
     },
     {
-        name: 'Naver',
-        category: 'Portal',
-        description:
-            '국내 대표 포털·검색·콘텐츠 플랫폼. 지도·페이·웹툰·클라우드 등 다양한 서비스를 유기적으로 연동.',
-        code: '// Naver 예시 코드',
-        logo: 'https://ssl.pstatic.net/static/nid/join/m_logo_naver.png',
-    },
-    {
-        name: 'Kakao',
-        category: 'Platform',
-        description:
-            '카카오톡을 중심으로 커머스·모빌리티·엔터·핀테크까지 확장한 생활형 플랫폼. 다양한 파트너 생태계를 구축.',
-        code: '// Kakao 예시 코드',
-        logo: 'https://static.cdnlogo.com/logos/k/39/kakao.svg',
-    },
-    {
         name: 'Meta',
         category: 'AI',
         description:
             '소셜 네트워크 기반의 글로벌 기업. 오픈소스 Llama 시리즈와 AR/VR(메타버스) 투자로 AI·XR 융합을 추진.',
         code: '// Meta 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Meta_Platforms_Inc._logo.svg/800px-Meta_Platforms_Inc._logo.svg.png',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/0/0d/Meta_Platforms_Inc._logo.svg',
     },
     {
         name: 'Amazon',
@@ -61,22 +45,6 @@ const companies = [
             '전자상거래와 AWS 클라우드를 양 축으로 성장. 대규모 분산 시스템·로지스틱스·추천 알고리즘이 강점.',
         code: '// Amazon 예시 코드',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg',
-    },
-    {
-        name: 'LINE',
-        category: 'Platform',
-        description:
-            '모바일 메신저를 중심으로 결제·음악·뉴스·게임 등으로 확장. 일본·동남아 시장에서 강력한 사용자 기반.',
-        code: '// LINE 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/4/41/LINE_logo.svg',
-    },
-    {
-        name: 'Toss',
-        category: 'Finance',
-        description:
-            '간편 송금에서 출발해 보험·증권·은행까지 확장한 핀테크. 사용성 중심의 UX와 과감한 데이터 활용이 특징.',
-        code: '// Toss 예시 코드',
-        logo: 'https://static.toss.im/web-general/brand/static/logo.svg',
     },
     {
         name: 'NVIDIA',
@@ -100,7 +68,7 @@ const companies = [
         description:
             '디지털 미디어·마케팅 소프트웨어의 대표 주자. Firefly 등 생성형 AI를 크리에이티브 워크플로에 녹여 생산성 강화.',
         code: '// Adobe 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/Adobe_Corporate_Logo.svg',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/7/7f/Adobe_Corporate_logo.svg',
     },
     {
         name: 'Salesforce',
@@ -108,7 +76,7 @@ const companies = [
         description:
             'CRM 클라우드 1위 기업. 데이터 클라우드·플로우·Einstein AI로 세일즈/마케팅/서비스 자동화를 고도화.',
         code: '// Salesforce 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/3/32/Salesforce.com_logo.svg',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg',
     },
     {
         name: 'Oracle',
@@ -132,7 +100,7 @@ const companies = [
         description:
             '중국 검색·AI 선도 기업. 자율주행(아폴로)·대규모 모델(ERNIE) 등에서 생태계와 레퍼런스를 확보.',
         code: '// Baidu 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4b/Baidu.svg',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/0/00/Baidu_Logo.svg',
     },
     {
         name: 'Alibaba',
@@ -140,7 +108,7 @@ const companies = [
         description:
             '커머스·물류·클라우드를 결합한 초대형 플랫폼. 알리바바 클라우드와 초대규모 세일 행사(11.11)가 상징적.',
         code: '// Alibaba 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5f/Alibaba_Group_logo.svg',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5d/Alibaba_Cloud_logo.svg',
     },
     {
         name: 'Tencent',
@@ -148,15 +116,7 @@ const companies = [
         description:
             '메신저·게임·핀테크를 아우르는 종합 플랫폼. 위챗 생태계와 투자 포트폴리오로 성장 동력을 확보.',
         code: '// Tencent 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/5/59/Tencent_Logo.svg',
-    },
-    {
-        name: 'Coupang',
-        category: 'Web',
-        description:
-            '로켓배송으로 대표되는 이커머스. 물류 자동화·데이터 기반 수요 예측으로 빠른 배송 경험을 표준화.',
-        code: '// Coupang 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5b/Coupang_logo.svg',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/4/45/Tencent_Logo.svg',
     },
     {
         name: 'ByteDance',
@@ -167,30 +127,6 @@ const companies = [
         logo: 'https://upload.wikimedia.org/wikipedia/commons/3/39/ByteDance_Logo.png',
     },
     {
-        name: 'PayPal',
-        category: 'Finance',
-        description:
-            '온라인 결제의 표준을 만든 핀테크. 대규모 결제 네트워크 운영 노하우와 리스크 관리 역량이 강점.',
-        code: '// PayPal 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg',
-    },
-    {
-        name: 'Stripe',
-        category: 'Finance',
-        description:
-            '개발자 친화적 API로 결제·빌링·세금까지 모듈형 제공. 스타트업부터 엔터프라이즈까지 폭넓게 채택.',
-        code: '// Stripe 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/9/9a/Stripe_Logo%2C_revised_2016.svg',
-    },
-    {
-        name: 'Visa',
-        category: 'Finance',
-        description:
-            '글로벌 카드 결제 네트워크. 초고가용성·저지연 결제 처리와 보안·위변조 방지 기술이 핵심 역량.',
-        code: '// Visa 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png',
-    },
-    {
         name: 'Samsung',
         category: 'Platform',
         description:
@@ -198,6 +134,46 @@ const companies = [
         code: '// Samsung 예시 코드',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg',
     },
+    {
+        name: 'GitHub',
+        category: 'Platform',
+        description:
+            '전 세계 최대 개발자 협업 플랫폼. 오픈소스, 코드 관리, CI/CD 등 개발 생태계의 중심 허브.',
+        code: '// GitHub 예시 코드',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg',
+    },
+    {
+        name: 'Intel',
+        category: 'Platform',
+        description:
+            '반도체와 CPU 시장의 선두 기업. AI·데이터센터·클라우드 컴퓨팅을 위한 하드웨어 생태계를 제공.',
+        code: '// Intel 예시 코드',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/c/c9/Intel-logo.svg',
+    },
+    {
+        name: 'ARM',
+        category: 'Platform',
+        description:
+            '저전력 고효율 CPU 아키텍처로 모바일 및 임베디드 기기 생태계를 주도. 클라우드와 AI 분야로 확장 중.',
+        code: '// ARM 예시 코드',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/6/6e/ARM_logo_2017.svg',
+    },
+    {
+        name: 'Cloudflare',
+        category: 'Web',
+        description:
+            'CDN, 보안, 성능 최적화 솔루션을 제공하는 글로벌 네트워크 기업. 엣지 컴퓨팅과 제로트러스트 보안을 확장.',
+        code: '// Cloudflare 예시 코드',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4b/Cloudflare_Logo.svg',
+    },
+    {
+        name: 'Spotify',
+        category: 'Web',
+        description:
+            '글로벌 음악 스트리밍 플랫폼. 추천 알고리즘과 데이터 분석으로 개인화된 음악 경험을 제공.',
+        code: '// Spotify 예시 코드',
+        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg',
+    }
 ];
 
 const AiInviewer = () => {

@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/Interview.scss';
 
-// 환경 변수에서 OpenAI 키 가져오기
+// 환경 변수에서 Gemini 키 가져오기
 const API_KEYS = [
-    process.env.REACT_APP_OPENAI_KEY
+    process.env.REACT_APP_GEMINI_KEY
 ];
 
 // fetch 타임아웃 적용
@@ -50,40 +50,46 @@ const Interview = () => {
         };
     }, []);
 
-    // API 호출 (지수 백오프 + 키 순환 + AbortController)
-    const callOpenAI = async (messages, attempt = 0) => {
-        const MAX_ATTEMPTS = API_KEYS.length * 5; // 재시도 횟수 늘림
+    // Gemini API 호출
+    const callGemini = async (messages, attempt = 0) => {
+        const MAX_ATTEMPTS = API_KEYS.length * 5;
         const keyIndex = attempt % API_KEYS.length;
 
         if (attempt >= MAX_ATTEMPTS) {
             throw new Error('모든 API 키가 제한 상태이거나 오류가 발생했습니다.');
         }
 
-        console.log(`Attempt #${attempt + 1} with API Key index: ${keyIndex}`);
+        console.log(`Attempt #${attempt + 1} with Gemini API Key index: ${keyIndex}`);
 
         const controller = new AbortController();
         controllerRef.current = controller;
 
         try {
-            const response = await fetchWithTimeout('/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${API_KEYS[keyIndex]}`,
-                },
-                body: JSON.stringify({
-                    model: 'gpt-4o',
-                    messages,
-                    temperature: 0.7,
-                }),
-                signal: controller.signal,
-            });
+            const prompt = messages.map(msg => `${msg.role === 'user' ? '사용자' : 'AI'}: ${msg.content}`).join("\n");
+
+            const response = await fetchWithTimeout(
+                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEYS[keyIndex]}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [
+                            {
+                                parts: [{ text: prompt }]
+                            }
+                        ]
+                    }),
+                    signal: controller.signal,
+                }
+            );
 
             if (response.status === 429) {
                 const delay = Math.min(60000, 1000 * Math.pow(2, attempt));
                 console.warn(`429 오류 - ${delay / 1000}s 후 재시도`);
                 await new Promise(r => setTimeout(r, delay));
-                return await callOpenAI(messages, attempt + 1);
+                return await callGemini(messages, attempt + 1);
             }
 
             if (!response.ok) {
@@ -101,7 +107,7 @@ const Interview = () => {
             console.warn(`API 호출 실패 (attempt ${attempt + 1}):`, error.message);
             const delay = 500 * (attempt + 1);
             await new Promise(r => setTimeout(r, delay));
-            return await callOpenAI(messages, attempt + 1);
+            return await callGemini(messages, attempt + 1);
         }
     };
 
@@ -114,10 +120,10 @@ const Interview = () => {
         setLoading(true);
 
         try {
-            const data = await callOpenAI(updatedChat);
+            const data = await callGemini(updatedChat);
 
-            if (data.choices && data.choices.length > 0) {
-                const reply = data.choices[0].message.content;
+            if (data.candidates && data.candidates.length > 0) {
+                const reply = data.candidates[0].content.parts[0].text;
                 setChat([...updatedChat, { role: 'assistant', content: reply }]);
             } else {
                 setChat([...updatedChat, { role: 'assistant', content: 'AI 응답이 없습니다.' }]);

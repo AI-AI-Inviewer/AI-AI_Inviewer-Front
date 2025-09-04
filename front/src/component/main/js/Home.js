@@ -70,11 +70,11 @@ const Home = () => {
                 <div className="testimonials-grid">
                     <div className="testimonial-card">
                         <p>“면접 전에 연습할 수 있어서 자신감이 생겼어요!”</p>
-                        <span>- 대학생 김민수</span>
+                        <span>- 대학생 조현준</span>
                     </div>
                     <div className="testimonial-card">
                         <p>“AI가 바로 피드백을 주니까 개선이 빨라요.”</p>
-                        <span>- 취준생 이지은</span>
+                        <span>- 취준생 김광진</span>
                     </div>
                 </div>
             </section>
