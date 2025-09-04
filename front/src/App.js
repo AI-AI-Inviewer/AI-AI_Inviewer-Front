@@ -50,7 +50,7 @@ function App() {
                 <main style={{ flex: 1 }}>
                     <Routes>
                         <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
-                        <Route path="/captcha" element={<AiInviewer isCheckHeader={isCheckHeader} />} />
+                        <Route path="/interview" element={<AiInviewer isCheckHeader={isCheckHeader} />} />
                         <Route path="/cl" element={<CL isCheckHeader={isCheckHeader} />} />
                         <Route path="/cl/:id" element={<CLDetail />} />
                         <Route
