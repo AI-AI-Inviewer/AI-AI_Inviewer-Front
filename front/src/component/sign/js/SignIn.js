@@ -81,8 +81,8 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
 
                 <div className="options">
                     <label className="save-id">
+                            아이디 저장
                         <input type="checkbox" checked={saveId} onChange={() => setSaveId(!saveId)} />
-                        아이디 저장
                     </label>
                 </div>
 
