@@ -33,9 +33,9 @@ const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
                 <nav className="nav">
                     <ul className="nav-list main-menu">
                         <li><Link to="/" onClick={() => handleNavigation("/")}>홈</Link></li>
-                        <li><Link to="/interview" onClick={() => handleNavigation("interview")}>AI 면접연습</Link></li>
+                        <li><Link to="/AiInviewer" onClick={() => handleNavigation("interview")}>AI 면접연습</Link></li>
                         <li><Link to="/jobposting" onCLick={() => handleNavigation("jobposting")}>채용 공고</Link></li>
-                        <li><Link to="/jasoseo" onClick={() => handleNavigation("jasoseo")}>자소서</Link></li>
+                        <li><Link to="/CL" onClick={() => handleNavigation("/CL")}>자소서</Link></li>
                         <li className="dropdown">
                             <span>전체 게시판</span>
                             <ul className="dropdown-menu">

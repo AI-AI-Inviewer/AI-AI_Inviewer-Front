@@ -12,7 +12,7 @@ const fetchWithTimeout = (url, options, timeout = 15000) => {
     return Promise.race([
         fetch(url, options),
         new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('요청 시간이 초과되었습니다.')), timeout)
+            setTimeout(()   => reject(new Error('요청 시간이 초과되었습니다.')), timeout)
         )
     ]);
 };

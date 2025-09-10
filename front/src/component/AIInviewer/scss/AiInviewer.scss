@@ -224,22 +224,20 @@ $shadow-base: 0 4px 6px rgba(0, 0, 0, 0.1);
       }
     }
 
-    .job-posting {
-      width: 100%;
-      padding: 0.8rem;
-      padding-top: 1rem;
-      border: none;
-      border-radius: $radius-lg;
-      background: $color-primary;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
+    //.job-posting {
+      //width: 100%;
+      //padding: 0.8rem;
+      //padding-top: 1rem;
+      //border: none;
+      //border-radius: $radius-lg;
+      //background: $color-primary;
+      //color: #fff;
+      //font-weight: 600;
+      //cursor: pointer;
+      //transition: 0.2s;
 
-      &:hover {
-        background: darken($color-primary, 5%);
-      }
-    }
+      //&:hover {
+        //background: darken($color-primary, 5%);
 
     .close-btn {
       margin-top: 1rem;

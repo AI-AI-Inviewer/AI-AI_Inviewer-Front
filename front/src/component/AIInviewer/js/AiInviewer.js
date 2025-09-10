@@ -283,9 +283,6 @@ const AiInviewer = () => {
                             <button onClick={handleStartInterview} className="interview-btn">
                                 AI 면접으로 이동
                             </button>
-                            <button onClick={handleStartInterview} className="job-posting">
-                                관련 채용 공고
-                            </button>
                             <button onClick={() => setSelectedCompany(null)} className="close-btn">
                                 닫기
                             </button>

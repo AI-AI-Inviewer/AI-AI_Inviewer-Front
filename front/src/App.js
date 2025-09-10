@@ -18,6 +18,8 @@ import FeedBackDetail from "./component/community/js/FeedBackDetail";
 import PostScript from "./component/community/js/PostScript";
 import PostScriptWrite from "./component/community/js/PostScript-write";
 import PostScriptDetail from "./component/community/js/PostScriptDetail";
+import JobPosting from "./component/jobposting/js/JobPosting";
+import JobPostingDetail from "./component/jobposting/js/JobPostingDetail";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState } from "react";
@@ -49,10 +51,12 @@ function App() {
                 />
                 <main style={{ flex: 1 }}>
                     <Routes>
-                        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
-                        <Route path="/interview" element={<AiInviewer isCheckHeader={isCheckHeader} />} />
-                        <Route path="/cl" element={<CL isCheckHeader={isCheckHeader} />} />
-                        <Route path="/cl/:id" element={<CLDetail />} />
+                        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />>
+                        <Route path="/AiInviewer" element={<AiInviewer isCheckHeader={isCheckHeader} />} />
+                        <Route path="/JobPosting" element={<JobPosting isCheckHeader={isCheckHeader} />} />
+                        <Route path="/JobPosting/:id" element={<JobPostingDetail />} />
+                        <Route path="/CL" element={<CL isCheckHeader={isCheckHeader} />} />
+                        <Route path="/CL/:id" element={<CLDetail />} />
                         <Route
                             path="/feedback"
                             element={
