@@ -1,10 +1,20 @@
+// FeedBackDetail.jsx (수정본)
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../scss/FeedBackDetail.scss';
 
+const parseDate = (v) => {
+    if (!v) return null;
+    if (Array.isArray(v)) {
+        const [y, M, d, h = 0, m = 0, s = 0, ns = 0] = v;
+        return new Date(y, M - 1, d, h, m, s, Math.floor(ns / 1e6));
+    }
+    return new Date(v);
+};
+
 const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
-    const { communityNum } = useParams();
+    const { communityNum } = useParams();          // route는 /feedback/:communityNum 유지
     const navigate = useNavigate();
 
     const [feedback, setFeedback] = useState(null);
@@ -14,12 +24,13 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // 상세는 공개 엔드포인트(permitAll)라 토큰 없어도 됨
+                const res = await axios.get(`http://localhost:10000/api/community/${communityNum}`);
+                setFeedback(res.data); // DTO: title, content, createdAt, userName/userNickname/userId 등
+
+                // 댓글 API는 기존 그대로 사용한다고 가정
                 const token = localStorage.getItem('jwtToken');
                 const headers = token ? { Authorization: `Bearer ${token}` } : {};
-
-                const res = await axios.get(`http://localhost:10000/api/community/${communityNum}`, { headers });
-                setFeedback(res.data);
-
                 const commentRes = await axios.get(`http://localhost:10000/api/comments/${communityNum}`, { headers });
                 setComments(commentRes.data);
             } catch (err) {
@@ -31,11 +42,12 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         fetchData();
     }, [communityNum, navigate]);
 
-    const formatTime = (date) => {
-        return new Date(date).toLocaleString('ko-KR', {
+    const formatTime = (dateLike) => {
+        const d = parseDate(dateLike);
+        return d ? d.toLocaleString('ko-KR', {
             year: 'numeric', month: '2-digit', day: '2-digit',
             hour: '2-digit', minute: '2-digit'
-        });
+        }) : '-';
     };
 
     const handleAddComment = async () => {
@@ -51,44 +63,23 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         try {
             await axios.post(
                 'http://localhost:10000/api/comments',
-                {
-                    communityNum: communityNum,
-                    content: input
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+                { communityNum, content: input },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
 
-            const res = await axios.get(
+            const commentRes = await axios.get(
                 `http://localhost:10000/api/comments/${communityNum}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+                { headers: { Authorization: `Bearer ${token}` } }
             );
-            setComments(res.data);
+            setComments(commentRes.data);
             setInput('');
         } catch (err) {
-            // 전체 에러 로그 구조 확인
             console.error('댓글 등록 실패 (전체 에러 구조):', err);
-
-            // axios의 response 안에 에러 메시지가 들어있으면 로그 출력
             if (err.response) {
-                console.error('에러 response:', err.response);
-                console.error('에러 status:', err.response.status);
-                console.error('에러 data:', err.response.data);
                 alert(`댓글 등록 실패: ${err.response.data?.message || '서버 오류'}`);
             } else if (err.request) {
-                // 요청이 서버에 도달했으나 응답이 없을 때
-                console.error('에러 request:', err.request);
                 alert('서버로부터 응답이 없습니다.');
             } else {
-                // 그 외 에러
-                console.error('에러 message:', err.message);
                 alert(`요청 실패: ${err.message}`);
             }
         }
@@ -101,18 +92,13 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
             navigate('/signin');
             return;
         }
-
         if (window.confirm('댓글을 삭제하시겠습니까?')) {
             try {
                 await axios.delete(
                     `http://localhost:10000/api/comments/${commentNum}`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
+                    { headers: { Authorization: `Bearer ${token}` } }
                 );
-                setComments(comments.filter(c => c.commentNum !== commentNum));
+                setComments((prev) => prev.filter((c) => c.commentNum !== commentNum));
             } catch (err) {
                 console.error('댓글 삭제 실패:', err);
                 alert('댓글 삭제에 실패했습니다.');
@@ -131,13 +117,16 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         );
     }
 
+    // ✅ DTO 필드 사용
+    const author = feedback.userNickname || feedback.userName || feedback.userId || '알 수 없음';
+
     return (
         <div className="feedback-detail-container">
-            <h2 className="detail-title">{feedback.communityTitle}</h2>
-            <p className="detail-writer">작성자: {feedback.user?.userName || '알 수 없음'}</p>
-            <p className="detail-date">{formatTime(feedback.communityDate)}</p>
+            <h2 className="detail-title">{feedback.title}</h2>
+            <p className="detail-writer">작성자: {author}</p>
+            <p className="detail-date">{formatTime(feedback.createdAt)}</p>
             <hr />
-            <p className="detail-content">{feedback.communityContent}</p>
+            <p className="detail-content">{feedback.content}</p>
 
             <div className="comment-section">
                 <h3>댓글</h3>
@@ -165,7 +154,7 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
                     {comments.map((c) => (
                         <li key={c.commentNum} className="comment-item">
                             <div className="comment-meta">
-                                <strong>{c.user?.userName || '익명'}</strong>
+                                <strong>{c.userNickname || c.userName || c.userId || '익명'}</strong>
                                 <span className="comment-time">{formatTime(c.commentDate)}</span>
                             </div>
                             <p>{c.content}</p>

@@ -1,139 +1,167 @@
+// src/component/interview/js/Interview.js
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/Interview.scss';
 
-// 환경 변수에서 Gemini 키 가져오기
-const API_KEYS = [
-    process.env.REACT_APP_GEMINI_KEY
-];
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:10000';
 
-// fetch 타임아웃 적용
+/** 공용 fetch 타임아웃 래퍼 */
 const fetchWithTimeout = (url, options, timeout = 15000) => {
     return Promise.race([
         fetch(url, options),
         new Promise((_, reject) =>
-            setTimeout(()   => reject(new Error('요청 시간이 초과되었습니다.')), timeout)
-        )
+            setTimeout(() => reject(new Error('요청 시간이 초과되었습니다.')), timeout)
+        ),
     ]);
 };
 
 const Interview = () => {
     const location = useLocation();
-    const { resumeSummary = "기본 자기소개서", company } = location.state || {};
+    const { resumeSummary = '기본 자기소개서', company } = location.state || {};
 
-    const [resumeText] = useState(resumeSummary);
     const [chat, setChat] = useState([
         {
             role: 'system',
-            content: `AI 면접관입니다. ${company || ''} 회사 자기소개서를 기반으로 질문을 드립니다.
+            content: `당신은 면접 전문 AI입니다. 아래 자기소개서 요약과 회사 정보를 바탕으로, 1문 1답 형식으로 대화합니다.
+- 회사: ${company || '미지정'}
+- 자기소개서 요약:
+${resumeSummary}
 
-답변 시 아래를 반드시 포함하세요:
-
-1) 자연어처리 기법으로 답변 분석 및 피드백
-2) 자연스러움, 전문성, 논리성 등 기준으로 0~100 점수화
-3) 개선할 점 구체적 제안`
-        }
+[응답 형식 규칙]
+1) 답변 분석: 자연어처리 시각으로 내용의 강점/약점/근거를 간결히 설명
+2) 점수표: 자연스러움/전문성/논리성을 0~100 점수로 제시 (예: 자연스러움 78 / 전문성 82 / 논리성 75)
+3) 개선 제안: 구체적으로 2~3가지
+4) 다음 꼬리질문 1개 제시
+`,
+        },
     ]);
+
     const [userInput, setUserInput] = useState('');
     const [loading, setLoading] = useState(false);
-
-    // API 요청 취소용 컨트롤러 ref
     const controllerRef = useRef(null);
 
-    // 컴포넌트 언마운트 시 요청 중단
     useEffect(() => {
         return () => {
             if (controllerRef.current) {
                 controllerRef.current.abort();
-                console.log("API 요청 중단됨 (페이지 나감)");
+                console.log('API 요청 중단됨 (페이지 이탈)');
             }
         };
     }, []);
 
-    // Gemini API 호출
-    const callGemini = async (messages, attempt = 0) => {
-        const MAX_ATTEMPTS = API_KEYS.length * 5;
-        const keyIndex = attempt % API_KEYS.length;
+    // ✅ 토큰 읽기: accessToken 우선, 과거 키(jwtToken)도 백업으로
+    const getAccessToken = () =>
+        localStorage.getItem('accessToken') ||
+        localStorage.getItem('jwtToken') ||
+        sessionStorage.getItem('accessToken') ||
+        sessionStorage.getItem('jwtToken') ||
+        null;
 
-        if (attempt >= MAX_ATTEMPTS) {
-            throw new Error('모든 API 키가 제한 상태이거나 오류가 발생했습니다.');
+    // ✅ 토큰 갱신 (리프레시 쿠키 기반)
+    const refreshAccessToken = async () => {
+        const res = await fetchWithTimeout(
+            `${API_BASE}/api/auth/refresh`,
+            {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+            },
+            15000
+        );
+
+        if (!res.ok) return null;
+
+        // (A) JSON 본문에서 우선 시도
+        let token = null;
+        try {
+            const data = await res.json();
+            token = data?.accessToken || data?.token || data?.jwt || null;
+        } catch {
+            /* 본문이 없을 수 있음 -> 헤더 체크 */
         }
 
-        console.log(`Attempt #${attempt + 1} with Gemini API Key index: ${keyIndex}`);
+        // (B) Authorization 헤더에서 시도
+        if (!token) {
+            const authHeader =
+                res.headers.get('Authorization') || res.headers.get('authorization');
+            if (authHeader?.startsWith('Bearer ')) {
+                token = authHeader.slice(7);
+            }
+        }
 
+        if (token) {
+            localStorage.setItem('accessToken', token);
+            localStorage.setItem('jwtToken', token); // 호환 저장
+            return token;
+        }
+        return null;
+    };
+
+    // ✅ 보안 유지 버전: Authorization 헤더 포함 + 401 시 1회 리프레시 재시도
+    const callBackendChat = async (messages) => {
         const controller = new AbortController();
         controllerRef.current = controller;
 
-        try {
-            const prompt = messages.map(msg => `${msg.role === 'user' ? '사용자' : 'AI'}: ${msg.content}`).join("\n");
+        let token = getAccessToken();
+        if (!token) {
+            throw new Error('로그인이 필요합니다. (토큰이 없습니다)');
+        }
 
-            const response = await fetchWithTimeout(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEYS[keyIndex]}`,
+        const doRequest = async (bearerToken) =>
+            fetchWithTimeout(
+                `${API_BASE}/api/chat`,
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        Authorization: `Bearer ${bearerToken}`,
                     },
-                    body: JSON.stringify({
-                        contents: [
-                            {
-                                parts: [{ text: prompt }]
-                            }
-                        ]
-                    }),
+                    body: JSON.stringify({ messages }),
+                    credentials: 'include', // (선택) 서버에서 쿠키도 함께 쓰는 경우
                     signal: controller.signal,
-                }
+                },
+                20000
             );
 
-            if (response.status === 429) {
-                const delay = Math.min(60000, 1000 * Math.pow(2, attempt));
-                console.warn(`429 오류 - ${delay / 1000}s 후 재시도`);
-                await new Promise(r => setTimeout(r, delay));
-                return await callGemini(messages, attempt + 1);
-            }
+        let res = await doRequest(token);
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`API 오류: ${response.status} ${errorText}`);
-            }
-
-            return await response.json();
-        } catch (error) {
-            if (error.name === 'AbortError') {
-                console.warn('API 요청이 중단되었습니다.');
-                throw new Error('요청이 취소되었습니다.');
-            }
-
-            console.warn(`API 호출 실패 (attempt ${attempt + 1}):`, error.message);
-            const delay = 500 * (attempt + 1);
-            await new Promise(r => setTimeout(r, delay));
-            return await callGemini(messages, attempt + 1);
+        if (res.status === 401) {
+            const newToken = await refreshAccessToken();
+            if (!newToken) throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.');
+            token = newToken;
+            res = await doRequest(token);
         }
+
+        if (!res.ok) {
+            const text = await res.text().catch(() => '');
+            throw new Error(`서버 오류: ${res.status} ${text || res.statusText}`);
+        }
+
+        const data = await res.json();
+        if (!data || typeof data.reply !== 'string') {
+            throw new Error('서버 응답 형식이 올바르지 않습니다.');
+        }
+        return data.reply;
     };
 
     const handleSend = async () => {
         if (!userInput.trim() || loading) return;
 
-        const updatedChat = [...chat, { role: 'user', content: userInput }];
+        const updatedChat = [...chat, { role: 'user', content: userInput.trim() }];
         setChat(updatedChat);
         setUserInput('');
         setLoading(true);
 
         try {
-            const data = await callGemini(updatedChat);
-
-            if (data.candidates && data.candidates.length > 0) {
-                const reply = data.candidates[0].content.parts[0].text;
-                setChat([...updatedChat, { role: 'assistant', content: reply }]);
-            } else {
-                setChat([...updatedChat, { role: 'assistant', content: 'AI 응답이 없습니다.' }]);
-            }
+            const reply = await callBackendChat(updatedChat);
+            setChat((prev) => [...prev, { role: 'assistant', content: reply }]);
         } catch (error) {
             console.error(error);
-            setChat(prev => [
-                ...prev,
-                { role: 'assistant', content: error.message || '오류가 발생했습니다. 다시 시도해 주세요.' }
-            ]);
+            const message =
+                error?.name === 'AbortError'
+                    ? '요청이 취소되었습니다.'
+                    : error?.message || '오류가 발생했습니다. 다시 시도해 주세요.';
+            setChat((prev) => [...prev, { role: 'assistant', content: message }]);
         } finally {
             setLoading(false);
         }
@@ -143,31 +171,36 @@ const Interview = () => {
         <div className="ai-interview-container">
             <div className="resume-section">
                 <h3>자기소개서 요약</h3>
-                <div style={{ whiteSpace: 'pre-wrap' }}>{resumeText}</div>
+                <div style={{ whiteSpace: 'pre-wrap' }}>{resumeSummary}</div>
             </div>
 
             <div className="chat-section">
                 <h3>AI 면접 시뮬레이션</h3>
+
                 <div className="chat-box">
                     {chat.map((msg, index) => (
                         <div key={index} className={`chat-message ${msg.role}`}>
-                            <strong>{msg.role === 'user' ? '나' : 'AI'}:</strong>{' '}
+                            <strong>
+                                {msg.role === 'user' ? '나' : msg.role === 'assistant' ? 'AI' : '시스템'}:
+                            </strong>{' '}
                             <span style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</span>
                         </div>
                     ))}
+
                     {loading && (
                         <div className="chat-message assistant typing">
                             <strong>AI:</strong> 응답을 생성 중...
                         </div>
                     )}
                 </div>
+
                 <div className="input-area">
-                    <textarea
-                        value={userInput}
-                        onChange={(e) => setUserInput(e.target.value)}
-                        placeholder="답변을 입력하세요"
-                        disabled={loading}
-                    />
+          <textarea
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder="답변을 입력하세요"
+              disabled={loading}
+          />
                     <button onClick={handleSend} disabled={loading || !userInput.trim()}>
                         {loading ? '전송 중...' : '전송'}
                     </button>

@@ -13,24 +13,36 @@ const FeedBack = ({ isLoggedIn }) => {
     const [searchParams, setSearchParams] = useSearchParams();
 
     useEffect(() => {
-        const page = parseInt(searchParams.get('page')) || 1;
+        const page = parseInt(searchParams.get('page')) || 1;     // 1-based in UI
         const search = searchParams.get('searchKey') || '';
         setNowPage(page);
         setSearchKey(search);
 
         const fetchFeedbacks = async () => {
             try {
-                const res = await axios.get(`http://localhost:10000/api/community`, {
-                    params: { page, searchKey: search }
+                const apiPage = Math.max(0, page - 1);                // ✅ 0-based for backend
+                const res = await axios.get('http://localhost:10000/api/community', {
+                    params: {
+                        page: apiPage,
+                        size: rowSize,                                    // ✅ 페이지 크기 명시
+                        searchKey: search                                 // ❗백엔드 파라미터명이 다르면 맞춰주세요 (e.g., keyword)
+                    }
                 });
 
-                // res.data에 content, totalElements가 없으면 대체 처리
-                if (res.data.content) {
+
+
+                if (res.data?.content) {
                     setFeedbacks(res.data.content);
-                    setTotalCount(res.data.totalElements);
-                } else {
+                    setTotalCount(res.data.totalElements ?? res.data.total_count ?? 0);
+                } else if (Array.isArray(res.data?.list)) {           // 혹시 list/totalCount 형태면
+                    setFeedbacks(res.data.list);
+                    setTotalCount(res.data.totalCount ?? res.data.total_count ?? res.data.list.length);
+                } else if (Array.isArray(res.data)) {
                     setFeedbacks(res.data);
                     setTotalCount(res.data.length);
+                } else {
+                    setFeedbacks([]);
+                    setTotalCount(0);
                 }
             } catch (err) {
                 console.error('게시글 불러오기 오류:', err);
@@ -40,9 +52,18 @@ const FeedBack = ({ isLoggedIn }) => {
         fetchFeedbacks();
     }, [searchParams]);
 
+
     const handleSearchSubmit = (e) => {
         e.preventDefault();
         setSearchParams({ page: 1, searchKey });
+    };
+    const parseDate = (v) => {
+        if (!v) return null;
+        if (Array.isArray(v)) {
+            const [y, M, d, h = 0, m = 0, s = 0, ns = 0] = v;
+            return new Date(y, M - 1, d, h, m, s, Math.floor(ns / 1e6));
+        }
+        return new Date(v);
     };
 
     const realEndPage = Math.ceil(totalCount / rowSize);
@@ -75,23 +96,29 @@ const FeedBack = ({ isLoggedIn }) => {
                 </thead>
                 <tbody>
                 {feedbacks.length > 0 ? (
-                    feedbacks.map((feedback, index) => (
-                        <tr key={feedback.communityNum}>
-                            <td>{(totalCount - ((nowPage - 1) * rowSize)) - index}</td>
-                            <td>
-                                <Link to={`/feedback/${feedback.communityNum}`} state={feedback}>
-                                    {feedback.communityTitle}
-                                </Link>
-                            </td>
-                            <td>{feedback.user?.userName || '알 수 없음'}</td>
-                            <td>{new Date(feedback.communityDate).toLocaleDateString()}</td>
-                            <td>{feedback.communityViewCount}</td>
-                        </tr>
-                    ))
+                    feedbacks.map((fb, index) => {
+                        const dt = parseDate(fb.createdAt);  // createdAt 사용
+                        return (
+                            <tr key={fb.communityNum}>
+                                <td>{(totalCount - ((nowPage - 1) * rowSize)) - index}</td>
+                                <td>
+                                    <Link to={`/feedback/${fb.communityNum}`} state={fb}>
+                                        {fb.title}
+                                    </Link>
+                                </td>
+                                <td>{fb.userNickname || fb.userName || fb.userId || '알 수 없음'}</td>
+                                <td>{dt ? dt.toLocaleDateString() : '-'}</td>
+                                <td>{fb.viewCount}</td>
+                            </tr>
+                        );
+                    })
                 ) : (
-                    <tr><td colSpan="5">게시글이 없습니다.</td></tr>
+                    <tr>
+                        <td colSpan="5">게시글이 없습니다.</td>
+                    </tr>
                 )}
                 </tbody>
+
             </table>
 
             <div className="pagination">

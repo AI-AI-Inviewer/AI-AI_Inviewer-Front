@@ -21,22 +21,27 @@ const SignUp = () => {
     const handleUserIdCheck = async () => {
         if (!form.userId) return alert('아이디를 입력해 주세요.');
         try {
-            const res = await checkUserId(form.userId);
-            if (res.data.available) setIsUserIdChecked(true);
-            else setIsUserIdChecked(false);
-            alert(res.data.available ? '사용 가능한 아이디입니다.' : '이미 사용 중인 아이디입니다.');
-        } catch { alert('아이디 중복 검사 실패'); }
+            const { available } = await checkUserId(form.userId);
+            setIsUserIdChecked(!!available);
+            alert(available ? '사용 가능한 아이디입니다.' : '이미 사용 중인 아이디입니다.');
+        } catch (err) {
+            console.error('ID check error:', err?.response?.status, err?.response?.data);
+            alert(`아이디 중복 검사 실패 (${err?.response?.status ?? '네트워크 오류'})`);
+        }
     };
 
     const handleNicknameCheck = async () => {
         if (!form.nickname) return alert('닉네임을 입력해 주세요.');
         try {
-            const res = await checkNickname(form.nickname);
-            if (res.data.available) setIsNicknameChecked(true);
-            else setIsNicknameChecked(false);
-            alert(res.data.available ? '사용 가능한 닉네임입니다.' : '이미 사용 중인 닉네임입니다.');
-        } catch { alert('닉네임 중복 검사 실패'); }
+            const { available } = await checkNickname(form.nickname);
+            setIsNicknameChecked(!!available);
+            alert(available ? '사용 가능한 닉네임입니다.' : '이미 사용 중인 닉네임입니다.');
+        } catch (err) {
+            console.error('Nickname check error:', err?.response?.status, err?.response?.data);
+            alert(`닉네임 중복 검사 실패 (${err?.response?.status ?? '네트워크 오류'})`);
+        }
     };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
