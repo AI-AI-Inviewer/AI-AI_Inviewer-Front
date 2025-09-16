@@ -32,13 +32,85 @@
     margin-bottom: 20px;
   }
 
+  // 안내 텍스트 상자 기본값 (내용은 숨기고 상태만 보여줄 것이므로 별도 클래스 사용)
   > div {
     font-size: 0.95rem;
     line-height: 1.6;
     color: #555;
-    padding: 15px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
+    padding: 0;
+    background-color: transparent;
+    border-radius: 0;
+  }
+}
+
+// GitHub 임포트 UI (상태만 표시)
+.gh-import {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-weight: 700;
+    color: #1e1e2f;
+  }
+
+  .gh-row {
+    display: flex;
+    gap: 10px;
+
+    input[type="url"] {
+      flex: 1;
+      padding: 12px 14px;
+      border: 1px solid #cfd2dc;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: border-color .2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: #6c63ff;
+      }
+    }
+
+    button {
+      background-color: #6c63ff;
+      color: #fff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: background-color .2s ease, opacity .2s ease;
+
+      &:hover:not(:disabled) {
+        background-color: #5b53e6;
+      }
+      &:disabled {
+        background: #a0a0a0;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .gh-status {
+    margin-top: 4px;
+    font-size: 0.9rem;
+    &.ok { color: #16a34a; font-weight: 700; }
+    &.err { color: #e11d48; }
+  }
+
+  .gh-help {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+
+    code {
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
+      padding: 0 4px;
+    }
   }
 }
 
@@ -55,6 +127,7 @@
   }
 }
 
+/* ✅ 채팅 박스: 내부 스크롤 (부모가 늘어나지 않도록 높이 제한) */
 .chat-box {
   flex-grow: 1;
   overflow-y: auto;
@@ -66,6 +139,9 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+
+  /* 화면 크기에 따라 자동 높이 제한 (300px~600px 사이를 선호, 기본 55vh) */
+  height: clamp(300px, 55vh, 600px);
 }
 
 .chat-message {
@@ -90,9 +166,7 @@
   color: #fff;
   align-self: flex-end;
 
-  strong {
-    color: #fff;
-  }
+  strong { color: #fff; }
 }
 
 .chat-message.assistant {
@@ -100,9 +174,7 @@
   color: #333;
   align-self: flex-start;
 
-  strong {
-    color: #1e1e2f;
-  }
+  strong { color: #1e1e2f; }
 }
 
 .chat-message.typing {
@@ -143,14 +215,8 @@
   font-weight: 500;
   transition: background-color 0.3s ease, opacity 0.3s ease;
 
-  &:hover:not(:disabled) {
-    background-color: darken(#6c63ff, 10%);
-  }
-
-  &:disabled {
-    background-color: #a0a0a0;
-    cursor: not-allowed;
-  }
+  &:hover:not(:disabled) { background-color: #5b53e6; }
+  &:disabled { background-color: #a0a0a0; cursor: not-allowed; }
 }
 
 // 반응형 디자인
@@ -162,5 +228,9 @@
 
   .resume-section {
     order: 2; // 모바일에서 아래로 이동
+  }
+
+  .chat-box {
+    height: 50vh; // 모바일에서 조금 더 낮게
   }
 }
