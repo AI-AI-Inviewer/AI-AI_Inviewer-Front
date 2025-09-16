@@ -1,7 +1,10 @@
+// src/component/sign/js/SignIn.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../scss/SignIn.scss';
+
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:10000';
 
 const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
     const [form, setForm] = useState({ userId: '', password: '' });
@@ -12,7 +15,7 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        setForm((prev) => ({ ...prev, [name]: value }));
         setErrorMsg('');
     };
 
@@ -24,19 +27,45 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
         if (!password) return setErrorMsg('비밀번호를 입력해주세요.');
 
         try {
-            const response = await axios.post('http://localhost:10000/api/user/login', {
-                userId,
-                userPassword: password
-            });
+            // 서버 로그인 엔드포인트 (현재 프로젝트 기준)
+            const url = `${API_BASE}/api/user/login`;
+            const res = await axios.post(
+                url,
+                { userId, userPassword: password },
+                { withCredentials: true }
+            );
 
-            const token = response.data;
+            // 1) JSON 본문에서 토큰 시도
+            let token =
+                res.data?.accessToken ||
+                res.data?.token ||
+                res.data?.jwt ||
+                (typeof res.data === 'string' ? res.data : null);
+
+            // 2) 본문에 없으면 Authorization 헤더(Bearer …)에서 시도
+            if (!token) {
+                const authHeader =
+                    res.headers?.authorization || res.headers?.Authorization;
+                if (authHeader && authHeader.startsWith('Bearer ')) {
+                    token = authHeader.slice(7);
+                }
+            }
+
+            if (!token) {
+                setErrorMsg('로그인 성공했지만 토큰을 받지 못했습니다.');
+                return;
+            }
+
+            // ✅ 통일: accessToken 키로 저장 (호환을 위해 jwtToken도 같이 저장)
+            localStorage.setItem('accessToken', token);
             localStorage.setItem('jwtToken', token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
             if (saveId) localStorage.setItem('savedUserId', userId);
             else localStorage.removeItem('savedUserId');
 
-            setIsLoggedIn(true);
-            setUserNickname(userId);
+            setIsLoggedIn?.(true);
+            setUserNickname?.(userId);
             navigate('/');
             setForm({ userId: '', password: '' });
         } catch (error) {
@@ -81,8 +110,12 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
 
                 <div className="options">
                     <label className="save-id">
-                        <input type="checkbox" checked={saveId} onChange={() => setSaveId(!saveId)} />
                         아이디 저장
+                        <input
+                            type="checkbox"
+                            checked={saveId}
+                            onChange={() => setSaveId(!saveId)}
+                        />
                     </label>
                 </div>
 
