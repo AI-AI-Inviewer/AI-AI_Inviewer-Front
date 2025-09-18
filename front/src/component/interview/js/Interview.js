@@ -3,8 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/Interview.scss';
 
-const isAbortError = (e) =>
-    e?.name === 'AbortError' || String(e?.message || '').toLowerCase().includes('abort');
+// const isAbortError = (e) =>
+//     e?.name === 'AbortError' || String(e?.message || '').toLowerCase().includes('abort');
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:10000';
 const GH_TOKEN = process.env.REACT_APP_GH_TOKEN || null; // 프론트 노출 위험. 가능하면 백엔드 프록시 권장.
 
