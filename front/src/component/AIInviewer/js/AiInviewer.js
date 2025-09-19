@@ -173,7 +173,7 @@ const companies = [
             '글로벌 음악 스트리밍 플랫폼. 추천 알고리즘과 데이터 분석으로 개인화된 음악 경험을 제공.',
         code: '// Spotify 예시 코드',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg',
-    }
+    },
 ];
 
 const AiInviewer = () => {
@@ -195,19 +195,22 @@ const AiInviewer = () => {
     const handleStartInterview = () => {
         if (selectedCompany) {
             navigate('/interview', {
-                state: { initialCode: selectedCompany.code, codeIndex: companies.indexOf(selectedCompany) },
+                state: {
+                    company: selectedCompany.name, // ✅ 회사명 전달 (Interview.js에서 회사별 프롬프트 구성)
+                    initialCode: selectedCompany.code,
+                    codeIndex: companies.indexOf(selectedCompany),
+                    // resumeSummary는 필요 시 다른 페이지에서 함께 넘겨도 됩니다.
+                },
             });
         }
     };
 
-    const toggleBookmark = () => setBookmarkActive(!bookmarkActive);
+    const toggleBookmark = () => setBookmarkActive((v) => !v);
 
     const toggleCompanyBookmark = (companyName) => {
-        if (bookmarks.includes(companyName)) {
-            setBookmarks(bookmarks.filter((name) => name !== companyName));
-        } else {
-            setBookmarks([...bookmarks, companyName]);
-        }
+        setBookmarks((prev) =>
+            prev.includes(companyName) ? prev.filter((n) => n !== companyName) : [...prev, companyName]
+        );
     };
 
     return (
@@ -256,9 +259,7 @@ const AiInviewer = () => {
                             <img src={company.logo} alt={company.name} className="company-logo" />
                             <span>{company.name}</span>
                             <button
-                                className={`bookmark-toggle ${
-                                    bookmarks.includes(company.name) ? 'bookmarked' : ''
-                                }`}
+                                className={`bookmark-toggle ${bookmarks.includes(company.name) ? 'bookmarked' : ''}`}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     toggleCompanyBookmark(company.name);
