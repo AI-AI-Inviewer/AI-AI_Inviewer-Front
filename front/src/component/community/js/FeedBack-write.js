@@ -30,7 +30,7 @@ const FeedBackWrite = () => {
 
         try {
             await axios.post(
-                'http://localhost:10000/api/community',
+                'http://localhost:10002/api/community',
                 form,
                 {
                     headers: {

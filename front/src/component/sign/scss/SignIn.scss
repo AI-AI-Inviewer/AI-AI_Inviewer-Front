@@ -1,19 +1,20 @@
 /* src/scss/SignIn.scss */
 .signin-container {
   max-width: 400px;
-  margin: 5rem auto;
-  padding: 2.5rem;
-  background: #f9f9ff;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  margin: 6rem auto;
+  padding: 3rem 2.5rem;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   font-family: "Noto Sans KR", sans-serif;
-  color: #333;
+  color: #222;
 
   h2 {
     text-align: center;
-    font-size: 2rem;
+    font-size: 1.8rem;
     font-weight: 600;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    color: #111;
   }
 
   .signin-form {
@@ -21,23 +22,31 @@
     flex-direction: column;
 
     label {
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      font-size: 0.9rem;
       font-weight: 500;
+      color: #555;
 
       input {
         width: 100%;
-        padding: 0.6rem 0.8rem;
-        margin-top: 0.4rem;
-        border: 1px solid #ddd;
-        border-radius: 6px;
+        padding: 0.8rem 1rem;
+        margin-top: 0.5rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
         font-size: 0.95rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+
+        &:focus {
+          border-color: #2563eb;
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+          outline: none;
+        }
       }
 
       .password-wrapper {
+        position: relative;
         display: flex;
         align-items: center;
-        position: relative;
 
         input {
           flex: 1;
@@ -45,11 +54,17 @@
 
         .toggle-password {
           position: absolute;
-          right: 10px;
+          right: 12px;
           background: none;
           border: none;
           cursor: pointer;
-          font-size: 1.1rem;
+          font-size: 1.2rem;
+          color: #888;
+          transition: color 0.2s;
+
+          &:hover {
+            color: #2563eb;
+          }
         }
       }
     }
@@ -57,35 +72,55 @@
     .options {
       display: flex;
       align-items: center;
-      margin-bottom: 1rem;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+      font-size: 0.85rem;
+      color: #555;
 
       .save-id {
-        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+
         input {
           margin-right: 0.4rem;
+        }
+      }
+
+      a {
+        color: #2563eb;
+        text-decoration: none;
+        font-weight: 500;
+
+        &:hover {
+          text-decoration: underline;
         }
       }
     }
 
     .error-msg {
-      color: #ff4d4f;
+      color: #ef4444;
       margin-bottom: 1rem;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       text-align: center;
     }
 
     button[type="submit"] {
-      padding: 0.6rem 0;
+      padding: 0.8rem 0;
       border: none;
-      border-radius: 6px;
-      background-color: #007bff;
+      border-radius: 10px;
+      background-color: #2563eb;
       color: #fff;
       font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      transition: background 0.3s;
+      transition: background 0.3s, transform 0.1s;
 
       &:hover {
-        background-color: #0056b3;
+        background-color: #1e40af;
+      }
+
+      &:active {
+        transform: scale(0.98);
       }
     }
   }

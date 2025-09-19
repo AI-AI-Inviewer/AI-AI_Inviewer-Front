@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Spring Boot API 엔드포인트
-const API_BASE_URL = 'http://localhost:10000/api/community';
+const API_BASE_URL = 'http://localhost:10002/api/community';
 
 // 🔹 피드백 리스트 조회
 export const getFeedbackList = async () => {

@@ -1,86 +1,117 @@
+// PostScriptDetail.scss
+
 .postscript-detail-container {
-  max-width: 600px;
-  margin: 3rem auto;
+  max-width: 800px;
+  margin: 2rem auto;
   padding: 2rem;
-  background: #fefeff;
+  background: #fff;
   border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif;
+  line-height: 1.6;
   color: #333;
 
   .detail-title {
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-size: 2rem;
+    font-weight: bold;
     margin-bottom: 0.5rem;
-    text-align: center;
+    color: #222;
   }
 
   .detail-date {
-    font-size: 0.95rem;
-    color: #888;
-    text-align: center;
+    font-size: 0.9rem;
+    color: #777;
     margin-bottom: 1rem;
   }
 
   .detail-content {
     font-size: 1.1rem;
-    line-height: 1.6;
+    margin: 1.5rem 0;
     white-space: pre-line;
-    margin-top: 1.5rem;
   }
 
-  .btn-wrapper {
-    margin-top: 2rem;
-    text-align: right;
+  hr {
+    margin: 1.5rem 0;
+    border: none;
+    border-top: 1px solid #ddd;
   }
 
-  .back-btn {
-    background-color: #6c63ff;
-    color: #fff;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: background-color 0.3s;
+  .post-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2rem;
 
-    &:hover {
-      background-color: #574fd6;
+    .btn {
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.2s;
+
+      &.edit-btn {
+        background: #4cafef;
+        color: #fff;
+
+        &:hover {
+          background: #3b8ddb;
+        }
+      }
+
+      &.delete-btn {
+        background: #f44336;
+        color: #fff;
+
+        &:hover {
+          background: #d32f2f;
+        }
+      }
     }
   }
 
   .comment-section {
-    margin-top: 3rem;
+    margin-top: 2rem;
 
     h3 {
+      font-size: 1.3rem;
       margin-bottom: 1rem;
-      font-size: 1.2rem;
     }
 
     .comment-input {
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
 
       textarea {
-        padding: 0.6rem;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        resize: vertical;
+        width: 100%;
         min-height: 80px;
+        padding: 0.8rem;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        resize: none;
+        font-size: 1rem;
+
+        &:focus {
+          border-color: #4cafef;
+          outline: none;
+          box-shadow: 0 0 4px rgba(76, 175, 239, 0.3);
+        }
       }
 
       button {
         align-self: flex-end;
-        background-color: #6c63ff;
-        color: white;
+        padding: 0.5rem 1.2rem;
+        background: #4cafef;
+        color: #fff;
         border: none;
-        border-radius: 6px;
-        padding: 0.5rem 1rem;
-        font-weight: 600;
+        border-radius: 8px;
         cursor: pointer;
+        font-size: 0.9rem;
+        transition: 0.2s;
 
         &:hover {
-          background-color: #574fd6;
+          background: #3b8ddb;
         }
       }
     }
@@ -90,89 +121,96 @@
       padding: 0;
 
       .comment-item {
-        background: #f9f9ff;
+        background: #fafafa;
+        border: 1px solid #eee;
         padding: 1rem;
         border-radius: 8px;
         margin-bottom: 1rem;
-        position: relative;
-
-        p {
-          margin-bottom: 0.5rem;
-        }
-
-        textarea {
-          width: 100%;
-          min-height: 70px;
-          padding: 0.6rem;
-          border-radius: 8px;
-          border: 1px solid #ccc;
-        }
-
-        .comment-buttons {
-          display: flex;
-          gap: 0.5rem;
-
-          button {
-            padding: 0.3rem 0.8rem;
-            border: none;
-            border-radius: 6px;
-            background-color: #e0e0e0;
-            font-weight: 600;
-            cursor: pointer;
-
-            &:hover {
-              background-color: #d0d0ff;
-            }
-          }
-        }
 
         .comment-meta {
           display: flex;
           justify-content: space-between;
-          margin-bottom: 0.3rem;
           font-size: 0.9rem;
           color: #555;
+          margin-bottom: 0.5rem;
 
           strong {
-            font-weight: 600;
+            color: #333;
           }
 
           .comment-time {
-            font-style: italic;
+            font-size: 0.8rem;
             color: #888;
+          }
+        }
+
+        p {
+          margin: 0.5rem 0 0.8rem 0;
+          font-size: 1rem;
+        }
+
+        textarea {
+          width: 100%;
+          min-height: 60px;
+          padding: 0.5rem;
+          border-radius: 6px;
+          border: 1px solid #ccc;
+          resize: none;
+          font-size: 0.95rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .comment-buttons {
+          display: flex;
+          gap: 8px;
+
+          button {
+            padding: 0.3rem 0.8rem;
+            font-size: 0.85rem;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+
+            &:first-child {
+              background: #4cafef;
+              color: #fff;
+
+              &:hover {
+                background: #3b8ddb;
+              }
+            }
+
+            &:last-child {
+              background: #f44336;
+              color: #fff;
+
+              &:hover {
+                background: #d32f2f;
+              }
+            }
           }
         }
       }
     }
   }
-  .post-buttons {
-    display: flex;
-    gap: 0.5rem;
-    margin-top: 1rem;
 
-    .btn {
-      padding: 0.4rem 0.8rem;
-      font-weight: 600;
-      border-radius: 6px;
-      border: none;
-      cursor: pointer;
-    }
+  .btn-wrapper {
+    margin-top: 2rem;
+    text-align: center;
 
-    .edit-btn {
-      background-color: #6c63ff;
+    .back-btn {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      background: #555;
       color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: 0.2s;
 
       &:hover {
-        background-color: #4f48cc;
-      }
-    }
-
-    .delete-btn {
-      background-color: #ff4d4d;
-      color: white;
-
-      &:hover {
-        background-color: #e03e3e;
+        background: #333;
       }
     }
   }

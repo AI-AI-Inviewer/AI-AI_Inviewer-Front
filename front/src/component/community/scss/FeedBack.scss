@@ -1,153 +1,143 @@
-/* FeedBack.scss */
-$primary-color: #5a67d8;
-$border-color: #e2e8f0;
-$text-color: #2d3748;
-$text-light: #718096;
-$background-color: #f7fafc;
-$card-background: #ffffff;
-$font-family: "Noto Sans KR", sans-serif;
-
 .feedback-container {
-  max-width: 1200px;
-  margin: 3rem auto;
-  padding: 0 2rem;
-  font-family: $font-family;
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  font-family: "Noto Sans KR", sans-serif;
 
   .board-title {
     font-size: 1.8rem;
     font-weight: 700;
-    margin-bottom: 2rem;
-    color: $text-color;
-    border-bottom: 2px solid $border-color;
-    padding-bottom: 1rem;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.5rem;
   }
 
+  /* 검색창 */
   .search-container {
     display: flex;
     margin-bottom: 1.5rem;
 
     .search-input {
       flex: 1;
-      padding: 0.75rem 1rem;
-      border: 1px solid $border-color;
+      padding: 0.6rem 1rem;
+      border: 1px solid #cbd5e0;
       border-radius: 8px 0 0 8px;
-      font-size: 1rem;
       outline: none;
+      font-size: 1rem;
 
       &:focus {
-        border-color: $primary-color;
-        box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
+        border-color: #5a67d8;
+        box-shadow: 0 0 0 2px rgba(90, 103, 216, 0.2);
       }
     }
 
     .search-btn {
-      padding: 0.75rem 1.5rem;
-      border: 1px solid $border-color;
-      border-left: none;
-      background-color: $primary-color;
+      padding: 0.6rem 1.2rem;
+      background-color: #5a67d8;
       color: #fff;
       font-weight: 600;
       border-radius: 0 8px 8px 0;
+      border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: background 0.2s;
 
       &:hover {
-        background-color: darken($primary-color, 10%);
+        background-color: #4c51bf;
       }
     }
   }
 
-  .table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 0.75rem;
+  /* 게시글 카드 리스트 */
+  .feedback-list {
+    display: grid;
+    gap: 1rem;
 
-    th {
-      text-align: left;
-      color: $text-light;
-      font-weight: 600;
-      padding: 0.75rem 1rem;
-    }
-
-    td {
-      background: $card-background;
-      padding: 0.75rem 1rem;
+    .feedback-card {
+      display: block;
+      background: #fff;
+      padding: 1rem 1.2rem;
       border-radius: 12px;
-      color: $text-color;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.25s;
+      text-decoration: none;
+      color: inherit;
 
-      a {
-        color: $primary-color;
-        text-decoration: none;
-        font-weight: 500;
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+      }
 
-        &:hover {
-          text-decoration: underline;
-        }
+      .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #2d3748;
+      }
+
+      .card-meta {
+        font-size: 0.85rem;
+        color: #718096;
+        display: flex;
+        gap: 1rem;
       }
     }
 
-    tbody tr td:first-child {
-      width: 60px;
+    .no-posts {
+      text-align: center;
+      padding: 2rem;
+      color: #718096;
     }
   }
 
+  /* 페이지네이션 */
   .pagination {
     display: flex;
     justify-content: center;
-    gap: 0.5rem;
-    margin: 2rem 0;
+    margin-top: 2rem;
+    gap: 0.4rem;
 
     .page-btn {
-      padding: 0.5rem 0.75rem;
-      border: 1px solid $border-color;
-      border-radius: 8px;
-      background-color: $card-background;
-      color: $text-color;
+      padding: 0.5rem 0.9rem;
+      border-radius: 6px;
+      text-decoration: none;
+      color: #4a5568;
       font-weight: 500;
       transition: all 0.2s;
-      cursor: pointer;
-      text-decoration: none;
+      border: 1px solid #cbd5e0;
+
+      &:hover {
+        background: #edf2f7;
+      }
 
       &.active {
-        background-color: $primary-color;
+        background: #5a67d8;
         color: #fff;
-        font-weight: 700;
-      }
-
-      &:hover {
-        border-color: $primary-color;
-        color: $primary-color;
+        border-color: #5a67d8;
       }
     }
   }
 
-  .write-button-container {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1.5rem;
-
-    .write-btn {
-      padding: 0.75rem 1.5rem;
-      background-color: $primary-color;
-      color: #fff;
-      font-weight: 600;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: all 0.2s;
-
-      &:hover {
-        background-color: darken($primary-color, 10%);
-      }
-    }
-  }
-
-  .table tbody tr td[colspan="5"] {
+  /* 글쓰기 버튼 (Floating Action Button) */
+  .write-btn {
+    position: fixed;
+    right: 2rem;
+    bottom: 2rem;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #5a67d8;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: bold;
     text-align: center;
-    padding: 2rem;
-    color: $text-light;
-    background-color: #fdfdfd;
-    border-radius: 12px;
-    border: 1px dashed $border-color;
-    font-weight: 500;
+    line-height: 52px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: background 0.2s;
+    text-decoration: none;
+
+    &:hover {
+      background: #4c51bf;
+    }
   }
 }

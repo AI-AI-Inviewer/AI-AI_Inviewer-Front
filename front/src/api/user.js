@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 // .env에 VITE_API_BASE_URL 있으면 그걸 우선 사용 (예: http://localhost:10000)
-const API_BASE = import.meta.env?.VITE_API_BASE_URL ?? 'http://localhost:10000';
+const API_BASE = import.meta.env?.VITE_API_BASE_URL ?? 'http://localhost:10002';
 const USER_BASE = '/api/user'; // 컨트롤러 @RequestMapping("/api/user")와 일치
 
 // 공통 axios 인스턴스

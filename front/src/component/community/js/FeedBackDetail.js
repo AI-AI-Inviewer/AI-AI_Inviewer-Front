@@ -25,13 +25,13 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         const fetchData = async () => {
             try {
                 // 상세는 공개 엔드포인트(permitAll)라 토큰 없어도 됨
-                const res = await axios.get(`http://localhost:10000/api/community/${communityNum}`);
+                const res = await axios.get(`http://localhost:10002/api/community/${communityNum}`);
                 setFeedback(res.data); // DTO: title, content, createdAt, userName/userNickname/userId 등
 
                 // 댓글 API는 기존 그대로 사용한다고 가정
                 const token = localStorage.getItem('jwtToken');
                 const headers = token ? { Authorization: `Bearer ${token}` } : {};
-                const commentRes = await axios.get(`http://localhost:10000/api/comments/${communityNum}`, { headers });
+                const commentRes = await axios.get(`http://localhost:10002/api/comments/${communityNum}`, { headers });
                 setComments(commentRes.data);
             } catch (err) {
                 console.error('게시글/댓글 불러오기 오류:', err);
@@ -62,13 +62,13 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
 
         try {
             await axios.post(
-                'http://localhost:10000/api/comments',
+                'http://localhost:10002/api/comments',
                 { communityNum, content: input },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
 
             const commentRes = await axios.get(
-                `http://localhost:10000/api/comments/${communityNum}`,
+                `http://localhost:10002/api/comments/${communityNum}`,
                 { headers: { Authorization: `Bearer ${token}` } }
             );
             setComments(commentRes.data);
@@ -95,7 +95,7 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         if (window.confirm('댓글을 삭제하시겠습니까?')) {
             try {
                 await axios.delete(
-                    `http://localhost:10000/api/comments/${commentNum}`,
+                    `http://localhost:10002/api/comments/${commentNum}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
                 setComments((prev) => prev.filter((c) => c.commentNum !== commentNum));

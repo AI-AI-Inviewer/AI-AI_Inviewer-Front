@@ -18,7 +18,7 @@ const Mypage = () => {
         const fetchUserInfo = async () => {
             try {
                 const token = localStorage.getItem('jwtToken');  // ✅ 수정
-                const response = await axios.get('http://localhost:10000/api/user/me', {  // ✅ 수정
+                const response = await axios.get('http://localhost:10002/api/user/me', {  // ✅ 수정
                     headers: { Authorization: `Bearer ${token}` }
                 });
                    setUserInfo(response.data);

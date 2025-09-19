@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../scss/SignIn.scss';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:10000';
+const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:10002';
 
 const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
     const [form, setForm] = useState({ userId: '', password: '' });
