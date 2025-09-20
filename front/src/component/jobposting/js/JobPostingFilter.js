@@ -1,6 +1,6 @@
 import React from "react";
 
-const categories = ["전체", "AI", "Web", "Platform", "Finance"];
+const categories = ["전체", "국내", "해외"];
 
 const JobPostingFilter = ({ searchText, setSearchText, filteredCategory, setFilteredCategory }) => {
     return (

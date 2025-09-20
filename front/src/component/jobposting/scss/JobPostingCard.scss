@@ -22,17 +22,22 @@ $font-family: "Noto Sans KR", sans-serif;
     border-color: $primary-color;
   }
 
-  .jobposting-card-title {
+/*  .jobposting-card-title {
     font-weight: 600;
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
     color: $text-color;
-  }
+  }*/
 
   .jobposting-card-company {
-    font-size: 0.9rem;
+    /*font-size: 0.9rem;
     color: #718096;
+    margin-bottom: 0.5rem;*/
+
+    font-weight: 600;
+    font-size: 1.1rem;
     margin-bottom: 0.5rem;
+    color: $text-color;
   }
 
   .jobposting-card-info {
@@ -44,9 +49,20 @@ $font-family: "Noto Sans KR", sans-serif;
     span {
       background-color: #ebf4ff;
       color: #3182ce;
-      padding: 2px 8px;
+      padding: 3px 8px;
       border-radius: 12px;
       font-weight: 500;
+    }
+
+    .apply-btn {
+      padding: 3px 10px;
+      background-color: $primary-color;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s ease;
     }
   }
 }

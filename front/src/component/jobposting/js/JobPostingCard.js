@@ -10,12 +10,15 @@ const JobPostingCard = ({ job }) => {
     };
 
     return (
-        <div className="jobposting-card" onClick={handleClick}>
-            <div className="jobposting-card-title">{job.title}</div>
+        <div className="jobposting-card" /*onClick={handleClick}*/>
+            {/*<div className="jobposting-card-title">{job.title}</div>*/}
             <div className="jobposting-card-company">{job.company}</div>
             <div className="jobposting-card-info">
-                <span>{job.category}</span>
+                {/*<span>{job.category}</span>*/}
                 <span>{job.location}</span>
+                <button className="apply-btn" onClick={() => window.open(job.link)}>
+                    지원하기
+                </button>
             </div>
         </div>
     );
