@@ -29,7 +29,7 @@ const MypageEdit = () => {
             };
 
             await axios.put(
-                'http://localhost:10000/api/user/me',  // 포트 번호 반영!
+                'http://localhost:10002/api/user/me',
                 updatedUser,
                 {
                     headers: {

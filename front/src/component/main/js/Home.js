@@ -1,7 +1,17 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "../scss/Home.scss";
 
 const Home = () => {
+    const navigate = useNavigate();
+
+    const goToLogin = () => {
+        navigate("/signin");
+    };
+    const goToInterview = () => {
+        navigate("/AiInviewer");
+    };
+
     return (
         <div className="home">
             {/* Hero Section */}
@@ -9,7 +19,9 @@ const Home = () => {
                 <div className="hero-content">
                     <h1>AI 면접 연습 플랫폼</h1>
                     <p>실제 면접처럼 준비하고 AI 피드백으로 성장하세요.</p>
-                    <button className="cta-btn">지금 시작하기</button>
+                    <button className="cta-btn" onClick={goToLogin}>
+                        지금 시작하기
+                    </button>
                 </div>
             </header>
 
@@ -39,7 +51,9 @@ const Home = () => {
             <section className="join-us">
                 <h2>지금 바로 당신의 면접을 업그레이드하세요</h2>
                 <p>AI Inviewer와 함께라면 합격의 문이 더 가까워집니다.</p>
-                <button className="btn-join">무료로 시작하기</button>
+                <button className="btn-join" onClick={goToInterview}>
+                    무료로 시작하기
+                </button>
             </section>
 
             {/* Features Section */}
@@ -78,13 +92,8 @@ const Home = () => {
                     </div>
                 </div>
             </section>
-
-
-            {/* Footer */}
         </div>
     );
 };
 
 export default Home;
-
-

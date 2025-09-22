@@ -16,7 +16,7 @@
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0",
-    "react-scripts": "^0.0.0",
+    "react-scripts": "^5.0.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -44,8 +44,8 @@
     ]
   },
   "devDependencies": {
-    "sass": "^1.92.1",
+    "sass": "^1.93.0",
     "sass-loader": "^16.0.5"
   },
-  "proxy": "http://localhost:10000"
+  "proxy": "http://localhost:10002"
 }

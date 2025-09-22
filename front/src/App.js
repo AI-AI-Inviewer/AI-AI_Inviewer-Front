@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./App.css";
+
 import Header from './component/header/js/Header';
 import Footer from './component/footer/js/Footer';
 import Home from './component/main/js/Home';
@@ -20,6 +21,7 @@ import PostScriptWrite from "./component/community/js/PostScript-write";
 import PostScriptDetail from "./component/community/js/PostScriptDetail";
 import JobPosting from "./component/jobposting/js/JobPosting";
 import JobPostingDetail from "./component/jobposting/js/JobPostingDetail";
+import ScrollToTop from "./component/common/js/ScrollToTop";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState } from "react";
@@ -42,6 +44,8 @@ function App() {
     return (
         <div className="App" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <BrowserRouter>
+                {/* 페이지 이동 시 스크롤 초기화 */}
+                <ScrollToTop />
                 <Header
                     isCheckHeader={isCheckHeader}
                     ChangeEventHandler={ChangeEventHandler}
@@ -51,7 +55,7 @@ function App() {
                 />
                 <main style={{ flex: 1 }}>
                     <Routes>
-                        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />>
+                        <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
                         <Route path="/AiInviewer" element={<AiInviewer isCheckHeader={isCheckHeader} />} />
                         <Route path="/JobPosting" element={<JobPosting isCheckHeader={isCheckHeader} />} />
                         <Route path="/JobPosting/:id" element={<JobPostingDetail />} />
