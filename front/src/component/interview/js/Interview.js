@@ -3,17 +3,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/Interview.scss';
 
-// const isAbortError = (e) =>
-//     e?.name === 'AbortError' || String(e?.message || '').toLowerCase().includes('abort');
 const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:10002';
-const GH_TOKEN = process.env.REACT_APP_GH_TOKEN || null; // 프론트 노출 위험. 가능하면 백엔드 프록시 권장.
+const GH_TOKEN = process.env.REACT_APP_GH_TOKEN || null;
 
-// ===== 유틸: GitHub URL → raw URL 변환 =====
 const toRawGithubUrl = (url) => {
     try {
         const u = new URL(url.trim());
         if (u.hostname === 'raw.githubusercontent.com') return u.toString();
-
         if (u.hostname === 'github.com') {
             const parts = u.pathname.split('/').filter(Boolean);
             const blobIdx = parts.indexOf('blob');
@@ -25,20 +21,17 @@ const toRawGithubUrl = (url) => {
                 return `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${path}`;
             }
         }
-
         if (u.hostname === 'gist.github.com') {
-            const parts = u.pathname.split('/').filter(Boolean); // ["owner","gistId"]
+            const parts = u.pathname.split('/').filter(Boolean);
             const gistId = parts[1];
             if (gistId) return `https://gist.githubusercontent.com/${parts[0]}/${gistId}/raw`;
         }
-
         return url;
     } catch {
         return url;
     }
 };
 
-// ===== 프롬프트 빌더 =====
 const buildSystemPrompt = (company, resumeSummary) => `
 당신은 '${company || '미지정'}' 회사의 면접관입니다.
 아래 자기소개서 요약을 참고해 1문1답으로 진행하세요.
@@ -53,25 +46,107 @@ ${resumeSummary || '기본 자기소개서'}
 4) 다음 꼬리질문 1개
 `;
 
-// ===== fetch 타임아웃 래퍼 =====
 const fetchWithTimeout = (url, options, timeout = 15000) =>
     Promise.race([
         fetch(url, options),
-        new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('요청 시간이 초과되었습니다.')), timeout)
-        ),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('요청 시간이 초과되었습니다.')), timeout)),
     ]);
 
-const MAX_RESUME_SIZE = 20000; // 20kB 초과시 컷
+const MAX_RESUME_SIZE = 20000;
+
+// ===== 간단 녹음 훅 =====
+const useRecorder = () => {
+    const mediaRef = useRef(null);
+    const chunksRef = useRef([]);
+    const [recording, setRecording] = useState(false);
+
+    const start = async () => {
+        if (recording) return;
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+            ? 'audio/webm;codecs=opus'
+            : 'audio/webm';
+        const mr = new MediaRecorder(stream, { mimeType });
+        mediaRef.current = mr;
+        chunksRef.current = [];
+        mr.ondataavailable = (e) => {
+            if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
+        };
+        mr.onstop = () => setRecording(false);
+        mr.start();
+        setRecording(true);
+    };
+
+    const stop = async () => {
+        if (!mediaRef.current) return null;
+        const mr = mediaRef.current;
+        return new Promise((resolve) => {
+            mr.onstop = () => {
+                setRecording(false);
+                const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'audio/webm' });
+                try {
+                    mr.stream.getTracks().forEach((t) => t.stop());
+                } catch {}
+                resolve(blob);
+            };
+            mr.stop();
+        });
+    };
+
+    return { start, stop, recording };
+};
+
+// ===== 브라우저 폴백 TTS =====
+const speak = (text, { lang = 'ko-KR' } = {}) => {
+    try {
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = lang;
+        const voices = window.speechSynthesis?.getVoices?.() || [];
+        const ko = voices.find((v) => v.lang?.toLowerCase().startsWith('ko'));
+        if (ko) u.voice = ko;
+        window.speechSynthesis.speak(u);
+    } catch (e) {
+        console.warn('TTS failed:', e);
+    }
+};
+
+// ===== 꼬리질문 추출 (강화) =====
+function extractFollowUpQuestion(text) {
+    if (!text) return '';
+    const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
+
+    // 1) "4) ..." or "다음 꼬리질문:" or "follow-up"
+    const p1 = lines.find(
+        (l) => /^4\)\s*/.test(l) || /^다음\s*꼬리질문/i.test(l) || /^follow[\s-]*up/i.test(l)
+    );
+    if (p1) {
+        let q = p1
+            .replace(/^4\)\s*/, '')
+            .replace(/^다음\s*꼬리질문[^:]*:\s*/i, '')
+            .replace(/^follow[\s-]*up[^:]*:\s*/i, '')
+            .trim();
+        if (!/[?？]$/.test(q) && q.length > 0) q += '?';
+        return q;
+    }
+
+    // 2) bullet/number line가 물음표로 끝나는 것
+    const bulletQ = lines.find((l) => /[?？]$/.test(l));
+    if (bulletQ) return bulletQ;
+
+    // 3) 통문장 중 첫 물음표 문장
+    const merged = lines.join(' ');
+    const parts = merged.split(/(?<=[?？])/).map((s) => s.trim()).filter(Boolean);
+    const first = parts.find((s) => /[?？]$/.test(s));
+    return first || '';
+}
 
 const Interview = () => {
     const location = useLocation();
     const { resumeSummary: initSummary = '기본 자기소개서', company } = location.state || {};
 
-    // 프롬프트용 요약(화면에는 절대 표시하지 않음)
     const [resumeSummary, setResumeSummary] = useState(initSummary);
 
-    // GitHub 입력/상태
+    // GitHub
     const [resumeUrl, setResumeUrl] = useState('');
     const [resumeLoaded, setResumeLoaded] = useState(false);
     const [resumeLoadState, setResumeLoadState] = useState({ loading: false, error: '' });
@@ -84,11 +159,27 @@ const Interview = () => {
     const controllerRef = useRef(null);
     const bootedRef = useRef(false);
 
-    useEffect(() => {
-        return () => {
+    // 녹음
+    const { start: recStart, stop: recStop, recording } = useRecorder();
+
+    // 🔊 보이스 상태
+    const [voices, setVoices] = useState([]); // {id, name, preview}
+    const [voiceId, setVoiceId] = useState('21m00Tcm4TlvDq8ikWAM');
+    const [modelId, setModelId] = useState('eleven_flash_v2_5'); // 기본값 변경
+    const audioRef = useRef(null);
+
+    useEffect(
+        () => () => {
             if (controllerRef.current) controllerRef.current.abort();
-        };
-    }, []);
+            if (audioRef.current) {
+                try {
+                    audioRef.current.pause();
+                    URL.revokeObjectURL(audioRef.current.src);
+                } catch {}
+            }
+        },
+        []
+    );
 
     // === 인증 헬퍼 ===
     const getAccessToken = () =>
@@ -158,7 +249,7 @@ const Interview = () => {
         return data.reply;
     };
 
-    // === 초기: AI 인사 ===
+    // === 초기 인사 & 보이스 목록 ===
     useEffect(() => {
         if (bootedRef.current) return;
         bootedRef.current = true;
@@ -166,12 +257,20 @@ const Interview = () => {
         (async () => {
             setLoading(true);
             try {
+                await loadVoices();
+
                 const kickoff = [
                     { role: 'system', content: buildSystemPrompt(company, resumeSummary) },
                     { role: 'user', content: '면접을 시작해 주세요. 먼저 인사하고 자기소개를 요청해 주세요.' },
                 ];
                 const reply = await callBackendChat(kickoff);
                 setChat((prev) => [...prev, { role: 'assistant', content: reply }]);
+
+                // 🔊 첫 질문 자동 낭독
+                const q1 =
+                    extractFollowUpQuestion(reply) ||
+                    (reply.replace(/\s+/g, ' ').trim().split(/(?<=[?？])/).find((s) => /[?？]$/.test(s)) || '').trim();
+                if (q1) await playTts(q1);
             } catch (e) {
                 setChat((prev) => [...prev, { role: 'assistant', content: e?.message || '초기 인사 생성 실패' }]);
             } finally {
@@ -181,7 +280,46 @@ const Interview = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // === GitHub에서 자기소개서 불러오기 (내용은 화면에 표시하지 않음) ===
+    const loadVoices = async () => {
+        let token = getAccessToken();
+        if (!token) return;
+        const doGet = (bearer) =>
+            fetch(`${API_BASE}/api/chat/voices`, {
+                headers: { Authorization: `Bearer ${bearer}` },
+                credentials: 'include',
+            });
+
+        let res = await doGet(token);
+        if (res.status === 401) {
+            const newToken = await refreshAccessToken();
+            if (!newToken) return;
+            token = newToken;
+            res = await doGet(token);
+        }
+        if (!res.ok) return;
+
+        const json = await res.json().catch(async () => {
+            const txt = await res.text();
+            try {
+                return JSON.parse(txt);
+            } catch {
+                return { voices: [] };
+            }
+        });
+        const list = Array.isArray(json.voices) ? json.voices : [];
+        setVoices(
+            list.map((v) => ({
+                id: v.voice_id,
+                name: v.name,
+                preview: v.preview_url,
+            }))
+        );
+        if (list.length > 0 && !list.find((v) => v.voice_id === voiceId)) {
+            setVoiceId(list[0].voice_id);
+        }
+    };
+
+    // === GitHub 자기소개서 불러오기 ===
     const loadResumeFromGithub = async () => {
         const url = resumeUrl.trim();
         if (!url) {
@@ -207,11 +345,7 @@ const Interview = () => {
                 if (!json?.content) throw new Error('GitHub API 응답 형식이 올바르지 않습니다.');
                 content = atob(json.content.replace(/\n/g, ''));
             } else {
-                const res = await fetchWithTimeout(
-                    rawUrl,
-                    { headers: { Accept: 'text/plain,*/*' } },
-                    15000
-                );
+                const res = await fetchWithTimeout(rawUrl, { headers: { Accept: 'text/plain,*/*' } }, 15000);
                 if (!res.ok) throw new Error(`가져오기 실패: ${res.status}`);
                 content = await res.text();
             }
@@ -221,13 +355,9 @@ const Interview = () => {
                 cleaned = cleaned.slice(0, MAX_RESUME_SIZE) + '\n\n(요약: 길이 제한으로 일부가 생략되었습니다)';
             }
 
-            // 프롬프트용 요약만 갱신 (UI에는 표시하지 않음)
             setResumeSummary(cleaned);
-
-            // 면접 재시작: system만 교체하고 기록 초기화
             setChat([{ role: 'system', content: buildSystemPrompt(company, cleaned) }]);
 
-            // 자동 인사
             setLoading(true);
             try {
                 const kickoff = [
@@ -236,6 +366,12 @@ const Interview = () => {
                 ];
                 const reply = await callBackendChat(kickoff);
                 setChat((prev) => [...prev, { role: 'assistant', content: reply }]);
+
+                // 🔊 첫 질문 자동 낭독
+                const q1 =
+                    extractFollowUpQuestion(reply) ||
+                    (reply.replace(/\s+/g, ' ').trim().split(/(?<=[?？])/).find((s) => /[?？]$/.test(s)) || '').trim();
+                if (q1) await playTts(q1);
             } catch (e) {
                 setChat((prev) => [...prev, { role: 'assistant', content: e?.message || '초기 인사 생성 실패' }]);
             } finally {
@@ -243,7 +379,7 @@ const Interview = () => {
             }
 
             setResumeLoadState({ loading: false, error: '' });
-            setResumeLoaded(true); // ✅ 화면에는 완료 메시지만
+            setResumeLoaded(true);
         } catch (e) {
             setResumeLoadState({ loading: false, error: e?.message || '불러오기 실패' });
             setResumeLoaded(false);
@@ -251,9 +387,11 @@ const Interview = () => {
     };
 
     // === 전송 ===
-    const handleSend = async () => {
-        if (!userInput.trim() || loading) return;
-        const updated = [...chat, { role: 'user', content: userInput.trim() }];
+    const handleSend = async (overrideText) => {
+        const text = (overrideText ?? userInput).trim();
+        if (!text || loading) return;
+
+        const updated = [...chat, { role: 'user', content: text }];
         setChat(updated);
         setUserInput('');
         setLoading(true);
@@ -261,10 +399,136 @@ const Interview = () => {
         try {
             const reply = await callBackendChat(updated);
             setChat((prev) => [...prev, { role: 'assistant', content: reply }]);
+
+            // 질문 추출 → 서버 TTS 재생 (실패 시 브라우저 TTS)
+            const q = extractFollowUpQuestion(reply);
+            const merged = reply.replace(/\s+/g, ' ').trim();
+            const firstQ = (merged.split(/(?<=[?？])/).find((s) => /[?？]$/.test(s)) || '').trim();
+            const toSpeak = q || firstQ;
+            if (toSpeak) {
+                await playTts(toSpeak);
+            }
         } catch (error) {
             setChat((prev) => [...prev, { role: 'assistant', content: error?.message || '오류가 발생했습니다.' }]);
         } finally {
             setLoading(false);
+        }
+    };
+
+    // === 서버 STT ===
+    const sendAudioForStt = async (blob) => {
+        let token = getAccessToken();
+        if (!token) throw new Error('로그인이 필요합니다. (토큰 없음)');
+
+        const doUpload = (bearer) => {
+            const form = new FormData();
+            form.append('file', blob, 'voice.webm');
+            form.append('language', 'ko');
+            return fetch(`${API_BASE}/api/chat/stt`, {
+                method: 'POST',
+                body: form,
+                credentials: 'include',
+                headers: { Authorization: `Bearer ${bearer}` },
+            });
+        };
+
+        let res = await doUpload(token);
+        if (res.status === 401) {
+            const newToken = await refreshAccessToken();
+            if (!newToken) throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.');
+            token = newToken;
+            res = await doUpload(token);
+        }
+        if (!res.ok) {
+            const msg = await res.text().catch(() => '');
+            throw new Error(`STT 실패: ${res.status} ${msg || res.statusText}`);
+        }
+        const json = await res.json();
+        return json.text;
+    };
+
+    // === 마이크 ===
+    const handleMic = async () => {
+        try {
+            if (!recording) {
+                await recStart();
+            } else {
+                const blob = await recStop();
+                if (!blob) return;
+                const text = await sendAudioForStt(blob);
+                await handleSend(text);
+            }
+        } catch (e) {
+            setChat((prev) => [
+                ...prev,
+                { role: 'assistant', content: e?.message || '음성 처리 중 오류가 발생했습니다.' },
+            ]);
+        }
+    };
+
+    // === 서버 TTS ===
+    const playTts = async (text) => {
+        // 긴 텍스트가 오면 TTS가 오래 걸리거나 차단될 수 있어 문장 1~2개만 사용
+        const trimmed = String(text).split(/(?<=[?？.!])\s+/).slice(0, 2).join(' ').trim();
+        if (!trimmed) return;
+
+        let token = getAccessToken();
+        if (!token) {
+            speak(trimmed);
+            return;
+        }
+
+        const payload = {
+            text: trimmed,
+            voiceId,
+            modelId,
+            stability: 0.4,
+            similarityBoost: 0.7,
+            outputFormat: 'mp3_44100_128',
+        };
+
+        const doCall = (bearer) =>
+            fetch(`${API_BASE}/api/chat/tts`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    Authorization: `Bearer ${bearer}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+        try {
+            let res = await doCall(token);
+
+            if (res.status === 401 || res.status === 403) {
+                const newToken = await refreshAccessToken();
+                if (!newToken) throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.');
+                res = await doCall(newToken);
+            }
+            if (!res.ok) {
+                const msg = await res.text().catch(() => '');
+                throw new Error(`TTS 실패: ${res.status} ${msg}`);
+            }
+
+            const blob = await res.blob();
+            const url = URL.createObjectURL(blob);
+
+            if (audioRef.current) {
+                try {
+                    audioRef.current.pause();
+                    URL.revokeObjectURL(audioRef.current.src);
+                } catch {}
+            }
+            audioRef.current = new Audio(url);
+            audioRef.current.play().catch((err) => {
+                console.warn('Audio play blocked or failed:', err);
+                // 차단되면 브라우저 TTS 폴백
+                speak(trimmed);
+            });
+        } catch (e) {
+            console.warn('서버 TTS 실패, 브라우저 TTS로 폴백:', e);
+            speak(trimmed);
         }
     };
 
@@ -273,10 +537,12 @@ const Interview = () => {
             <div className="resume-section">
                 <h3>자기소개서 요약</h3>
 
-                {/* GitHub 링크 입력 + 불러오기 */}
+                {/* GitHub 링크 입력 */}
                 <div className="gh-import">
-                    <label htmlFor="gh-url"><strong>GitHub 링크</strong> (README.md, resume.md 등)</label>
-                    <div style={{ display: 'flex', gap: 8 }}>
+                    <label htmlFor="gh-url">
+                        <strong>GitHub 링크</strong> (README.md, resume.md 등)
+                    </label>
+                    <div className="gh-row">
                         <input
                             id="gh-url"
                             type="url"
@@ -291,27 +557,63 @@ const Interview = () => {
                         </button>
                     </div>
 
-                    {/* 상태만 보여주기 (내용은 표시 안 함) */}
                     {resumeLoaded && !resumeLoadState.error && !resumeLoadState.loading && (
-                        <div style={{ marginTop: 10, color: '#16a34a', fontWeight: 600 }}>
-                            불러오기 완료 ✅
-                        </div>
+                        <div className="gh-status ok">불러오기 완료</div>
                     )}
                     {resumeLoadState.error && (
                         <div className="error" style={{ color: '#e11d48', marginTop: 6 }}>
                             {resumeLoadState.error}
                         </div>
                     )}
-                    <div style={{ fontSize: 12, color: '#6b7280', marginTop: 6 }}>
+                    <div className="gh-help">
                         공개 Repo의 <code>raw.githubusercontent.com</code> 또는 <code>github.com/.../blob/...</code> 링크를 넣어주세요.
                         사설 Repo는 백엔드 프록시가 필요합니다.
                     </div>
                 </div>
-                {/* ✅ 더 이상 resumeSummary를 화면에 렌더링하지 않음 */}
             </div>
 
             <div className="chat-section">
                 <h3>AI 면접 시뮬레이션{company ? ` — ${company}` : ''}</h3>
+
+                {/* 🔊 음성/모델 선택 */}
+                <div className="voice-row" style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                    <label>
+                        <strong>읽어줄 목소리</strong>
+                    </label>
+                    <select value={voiceId} onChange={(e) => setVoiceId(e.target.value)}>
+                        {voices.map((v) => (
+                            <option key={v.id} value={v.id}>
+                                {v.name} ({v.id.slice(0, 6)}…)
+                            </option>
+                        ))}
+                    </select>
+
+                    <label style={{ marginLeft: 12 }}>
+                        <strong>모델</strong>
+                    </label>
+                    <select value={modelId} onChange={(e) => setModelId(e.target.value)}>
+                        <option value="eleven_flash_v2_5">eleven_flash_v2_5 (권장)</option>
+                        <option value="eleven_multilingual_v2">eleven_multilingual_v2</option>
+                        <option value="eleven_turbo_v2_5">eleven_turbo_v2_5</option>
+                    </select>
+
+                    {/* 미리듣기 */}
+                    <button
+                        type="button"
+                        onClick={() => {
+                            const v = voices.find((x) => x.id === voiceId);
+                            if (v?.preview) {
+                                try {
+                                    if (audioRef.current) audioRef.current.pause();
+                                    audioRef.current = new Audio(v.preview);
+                                    audioRef.current.play().catch((err) => console.warn('Preview play failed:', err));
+                                } catch {}
+                            }
+                        }}
+                    >
+                        ▶ 미리듣기
+                    </button>
+                </div>
 
                 <div className="chat-box">
                     {chat
@@ -330,15 +632,27 @@ const Interview = () => {
                 </div>
 
                 <div className="input-area">
-          <textarea
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder="답변을 입력하세요"
-              disabled={loading}
-          />
-                    <button onClick={handleSend} disabled={loading || !userInput.trim()}>
-                        {loading ? '전송 중...' : '전송'}
-                    </button>
+                    <textarea
+                        value={userInput}
+                        onChange={(e) => setUserInput(e.target.value)}
+                        placeholder="답변을 입력하세요 (또는 마이크로 말하기)"
+                        disabled={loading}
+                    />
+                    <div className="input-actions">
+                        <button onClick={() => handleSend()} disabled={loading || !userInput.trim()}>
+                            {loading ? '전송 중...' : '전송'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleMic}
+                            disabled={loading}
+                            title={recording ? '말하기 종료' : '말하기 시작'}
+                            className={`btn-mic${recording ? ' recording' : ''}`}
+                        >
+                            {recording ? '■ 녹음 종료' : '🎤 녹음 시작'}
+                        </button>
+                    </div>
+                    {recording && <div className="recording-hint">🎤 녹음 중... (버튼을 눌러 종료하세요)</div>}
                 </div>
             </div>
         </div>

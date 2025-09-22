@@ -218,6 +218,68 @@
   &:hover:not(:disabled) { background-color: #5b53e6; }
   &:disabled { background-color: #a0a0a0; cursor: not-allowed; }
 }
+/* GitHub 행 레이아웃(인라인 제거용) */
+.gh-import .gh-row {
+  display: flex;
+  gap: 8px; /* 기존 인라인 gap: 8과 동일 */
+}
+
+/* 입력 영역의 버튼 묶음(인라인 제거용) */
+.input-area .input-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* 마이크 버튼 전용 스타일 */
+.input-area .btn-mic {
+  min-width: 110px;
+  background: #111827;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color .2s ease, opacity .2s ease;
+
+  &:hover:not(:disabled) { background: #0b0f1a; }
+  &:disabled { background: #a0a0a0; cursor: not-allowed; }
+
+  &.recording {
+    background: #ef4444;
+    &:hover:not(:disabled) { background: #d93c3c; }
+  }
+}
+
+/* 녹음 중 힌트(인라인 제거용) */
+.recording-hint {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* GitHub 상태/도움말(인라인 제거용) */
+.gh-status {
+  margin-top: 10px;
+  font-size: 0.9rem;
+
+  &.ok { color: #16a34a; font-weight: 700; }
+  &.err { color: #e11d48; margin-top: 6px; }
+}
+.gh-help {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 6px;
+
+  code {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0 4px;
+  }
+}
 
 // 반응형 디자인
 @media (max-width: 768px) {
@@ -234,3 +296,4 @@
     height: 50vh; // 모바일에서 조금 더 낮게
   }
 }
+
