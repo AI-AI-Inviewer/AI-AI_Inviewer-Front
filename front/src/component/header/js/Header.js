@@ -1,17 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../scss/Header.scss";
 
 const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
     const navigate = useNavigate();
     const [profileDropdown, setProfileDropdown] = useState(false);
+    const [mainDropdown, setMainDropdown] = useState(false);
+    const [mobileNav, setMobileNav] = useState(false);
     const profileRef = useRef();
     const dropdownRef = useRef();
+    const mainDropdownRef = useRef();
 
+    // 페이지 이동
     const handleNavigation = (path) => {
         ChangeEventHandler(path);
+        navigate(path);
+        setProfileDropdown(false);
+        setMobileNav(false);
+        setMainDropdown(false);
     };
 
+    // 로그아웃
     const handleLogout = () => {
         onLogout();
         alert("로그아웃 되었습니다.");
@@ -19,69 +28,61 @@ const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
         setProfileDropdown(false);
     };
 
-    const toggleDropdown = () => {
-        setProfileDropdown((prev) => !prev);
-    };
+    // 드롭다운 토글
+    const toggleProfileDropdown = () => setProfileDropdown(prev => !prev);
+    const toggleMainDropdown = () => setMainDropdown(prev => !prev);
+    const toggleMobileNav = () => setMobileNav(prev => !prev);
 
+    // 클릭 바깥 영역 닫기
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
-                profileRef.current &&
-                !profileRef.current.contains(event.target) &&
-                dropdownRef.current &&
-                !dropdownRef.current.contains(event.target)
+                profileRef.current && !profileRef.current.contains(event.target) &&
+                dropdownRef.current && !dropdownRef.current.contains(event.target)
             ) {
                 setProfileDropdown(false);
             }
+            if (
+                mainDropdownRef.current && !mainDropdownRef.current.contains(event.target)
+            ) {
+                setMainDropdown(false);
+            }
         };
         document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
+        document.addEventListener("touchstart", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("touchstart", handleClickOutside);
+        };
     }, []);
 
     return (
         <header className="header">
             <div className="header-container">
-                {/* 로고 */}
-                <div className="logo" onClick={() => handleNavigation("/")}>
-                    AI Inviewer
+                <div className="logo" onClick={() => handleNavigation("/")}>AI Inviewer</div>
+
+                <div className="hamburger" onClick={toggleMobileNav}>
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </div>
 
-                {/* 메뉴 */}
-                <nav className="nav">
+                <nav className={`nav ${mobileNav ? "show" : ""}`}>
+                    {/* 메인 메뉴 */}
                     <ul className="nav-list main-menu">
-                        <li>
-                            <Link to="/" onClick={() => handleNavigation("/")}>
-                                홈
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/AiInviewer" onClick={() => handleNavigation("interview")}>
-                                AI 면접연습
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/jobposting" onClick={() => handleNavigation("jobposting")}>
-                                채용 공고
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/CL" onClick={() => handleNavigation("/CL")}>
-                                자소서
-                            </Link>
-                        </li>
-                        <li className="dropdown">
+                        <li onClick={() => handleNavigation("/")}>홈</li>
+                        <li onClick={() => handleNavigation("/AiInviewer")}>AI 면접연습</li>
+                        <li onClick={() => handleNavigation("/jobposting")}>채용 공고</li>
+                        <li onClick={() => handleNavigation("/CL")}>자소서</li>
+                        <li
+                            className={mainDropdown ? "open" : ""}
+                            onClick={toggleMainDropdown}
+                            ref={mainDropdownRef}
+                        >
                             <span>전체 게시판</span>
                             <ul className="dropdown-menu">
-                                <li>
-                                    <Link to="/feedback" onClick={() => handleNavigation("noticeboard")}>
-                                        자유 게시판
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/postscript" onClick={() => handleNavigation("feedback")}>
-                                        면접 후기 게시판
-                                    </Link>
-                                </li>
+                                <li onClick={() => handleNavigation("/feedback")}>자유 게시판</li>
+                                <li onClick={() => handleNavigation("/postscript")}>면접 후기 게시판</li>
                             </ul>
                         </li>
                     </ul>
@@ -89,47 +90,21 @@ const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
                     {/* 로그인/프로필 */}
                     <ul className="nav-list login-menu">
                         {isLoggedIn ? (
-                            <li className="profile-dropdown">
-                                <div
-                                    className="profile-circle"
-                                    onClick={toggleDropdown}
-                                    ref={profileRef}
-                                >
+                            <li className={`profile-dropdown ${profileDropdown ? "open" : ""}`}>
+                                <div className="profile-circle" onClick={toggleProfileDropdown} ref={profileRef}>
                                     {userNickname?.[0] || "U"}
                                 </div>
-                                {profileDropdown && (
-                                    <ul className="dropdown-menu profile-menu" ref={dropdownRef}>
-                                        <li>
-                                            <Link
-                                                to="/mypage"
-                                                onClick={() => {
-                                                    handleNavigation("mypage");
-                                                    setProfileDropdown(false);
-                                                }}
-                                            >
-                                                마이페이지
-                                            </Link>
-                                        </li>
-                                        <li>
-                                            <button className="btn-logout" onClick={handleLogout}>
-                                                로그아웃
-                                            </button>
-                                        </li>
-                                    </ul>
-                                )}
+                                <ul className="profile-menu" ref={dropdownRef}>
+                                    <li onClick={() => handleNavigation("/mypage")}>마이페이지</li>
+                                    <li>
+                                        <button className="btn-logout" onClick={handleLogout}>로그아웃</button>
+                                    </li>
+                                </ul>
                             </li>
                         ) : (
                             <>
-                                <li>
-                                    <Link to="/signin" onClick={() => handleNavigation("signin")}>
-                                        Sign In
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link to="/signup" onClick={() => handleNavigation("signup")}>
-                                        Sign Up
-                                    </Link>
-                                </li>
+                                <li onClick={() => handleNavigation("/signin")}>Sign In</li>
+                                <li onClick={() => handleNavigation("/signup")}>Sign Up</li>
                             </>
                         )}
                     </ul>
