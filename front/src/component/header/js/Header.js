@@ -43,8 +43,10 @@ const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
         <header className="header">
             <div className="header-container">
                 {/* 로고 */}
-                <div className="logo" onClick={() => handleNavigation("/")}>
-                    AI Inviewer
+                <div>
+                    <Link to="/" onClick={() => handleNavigation("/")} className="logo">
+                        AI Inviewer
+                    </Link>
                 </div>
 
                 {/* 메뉴 */}
