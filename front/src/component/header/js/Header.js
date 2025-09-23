@@ -81,8 +81,12 @@ const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
                         >
                             <span>전체 게시판</span>
                             <ul className="dropdown-menu">
-                                <li onClick={() => handleNavigation("/feedback")}>자유 게시판</li>
-                                <li onClick={() => handleNavigation("/postscript")}>면접 후기 게시판</li>
+                                <li onClick={() => handleNavigation("/feedback")}>
+                                    <div className="circle-icon">F</div> 자유 게시판
+                                </li>
+                                <li onClick={() => handleNavigation("/postscript")}>
+                                    <div className="circle-icon">R</div> 면접 후기 게시판
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -95,8 +99,11 @@ const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
                                     {userNickname?.[0] || "U"}
                                 </div>
                                 <ul className="profile-menu" ref={dropdownRef}>
-                                    <li onClick={() => handleNavigation("/mypage")}>마이페이지</li>
+                                    <li onClick={() => handleNavigation("/mypage")}>
+                                        <div className="circle-icon">M</div> 마이페이지
+                                    </li>
                                     <li>
+                                        <div className="circle-icon">L</div>
                                         <button className="btn-logout" onClick={handleLogout}>로그아웃</button>
                                     </li>
                                 </ul>

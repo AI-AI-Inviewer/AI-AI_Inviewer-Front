@@ -24,7 +24,8 @@ import JobPostingDetail from "./component/jobposting/js/JobPostingDetail";
 import ScrollToTop from "./component/common/js/ScrollToTop";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getMyInfo } from "./api/user"; // JWT 기반 내 정보 조회
 
 function App() {
     const [isCheckHeader, setIsCheckHeader] = useState("True");
@@ -36,10 +37,28 @@ function App() {
     }
 
     function handleLogout() {
-        localStorage.removeItem("token");
+        localStorage.removeItem("jwtToken");
         setIsLoggedIn(false);
         setUserNickname("");
     }
+
+    // 새로고침 시 로그인 유지
+    useEffect(() => {
+        const token = localStorage.getItem("jwtToken");
+        if (token) {
+            getMyInfo()
+                .then((data) => {
+                    setIsLoggedIn(true);
+                    setUserNickname(data.userNickname);
+                })
+                .catch(() => {
+                    // 토큰 유효하지 않으면 초기화
+                    localStorage.removeItem("jwtToken");
+                    setIsLoggedIn(false);
+                    setUserNickname("");
+                });
+        }
+    }, []);
 
     return (
         <div className="App" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
