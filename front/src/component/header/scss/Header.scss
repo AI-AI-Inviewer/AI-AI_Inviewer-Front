@@ -38,6 +38,7 @@
       height: 3px;
       background-color: #333;
       border-radius: 2px;
+      transition: all 0.3s ease;
     }
   }
 
@@ -52,16 +53,42 @@
       margin: 0;
       padding: 0;
 
-      &.main-menu li {
+      li {
         margin: 0 1rem;
         position: relative;
+        cursor: pointer;
 
-        a, span {
+        a,
+        span {
           text-decoration: none;
           color: #333;
           font-weight: 500;
           cursor: pointer;
           padding: 0.5rem 0.8rem;
+          border-radius: 6px;
+          transition: color 0.2s ease;
+        }
+
+        &:hover a,
+        &:hover span {
+          color: #4cafef;
+        }
+
+        &::after {
+          content: "";
+          position: absolute;
+          left: 50%;
+          bottom: 0;
+          width: 0;
+          height: 2px;
+          background: #4cafef;
+          transition: width 0.3s ease, left 0.3s ease;
+          border-radius: 2px;
+        }
+
+        &:hover::after {
+          width: 100%;
+          left: 0;
         }
 
         .dropdown-menu {
@@ -72,12 +99,15 @@
           background: #fff;
           border: 1px solid #ddd;
           border-radius: 6px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
           min-width: 160px;
           flex-direction: column;
+          white-space: nowrap;
+          padding: 0.3rem 0.5rem;
 
           li {
-            padding: 0.5rem 1rem;
+            padding: 0.3rem 0.8rem;
+            transition: background-color 0.2s ease;
 
             &:hover {
               background-color: #f1f1f1;
@@ -121,19 +151,30 @@
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             min-width: 150px;
+            flex-direction: column;
+            white-space: nowrap;
+            padding: 0.3rem 0.5rem;
 
             li {
-              padding: 0.5rem 1rem;
+              padding: 0.3rem 0.8rem;
+              transition: background-color 0.2s ease;
+
+              &:hover {
+                background-color: #f5f5f5;
+              }
             }
+
             .btn-logout {
               width: 100%;
               background: none;
               border: none;
               cursor: pointer;
-              text-align: left; }
+              text-align: left;
+            }
           }
+
           &.open .profile-menu {
             display: block;
           }
@@ -143,12 +184,15 @@
   }
 }
 
-body { padding-top: 70px; }
+body {
+  padding-top: 70px;
+}
 
 @media (max-width: 1024px) {
   .hamburger {
     display: flex;
   }
+
   .nav {
     position: absolute;
     top: 100%;
@@ -157,24 +201,63 @@ body { padding-top: 70px; }
     flex-direction: column;
     background: #fff;
     border-top: 1px solid #ddd;
-    display: none;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
 
     &.show {
-      display: flex;
+      max-height: 500px;
     }
+
     .nav-list {
       flex-direction: column;
       width: 100%;
+
       li {
+        width: 100%;
+        padding: 0.8rem 1rem;
         border-bottom: 1px solid #eee;
+
+        &:hover {
+          background-color: #f5f5f5;
+        }
+
+        &::after {
+          display: none;
+        }
+
+        .dropdown-menu {
+          position: relative;
+          top: 0;
+          left: 0;
+          border: none;
+          box-shadow: none;
+          background: #f9f9f9;
+          flex-direction: column;
+          padding: 0;
+          white-space: normal;
+        }
+
+        .dropdown-menu li {
+          padding: 0.5rem 1rem;
+        }
+
+        .profile-menu {
+          position: relative;
+          top: 0;
+          right: 0;
+          border: none;
+          box-shadow: none;
+          background: #f9f9f9;
+          flex-direction: column;
+          padding: 0;
+          white-space: normal;
+        }
+
+        .profile-menu li {
+          padding: 0.5rem 1rem;
+        }
       }
-      .dropdown-menu {
-        position: relative;
-        top: 0;
-        left: 0;
-        border: none;
-        box-shadow: none;
-        background: #f9f9f9; }
     }
   }
 }
