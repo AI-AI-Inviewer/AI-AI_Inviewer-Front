@@ -32,7 +32,7 @@ const CLDetail = () => {
 
             {cl.file && (
                 <div className="cl-download">
-                    <a href={`/${cl.file}`} download className="download-btn">
+                    <a href={`/${cl.file}`} download={`${cl.jasoseo_name}`} className="download-btn">
                         다운로드
                     </a>
                 </div>

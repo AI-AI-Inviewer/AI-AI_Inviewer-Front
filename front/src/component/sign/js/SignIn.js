@@ -110,7 +110,9 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
 
                 <div className="options">
                     <label className="save-id">
+                        <div>
                         아이디 저장
+                        </div>
                         <input
                             type="checkbox"
                             checked={saveId}
