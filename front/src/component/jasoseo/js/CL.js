@@ -10,7 +10,7 @@ const coverLetters = [
     {id: 1, title: "[개발] 백엔드 신입 개발자 자소서", content: "마이크로서비스 아키텍처 경험을 강조한 백엔드 개발자 자소서 샘플입니다.", date: "2025-06-15", writer: "dev_master", category: "개발", file: "#"},
     {id: 2, title: "[기획] 신사업 기획자 자소서", content: "시장 분석과 데이터 기반 의사결정 능력을 어필한 기획 직무 자소서 샘플입니다.", date: "2025-06-01", writer: "planner_lee", category: "기획", file: "#"},
     {id: 3, title: "[마케팅] 퍼포먼스 마케터 자소서", content: "ROAS 300% 달성 경험을 중심으로 작성된 마케팅 직무 자소서 샘플입니다.", date: "2025-05-28", writer: "market_king", category: "마케팅", file: "#"},
-    {id: 4, title: "[디자인] UX/UI 디자이너 자소서", content: "사용자 중심 디자인 프로세스 개선 경험을 담은 디자인 직무 자소서 샘플입니다.", date: "2025-06-10", writer: "design_park", category: "디자인", file: "#"},
+    {id: 4, title: "[디자인] UX/UI 디자이너 자소서", content: "사용자 중심 디자인 프로세스 개선 경험을 담은 디자인 직무 자소서 샘플입니다.", date: "2025-06-10", writer: "design_park", category: "디자인", file: "jasoseo_file/jssoseo_file.docx", jasoseo_name: "UI/UX 디자이너 자기소개서.docx"},
     {id: 5, title: "[영업] B2B 솔루션 영업 자소서", content: "주요 고객사 수주 성공 사례를 중심으로 작성된 영업 직무 자소서 샘플입니다.", date: "2025-06-05", writer: "sales_kim", category: "영업", file: "#"},
     {id: 6, title: "[데이터] 데이터 분석가 자소서", content: "Python과 SQL을 활용한 고객 이탈 예측 모델 개발 경험을 서술했습니다.", date: "2025-06-20", writer: "data_analyst", category: "데이터", file: "#"},
     {id: 7, title: "[개발] 프론트엔드 신입 자소서 (React)", content: "React 기반의 인터랙티브 웹 개발 프로젝트 경험을 강조한 자소서입니다.", date: "2025-06-18", writer: "react_love", category: "개발", file: "#"},
