@@ -1,7 +1,7 @@
-// FeedBackDetail.jsx (수정본)
+// src/component/community/js/FeedBackDetail.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../../api/axiosInstance';
 import '../scss/FeedBackDetail.scss';
 
 const parseDate = (v) => {
@@ -14,7 +14,7 @@ const parseDate = (v) => {
 };
 
 const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
-    const { communityNum } = useParams();          // route는 /feedback/:communityNum 유지
+    const { communityNum } = useParams(); // route: /feedback/:communityNum
     const navigate = useNavigate();
 
     const [feedback, setFeedback] = useState(null);
@@ -24,14 +24,12 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // 상세는 공개 엔드포인트(permitAll)라 토큰 없어도 됨
-                const res = await axios.get(`http://localhost:10002/api/community/${communityNum}`);
-                setFeedback(res.data); // DTO: title, content, createdAt, userName/userNickname/userId 등
+                // 상세는 공개 엔드포인트(permitAll)
+                const { data } = await api.get(`/community/${communityNum}`);
+                setFeedback(data); // DTO: title, content, createdAt, userName/userNickname/userId 등
 
-                // 댓글 API는 기존 그대로 사용한다고 가정
-                const token = localStorage.getItem('jwtToken');
-                const headers = token ? { Authorization: `Bearer ${token}` } : {};
-                const commentRes = await axios.get(`http://localhost:10002/api/comments/${communityNum}`, { headers });
+                // 댓글 목록(토큰 필요 없어도 조회 가능하도록 가정)
+                const commentRes = await api.get(`/comments/${communityNum}`);
                 setComments(commentRes.data);
             } catch (err) {
                 console.error('게시글/댓글 불러오기 오류:', err);
@@ -44,10 +42,15 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
 
     const formatTime = (dateLike) => {
         const d = parseDate(dateLike);
-        return d ? d.toLocaleString('ko-KR', {
-            year: 'numeric', month: '2-digit', day: '2-digit',
-            hour: '2-digit', minute: '2-digit'
-        }) : '-';
+        return d
+            ? d.toLocaleString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+            })
+            : '-';
     };
 
     const handleAddComment = async () => {
@@ -61,16 +64,9 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         }
 
         try {
-            await axios.post(
-                'http://localhost:10002/api/comments',
-                { communityNum, content: input },
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            await api.post('/comments', { communityNum, content: input });
 
-            const commentRes = await axios.get(
-                `http://localhost:10002/api/comments/${communityNum}`,
-                { headers: { Authorization: `Bearer ${token}` } }
-            );
+            const commentRes = await api.get(`/comments/${communityNum}`);
             setComments(commentRes.data);
             setInput('');
         } catch (err) {
@@ -94,10 +90,7 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         }
         if (window.confirm('댓글을 삭제하시겠습니까?')) {
             try {
-                await axios.delete(
-                    `http://localhost:10002/api/comments/${commentNum}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
+                await api.delete(`/comments/${commentNum}`);
                 setComments((prev) => prev.filter((c) => c.commentNum !== commentNum));
             } catch (err) {
                 console.error('댓글 삭제 실패:', err);
@@ -111,7 +104,9 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
             <div className="feedback-detail-container">
                 <p className="not-found-msg">게시글을 불러오는 중입니다...</p>
                 <div className="btn-wrapper">
-                    <Link to="/feedback" className="btn back-btn">← 목록으로</Link>
+                    <Link to="/feedback" className="btn back-btn">
+                        ← 목록으로
+                    </Link>
                 </div>
             </div>
         );
@@ -169,10 +164,13 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
             </div>
 
             <div className="btn-wrapper">
-                <Link to="/feedback" className="btn back-btn">← 목록으로</Link>
+                <Link to="/feedback" className="btn back-btn">
+                    ← 목록으로
+                </Link>
             </div>
         </div>
     );
 };
 
 export default FeedBackDetail;
+

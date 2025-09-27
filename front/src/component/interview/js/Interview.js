@@ -3,7 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/Interview.scss';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:10002';
+// ✅ /api 프록시 기반 (Vite/CRA 모두 호환)
+const API_ROOT = process.env.REACT_APP_API_BASE || '/api';
 const GH_TOKEN = process.env.REACT_APP_GH_TOKEN || null;
 
 const toRawGithubUrl = (url) => {
@@ -90,23 +91,18 @@ const MAX_RESUME_SIZE = 20000;
 function extractNameFromResume(text) {
     if (!text) return null;
 
-    // 1) "이름: 홍길동"
     const m1 = text.match(/(?:^|\n)\s*이름\s*[:：-]\s*([가-힣]{2,4})\s*(?:\n|$)/);
     if (m1) return m1[1];
 
-    // 2) "저는 홍길동입니다" / "홍길동입니다"
     const m2 = text.match(/(?:저는\s*)?([가-힣]{2,4})\s*입니다/);
     if (m2) return m2[1];
 
-    // 3) Markdown 헤더: "# 홍길동 이력서" 또는 "# 홍길동"
     const m3 = text.match(/^\s*#\s*([가-힣]{2,4})(?:\s*(?:이력서|resume))?/m);
     if (m3) return m3[1];
 
-    // 4) 영어 이름: "Name: John Doe" / "name - John Doe"
     const m4 = text.match(/(?:^|\n)\s*name\s*[:：-]\s*([A-Za-z][A-Za-z.'-]+(?:\s+[A-Za-z.'-]+)*)/i);
     if (m4) return m4[1].trim();
 
-    // 5) 첫 줄이 "홍길동 (email…)" 형태
     const firstLine = (text.split('\n')[0] || '').trim();
     const m5 = firstLine.match(/^([가-힣]{2,4})\b/);
     if (m5) return m5[1];
@@ -284,7 +280,7 @@ const Interview = () => {
 
     const refreshAccessToken = async () => {
         const res = await fetchWithTimeout(
-            `${API_BASE}/api/auth/refresh`,
+            `${API_ROOT}/auth/refresh`,
             { method: 'POST', credentials: 'include', headers: { 'Content-Type': 'application/json' } },
             15000
         );
@@ -315,7 +311,7 @@ const Interview = () => {
 
         const doRequest = (bearer) =>
             fetchWithTimeout(
-                `${API_BASE}/api/chat`,
+                `${API_ROOT}/chat`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${bearer}` },
@@ -385,7 +381,7 @@ ${guideResume}
         let token = getAccessToken();
         if (!token) return;
         const doGet = (bearer) =>
-            fetch(`${API_BASE}/api/chat/voices`, {
+            fetch(`${API_ROOT}/chat/voices`, {
                 headers: { Authorization: `Bearer ${bearer}` },
                 credentials: 'include',
             });
@@ -518,7 +514,7 @@ ${guideResume}
             const form = new FormData();
             form.append('file', blob, 'voice.webm');
             form.append('language', 'ko');
-            return fetch(`${API_BASE}/api/chat/stt`, {
+            return fetch(`${API_ROOT}/chat/stt`, {
                 method: 'POST',
                 body: form,
                 credentials: 'include',
@@ -582,7 +578,7 @@ ${guideResume}
         };
 
         const doCall = (bearer) =>
-            fetch(`${API_BASE}/api/chat/tts`, {
+            fetch(`${API_ROOT}/chat/tts`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -638,7 +634,6 @@ ${guideResume}
         if (ended) return;
         setLoading(true);
         try {
-            // 평가용 시스템 프롬프트 + 대화록/요약을 묶어 전송
             const evalSystem = buildFinalEvalSystemPrompt(company);
             const payloadUser = [
                 `[회사] ${company || '미지정'}`,
@@ -661,7 +656,6 @@ ${guideResume}
                 { role: 'assistant', content: evaluation },
             ]);
 
-            // 점수/총평을 짧게 읽어주기
             const ttsLine = summarizeForTTS(evaluation);
             if (ttsLine) await playTts(ttsLine);
 
@@ -757,11 +751,7 @@ ${guideResume}
                     </button>
                 </div>
 
-                <div
-                    className="chat-box"
-                    ref={chatBoxRef}
-                    onScroll={handleChatScroll}
-                >
+                <div className="chat-box" ref={chatBoxRef} onScroll={handleChatScroll}>
                     {chat
                         .filter((m) => m.role !== 'system')
                         .map((msg, index) => (
@@ -819,3 +809,4 @@ ${guideResume}
 };
 
 export default Interview;
+

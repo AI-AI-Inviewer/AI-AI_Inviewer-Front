@@ -1,6 +1,7 @@
+// src/component/community/js/FeedBack.js
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../../api/axiosInstance'; // ← 공통 axios 인스턴스
 import '../scss/FeedBack.scss';
 
 const FeedBack = ({ isLoggedIn }) => {
@@ -21,16 +22,16 @@ const FeedBack = ({ isLoggedIn }) => {
         const fetchFeedbacks = async () => {
             try {
                 const apiPage = Math.max(0, page - 1);
-                const res = await axios.get('http://localhost:10002/api/community', {
-                    params: { page: apiPage, size: rowSize, searchKey: search }
+                const { data } = await api.get('/community', {
+                    params: { page: apiPage, size: rowSize, searchKey: search },
                 });
 
-                if (res.data?.content) {
-                    setFeedbacks(res.data.content);
-                    setTotalCount(res.data.totalElements ?? 0);
-                } else if (Array.isArray(res.data)) {
-                    setFeedbacks(res.data);
-                    setTotalCount(res.data.length);
+                if (data?.content) {
+                    setFeedbacks(data.content);
+                    setTotalCount(data.totalElements ?? 0);
+                } else if (Array.isArray(data)) {
+                    setFeedbacks(data);
+                    setTotalCount(data.length);
                 } else {
                     setFeedbacks([]);
                     setTotalCount(0);
@@ -40,6 +41,7 @@ const FeedBack = ({ isLoggedIn }) => {
                 alert('게시글 목록을 불러오는데 실패했습니다.');
             }
         };
+
         fetchFeedbacks();
     }, [searchParams]);
 
@@ -126,11 +128,10 @@ const FeedBack = ({ isLoggedIn }) => {
             </div>
 
             {/* 글쓰기 버튼 */}
-            {isLoggedIn && (
-                <Link to="/feedback/write" className="write-btn">+</Link>
-            )}
+            {isLoggedIn && <Link to="/feedback/write" className="write-btn">+</Link>}
         </div>
     );
 };
 
 export default FeedBack;
+

@@ -1,7 +1,8 @@
+// src/component/community/js/FeedBack-write.js
 import React, { useState } from 'react';
 import '../scss/FeedBack-write.scss';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../../api/axiosInstance'; // ← 공통 axios 인스턴스
 
 const FeedBackWrite = () => {
     const [form, setForm] = useState({ title: '', content: '' });
@@ -12,7 +13,6 @@ const FeedBackWrite = () => {
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!form.title || !form.content) {
@@ -20,8 +20,8 @@ const FeedBackWrite = () => {
             return;
         }
 
+        // 토큰 존재 여부만 확인(헤더 부착은 인터셉터가 처리)
         const token = localStorage.getItem('jwtToken');
-        console.log('jwtToken:', token);
         if (!token) {
             alert('로그인이 필요합니다.');
             navigate('/signin');
@@ -29,21 +29,12 @@ const FeedBackWrite = () => {
         }
 
         try {
-            await axios.post(
-                'http://localhost:10002/api/community',
-                form,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
+            await api.post('/community', form);
             alert('게시글이 등록되었습니다.');
             navigate('/feedback');
         } catch (error) {
             console.error('게시글 등록 오류:', error);
-            if (error.response && error.response.status === 403) {
+            if (error?.response?.status === 401 || error?.response?.status === 403) {
                 alert('권한이 없습니다. 로그인 후 다시 시도해 주세요.');
                 navigate('/signin');
             } else {
@@ -51,8 +42,6 @@ const FeedBackWrite = () => {
             }
         }
     };
-
-
 
     return (
         <div className="feedback-container">
@@ -85,3 +74,4 @@ const FeedBackWrite = () => {
 };
 
 export default FeedBackWrite;
+
