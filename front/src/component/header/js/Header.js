@@ -1,3 +1,4 @@
+// src/component/header/js/Header.jsx
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../scss/Header.scss";
@@ -11,13 +12,34 @@ const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
     const dropdownRef = useRef();
     const mainDropdownRef = useRef();
 
-    // 페이지 이동
+    // 로그인 필요한 경로 목록
+    const authRequired = new Set([
+        "/AiInviewer",
+        "/mypage",
+        "/feedback/write",
+        "/postscript/write",
+    ]);
+
+    // 공통 내비게이션 (헤더 참고 패턴)
     const handleNavigation = (path) => {
-        ChangeEventHandler(path);
-        navigate(path);
-        setProfileDropdown(false);
-        setMobileNav(false);
-        setMainDropdown(false);
+        const go = () => {
+            ChangeEventHandler(path);
+            navigate(path);
+            setProfileDropdown(false);
+            setMobileNav(false);
+            setMainDropdown(false);
+        };
+
+        if (authRequired.has(path) && !isLoggedIn) {
+            alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+            navigate("/signin", { replace: true, state: { from: path } });
+            setProfileDropdown(false);
+            setMobileNav(false);
+            setMainDropdown(false);
+            return;
+        }
+
+        go();
     };
 
     // 로그아웃
@@ -28,23 +50,22 @@ const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
         setProfileDropdown(false);
     };
 
-    // 드롭다운 토글
-    const toggleProfileDropdown = () => setProfileDropdown(prev => !prev);
-    const toggleMainDropdown = () => setMainDropdown(prev => !prev);
-    const toggleMobileNav = () => setMobileNav(prev => !prev);
+    const toggleProfileDropdown = () => setProfileDropdown((p) => !p);
+    const toggleMainDropdown = () => setMainDropdown((p) => !p);
+    const toggleMobileNav = () => setMobileNav((p) => !p);
 
     // 클릭 바깥 영역 닫기
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (
-                profileRef.current && !profileRef.current.contains(event.target) &&
-                dropdownRef.current && !dropdownRef.current.contains(event.target)
+                profileRef.current &&
+                !profileRef.current.contains(event.target) &&
+                dropdownRef.current &&
+                !dropdownRef.current.contains(event.target)
             ) {
                 setProfileDropdown(false);
             }
-            if (
-                mainDropdownRef.current && !mainDropdownRef.current.contains(event.target)
-            ) {
+            if (mainDropdownRef.current && !mainDropdownRef.current.contains(event.target)) {
                 setMainDropdown(false);
             }
         };
@@ -62,9 +83,7 @@ const Header = ({ ChangeEventHandler, isLoggedIn, userNickname, onLogout }) => {
                 <div className="logo" onClick={() => handleNavigation("/")}>AI Inviewer</div>
 
                 <div className="hamburger" onClick={toggleMobileNav}>
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span></span><span></span><span></span>
                 </div>
 
                 <nav className={`nav ${mobileNav ? "show" : ""}`}>
