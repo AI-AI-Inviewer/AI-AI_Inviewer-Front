@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../scss/SignIn.scss';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:10002';
+const API_BASE = process.env.REACT_APP_API_BASE || '/api';
 
 const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
     const [form, setForm] = useState({ userId: '', password: '' });
@@ -28,7 +28,7 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
 
         try {
             // 서버 로그인 엔드포인트 (현재 프로젝트 기준)
-            const url = `${API_BASE}/api/user/login`;
+            const url = `${API_BASE}/user/login`;
             const res = await axios.post(
                 url,
                 { userId, userPassword: password },
