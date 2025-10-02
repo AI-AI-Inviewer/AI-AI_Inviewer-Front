@@ -63,8 +63,8 @@ export const updateUser = async (userData) => {
 
 // ✅ 이메일 코드 전송
 export const sendEmailCode = async (email) => {
-    const { data } = await api.post(`${USER_BASE}/email-code/send`, { email: normEmail(email) });
-    return data; // { ok: true }
+    const { data } = await api.post(`${USER_BASE}/email-code/send`, { email: (email ?? '').trim() });
+    return data;
 };
 
 // ✅ 이메일 코드 검증
