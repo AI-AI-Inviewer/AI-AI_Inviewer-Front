@@ -52,3 +52,12 @@ export const updateUser = async (userData) => {
     return data;
 };
 
+export const sendEmailCode = async (email) => {
+    const { data } = await api.post('/user/email-code/send', { email });
+    return data;
+};
+
+export const verifyEmailCode = async (email, code) => {
+    const { data } = await api.post('/user/email-code/verify', { email, code });
+    return data;
+};

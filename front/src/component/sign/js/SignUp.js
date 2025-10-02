@@ -1,21 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../scss/SignUp.scss';
-import { registerUser, checkUserId, checkNickname } from '../../../api/user';
+import { registerUser, checkUserId, checkNickname, sendEmailCode, verifyEmailCode } from '../../../api/user';
 import { useNavigate } from 'react-router-dom';
+
+const COOLDOWN_SEC = 60; // 재전송 쿨다운
 
 const SignUp = () => {
     const [form, setForm] = useState({
-        userId: '', password: '', confirmPassword: '', email: '', name: '', nickname: '', profileImage: null
+        userId: '',
+        password: '',
+        confirmPassword: '',
+        email: '',
+        name: '',
+        nickname: '',
+        profileImage: null,
     });
+
     const [isUserIdChecked, setIsUserIdChecked] = useState(false);
     const [isNicknameChecked, setIsNicknameChecked] = useState(false);
+
+    // 이메일 인증 상태
+    const [emailCode, setEmailCode] = useState('');
+    const [isEmailCodeSent, setIsEmailCodeSent] = useState(false);
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+    const [cooldown, setCooldown] = useState(0);
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (cooldown <= 0) return;
+        const t = setInterval(() => setCooldown((c) => c - 1), 1000);
+        return () => clearInterval(t);
+    }, [cooldown]);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        setForm(prev => ({ ...prev, [name]: name === 'profileImage' ? files[0] : value }));
+        setForm((prev) => ({ ...prev, [name]: name === 'profileImage' ? files[0] : value }));
+
         if (name === 'userId') setIsUserIdChecked(false);
         if (name === 'nickname') setIsNicknameChecked(false);
+        if (name === 'email') {
+            // 이메일이 바뀌면 인증 상태 초기화
+            setIsEmailCodeSent(false);
+            setIsEmailVerified(false);
+            setEmailCode('');
+        }
     };
 
     const handleUserIdCheck = async () => {
@@ -42,6 +71,41 @@ const SignUp = () => {
         }
     };
 
+    const handleSendEmailCode = async () => {
+        if (!form.email) return alert('이메일을 입력해 주세요.');
+        if (cooldown > 0) return;
+
+        try {
+            const res = await sendEmailCode(form.email);
+            if (res?.ok) {
+                setIsEmailCodeSent(true);
+                setCooldown(COOLDOWN_SEC);
+                alert('인증 코드가 이메일로 전송되었습니다. 10분 내에 입력해 주세요.');
+            } else {
+                alert(res?.message || '코드 전송 실패');
+            }
+        } catch (err) {
+            console.error('send code error:', err?.response?.status, err?.response?.data);
+            alert(err?.response?.data?.message || '코드 전송 실패');
+        }
+    };
+
+    const handleVerifyEmailCode = async () => {
+        if (!form.email) return alert('이메일을 입력해 주세요.');
+        if (!emailCode) return alert('인증 코드를 입력해 주세요.');
+        try {
+            const res = await verifyEmailCode(form.email, emailCode);
+            if (res?.ok) {
+                setIsEmailVerified(true);
+                alert('이메일 인증이 완료되었습니다.');
+            } else {
+                alert(res?.message || '인증 실패');
+            }
+        } catch (err) {
+            console.error('verify code error:', err?.response?.status, err?.response?.data);
+            alert(err?.response?.data?.message || '인증 실패');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -50,7 +114,7 @@ const SignUp = () => {
         if (!userId || !isUserIdChecked || !name || !email || !password || !confirmPassword || !nickname || !isNicknameChecked) {
             return alert('필수 항목과 중복검사를 완료해주세요.');
         }
-
+        if (!isEmailVerified) return alert('이메일 인증을 완료해 주세요.');
         if (password !== confirmPassword) return alert('비밀번호가 일치하지 않습니다.');
 
         try {
@@ -58,7 +122,13 @@ const SignUp = () => {
             alert(`${userId}님, 회원가입이 완료되었습니다!`);
             navigate('/');
             setForm({ userId: '', password: '', confirmPassword: '', email: '', name: '', nickname: '', profileImage: null });
-        } catch { alert('회원가입 실패'); }
+            setIsEmailVerified(false);
+            setIsEmailCodeSent(false);
+            setEmailCode('');
+        } catch (err) {
+            console.error('register error:', err?.response?.status, err?.response?.data);
+            alert(err?.response?.data?.message || '회원가입 실패');
+        }
     };
 
     return (
@@ -72,22 +142,55 @@ const SignUp = () => {
                         <button type="button" onClick={handleUserIdCheck}>중복검사</button>
                     </div>
                 </label>
+
                 <label>
                     이름
                     <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="이름을 입력하세요" />
                 </label>
+
                 <label>
                     이메일
-                    <input type="email" name="email" value={form.email} onChange={handleChange} placeholder="이메일을 입력하세요" />
+                    <div className="input-with-btn">
+                        <input
+                            type="email"
+                            name="email"
+                            value={form.email}
+                            onChange={handleChange}
+                            placeholder="이메일을 입력하세요"
+                            disabled={isEmailVerified}
+                        />
+                        <button type="button" onClick={handleSendEmailCode} disabled={isEmailVerified || cooldown > 0}>
+                            {isEmailVerified ? '인증완료' : cooldown > 0 ? `재전송(${cooldown}s)` : '인증코드 보내기'}
+                        </button>
+                    </div>
                 </label>
+
+                {isEmailCodeSent && !isEmailVerified && (
+                    <label>
+                        이메일 인증코드
+                        <div className="input-with-btn">
+                            <input
+                                type="text"
+                                value={emailCode}
+                                onChange={(e) => setEmailCode(e.target.value.trim())}
+                                maxLength={6}
+                                placeholder="6자리 코드를 입력"
+                            />
+                            <button type="button" onClick={handleVerifyEmailCode}>코드 확인</button>
+                        </div>
+                    </label>
+                )}
+
                 <label>
                     비밀번호
                     <input type="password" name="password" value={form.password} onChange={handleChange} placeholder="비밀번호를 입력하세요" />
                 </label>
+
                 <label>
                     비밀번호 확인
                     <input type="password" name="confirmPassword" value={form.confirmPassword} onChange={handleChange} placeholder="비밀번호를 다시 입력하세요" />
                 </label>
+
                 <label>
                     닉네임
                     <div className="input-with-btn">
@@ -95,6 +198,7 @@ const SignUp = () => {
                         <button type="button" onClick={handleNicknameCheck}>중복검사</button>
                     </div>
                 </label>
+
                 <button type="submit">회원가입</button>
             </form>
         </div>
