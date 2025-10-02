@@ -3,28 +3,37 @@ import api from './axiosInstance';
 
 const USER_BASE = '/user';
 
+// 정규화 헬퍼
+const normEmail = (e) => (e ?? '').trim().toLowerCase();
+const normCode  = (c) => (c ?? '').toString().replace(/\s+/g, '').trim();
+
 // ✅ 회원가입
 export const registerUser = async (form) => {
     const payload = {
         userId: form.userId ?? '',
         userPassword: form.password ?? '',
-        userEmail: form.email ?? '',
+        userEmail: normEmail(form.email),       // ← 정규화
         userName: form.name ?? '',
         userNickname: form.nickname ?? '',
     };
     const { data } = await api.post(`${USER_BASE}/register`, payload);
-    return data; // { userNum: number }
+    return data;
 };
 
-// ✅ 로그인
+// ✅ 로그인 (쿠키 기반이지만 토큰을 주면 로컬에도 저장)
 export const loginUser = async (credentials) => {
-    const { data } = await api.post(`${USER_BASE}/login`, credentials);
-    if (data?.token) localStorage.setItem('jwtToken', data.token); // JWT 저장
+    const body = {
+        userId: credentials.userId ?? '',
+        password: credentials.password ?? credentials.userPassword ?? '',
+    };
+    const { data } = await api.post(`${USER_BASE}/login`, body, { withCredentials: true });
+    if (data?.token) localStorage.setItem('jwtToken', data.token);
     return data;
 };
 
 // ✅ 로그아웃
-export const logoutUser = () => {
+export const logoutUser = async () => {
+    try { await api.post(`${USER_BASE}/logout`, {}, { withCredentials: true }); } catch {}
     localStorage.removeItem('jwtToken');
 };
 
@@ -40,24 +49,29 @@ export const checkNickname = async (nickname) => {
     return data;
 };
 
-// ✅ 내 정보 가져오기
+// ✅ 내 정보
 export const getMyInfo = async () => {
-    const { data } = await api.get(`${USER_BASE}/me`);
+    const { data } = await api.get(`${USER_BASE}/me`, { withCredentials: true });
     return data;
 };
 
 // ✅ 사용자 정보 수정
 export const updateUser = async (userData) => {
-    const { data } = await api.put(`${USER_BASE}/update`, userData);
+    const { data } = await api.put(`${USER_BASE}/update`, userData, { withCredentials: true });
     return data;
 };
 
+// ✅ 이메일 코드 전송
 export const sendEmailCode = async (email) => {
-    const { data } = await api.post('/user/email-code/send', { email });
-    return data;
+    const { data } = await api.post(`${USER_BASE}/email-code/send`, { email: normEmail(email) });
+    return data; // { ok: true }
 };
 
+// ✅ 이메일 코드 검증
 export const verifyEmailCode = async (email, code) => {
-    const { data } = await api.post('/user/email-code/verify', { email, code });
-    return data;
+    const { data } = await api.post(`${USER_BASE}/email-code/verify`, {
+        email: normEmail(email),
+        code: normCode(code),                   // ← 공백/개행 제거 후 전송
+    });
+    return data; // { ok: true }
 };

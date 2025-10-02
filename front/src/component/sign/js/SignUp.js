@@ -1,9 +1,10 @@
+// src/pages/auth/SignUp.jsx
 import React, { useState, useEffect } from 'react';
 import '../scss/SignUp.scss';
 import { registerUser, checkUserId, checkNickname, sendEmailCode, verifyEmailCode } from '../../../api/user';
 import { useNavigate } from 'react-router-dom';
 
-const COOLDOWN_SEC = 60; // 재전송 쿨다운
+const COOLDOWN_SEC = 60;
 
 const SignUp = () => {
     const [form, setForm] = useState({
@@ -15,11 +16,9 @@ const SignUp = () => {
         nickname: '',
         profileImage: null,
     });
-
     const [isUserIdChecked, setIsUserIdChecked] = useState(false);
     const [isNicknameChecked, setIsNicknameChecked] = useState(false);
 
-    // 이메일 인증 상태
     const [emailCode, setEmailCode] = useState('');
     const [isEmailCodeSent, setIsEmailCodeSent] = useState(false);
     const [isEmailVerified, setIsEmailVerified] = useState(false);
@@ -29,22 +28,24 @@ const SignUp = () => {
 
     useEffect(() => {
         if (cooldown <= 0) return;
-        const t = setInterval(() => setCooldown((c) => c - 1), 1000);
+        const t = setInterval(() => setCooldown(c => c - 1), 1000);
         return () => clearInterval(t);
     }, [cooldown]);
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        setForm((prev) => ({ ...prev, [name]: name === 'profileImage' ? files[0] : value }));
+        let v = name === 'profileImage' ? files[0] : value;
 
-        if (name === 'userId') setIsUserIdChecked(false);
-        if (name === 'nickname') setIsNicknameChecked(false);
         if (name === 'email') {
-            // 이메일이 바뀌면 인증 상태 초기화
+            v = (v || '').trim().toLowerCase(); // ✅ 백엔드와 동일 정규화
             setIsEmailCodeSent(false);
             setIsEmailVerified(false);
             setEmailCode('');
         }
+        setForm(prev => ({ ...prev, [name]: v }));
+
+        if (name === 'userId') setIsUserIdChecked(false);
+        if (name === 'nickname') setIsNicknameChecked(false);
     };
 
     const handleUserIdCheck = async () => {
@@ -74,7 +75,6 @@ const SignUp = () => {
     const handleSendEmailCode = async () => {
         if (!form.email) return alert('이메일을 입력해 주세요.');
         if (cooldown > 0) return;
-
         try {
             const res = await sendEmailCode(form.email);
             if (res?.ok) {
@@ -135,6 +135,7 @@ const SignUp = () => {
         <div className="signup-container">
             <h2>회원가입</h2>
             <form className="signup-form" onSubmit={handleSubmit}>
+                {/* 아이디 */}
                 <label>
                     아이디
                     <div className="input-with-btn">
@@ -143,11 +144,13 @@ const SignUp = () => {
                     </div>
                 </label>
 
+                {/* 이름 */}
                 <label>
                     이름
                     <input type="text" name="name" value={form.name} onChange={handleChange} placeholder="이름을 입력하세요" />
                 </label>
 
+                {/* 이메일 */}
                 <label>
                     이메일
                     <div className="input-with-btn">
@@ -165,6 +168,7 @@ const SignUp = () => {
                     </div>
                 </label>
 
+                {/* 코드 입력 */}
                 {isEmailCodeSent && !isEmailVerified && (
                     <label>
                         이메일 인증코드
@@ -172,7 +176,7 @@ const SignUp = () => {
                             <input
                                 type="text"
                                 value={emailCode}
-                                onChange={(e) => setEmailCode(e.target.value.trim())}
+                                onChange={(e) => setEmailCode(e.target.value.replace(/\s+/g,'').trim())} // ✅ 모든 공백 제거
                                 maxLength={6}
                                 placeholder="6자리 코드를 입력"
                             />
@@ -181,16 +185,17 @@ const SignUp = () => {
                     </label>
                 )}
 
+                {/* 비번 */}
                 <label>
                     비밀번호
                     <input type="password" name="password" value={form.password} onChange={handleChange} placeholder="비밀번호를 입력하세요" />
                 </label>
-
                 <label>
                     비밀번호 확인
                     <input type="password" name="confirmPassword" value={form.confirmPassword} onChange={handleChange} placeholder="비밀번호를 다시 입력하세요" />
                 </label>
 
+                {/* 닉네임 */}
                 <label>
                     닉네임
                     <div className="input-with-btn">
