@@ -22,9 +22,11 @@ const FeedBack = ({ isLoggedIn }) => {
         const fetchFeedbacks = async () => {
             try {
                 const apiPage = Math.max(0, page - 1);
-                const { data } = await api.get('/community', {
-                    params: { page: apiPage, size: rowSize, searchKey: search },
-                });
+                const url = search ? '/community/search' : '/community';
+                const params = search
+                    ? { keyword: search, page: apiPage, size: rowSize }
+                    : { page: apiPage, size: rowSize };
+                const { data } = await api.get(url, { params });
 
                 if (data?.content) {
                     setFeedbacks(data.content);
