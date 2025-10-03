@@ -1,4 +1,3 @@
-// src/component/community/js/FeedBackDetail.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../../../api/axiosInstance';
@@ -198,7 +197,7 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         try {
             await api.delete(`/comments/${commentNum}`);
             setComments((prev) => prev.filter((c) => c.commentNum !== commentNum));
-            alert('댓글이 삭제되었습니다.'); // ✅ 성공 알림
+            alert('댓글이 삭제되었습니다.');
         } catch (err) {
             console.error('댓글 삭제 실패:', err);
             alert(err.response?.data?.message || '댓글 삭제에 실패했습니다.');
@@ -248,19 +247,29 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
                 <p className="detail-date">{formatTime(feedback.createdAt)}</p>
             </div>
 
-            {/* ✅ 게시글 삭제 버튼: 작성자만 (오른쪽 정렬 영역) */}
+            {/* ✅ 수정/삭제: 작성자만 */}
             <div className="detail-actions">
                 {loginOk && isPostAuthor && (
-                    <button
-                        type="button"
-                        className="btn danger delete-post-btn"
-                        onClick={handleDeletePost}
-                        aria-label="게시글 삭제"
-                        // 최소한의 가시성 보장을 위한 안전 패딩(스타일 파일이 안 먹을 때도 형태 유지)
-                        style={{ minWidth: 120 }}
-                    >
-                        게시글 삭제
-                    </button>
+                    <>
+                        <button
+                            type="button"
+                            className="btn edit-btn"
+                            onClick={() => navigate(`/feedback/${communityNum}/edit`, { state: feedback })}
+                            aria-label="게시글 수정"
+                            style={{ minWidth: 120, marginRight: 8 }}
+                        >
+                            게시글 수정
+                        </button>
+                        <button
+                            type="button"
+                            className="btn danger delete-post-btn"
+                            onClick={handleDeletePost}
+                            aria-label="게시글 삭제"
+                            style={{ minWidth: 120 }}
+                        >
+                            게시글 삭제
+                        </button>
+                    </>
                 )}
             </div>
 
@@ -298,7 +307,6 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
                             </div>
                             <p>{c.content}</p>
 
-                            {/* 댓글 삭제 버튼: 작성자만 */}
                             {loginOk && isCommentAuthor(c) && (
                                 <div className="comment-buttons">
                                     <button type="button" onClick={() => handleDeleteComment(c.commentNum)}>
