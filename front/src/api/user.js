@@ -75,3 +75,9 @@ export const verifyEmailCode = async (email, code) => {
     });
     return data; // { ok: true }
 };
+
+export const changePassword = async ({ currentPassword, newPassword }) => {
+    const payload = { currentPassword, newPassword };
+    const { data } = await api.put(`${USER_BASE}/password`, payload, { withCredentials: true });
+    return data;
+};
