@@ -1,5 +1,5 @@
 // src/component/community/js/FeedBackDetail.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../../../api/axiosInstance';
 import '../scss/FeedBackDetail.scss';
@@ -13,6 +13,34 @@ const parseDate = (v) => {
     return new Date(v);
 };
 
+const b64urlToJson = (b64) => {
+    try {
+        const pad = '='.repeat((4 - (b64.length % 4)) % 4);
+        const base64 = (b64 + pad).replace(/-/g, '+').replace(/_/g, '/');
+        const str = atob(base64);
+        return JSON.parse(
+            decodeURIComponent(
+                Array.prototype
+                    .map.call(str, (c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                    .join(''),
+            ),
+        );
+    } catch {
+        return {};
+    }
+};
+
+const getClaimsFromJwt = () => {
+    const t = localStorage.getItem('jwtToken');
+    if (!t || !t.includes('.')) return {};
+    const [, payload] = t.split('.');
+    return b64urlToJson(payload);
+};
+
+const norm = (x) => (x ?? '').toString().trim();
+const lower = (x) => norm(x).toLowerCase();
+const pick = (...vals) => vals.find((v) => v !== undefined && v !== null && norm(v) !== '');
+
 const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
     const { communityNum } = useParams(); // route: /feedback/:communityNum
     const navigate = useNavigate();
@@ -22,22 +50,19 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
     const [input, setInput] = useState('');
 
     useEffect(() => {
-        const fetchData = async () => {
+        (async () => {
             try {
-                // 상세는 공개 엔드포인트(permitAll)
                 const { data } = await api.get(`/community/${communityNum}`);
-                setFeedback(data); // DTO: title, content, createdAt, userName/userNickname/userId 등
+                setFeedback(data);
 
-                // 댓글 목록(토큰 필요 없어도 조회 가능하도록 가정)
                 const commentRes = await api.get(`/comments/${communityNum}`);
-                setComments(commentRes.data);
+                setComments(commentRes.data || []);
             } catch (err) {
                 console.error('게시글/댓글 불러오기 오류:', err);
                 alert('게시글을 불러오는데 실패했습니다.');
                 navigate('/feedback');
             }
-        };
-        fetchData();
+        })();
     }, [communityNum, navigate]);
 
     const formatTime = (dateLike) => {
@@ -53,11 +78,94 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
             : '-';
     };
 
+    const loginOk = isLoggedIn || !!localStorage.getItem('jwtToken');
+
+    const me = useMemo(() => {
+        const claims = getClaimsFromJwt();
+        const myId = pick(
+            currentUser?.userId,
+            currentUser?.id,
+            currentUser?.userNum,
+            currentUser?.username,
+            claims.userId,
+            claims.id,
+            claims.userNum,
+            claims.username,
+            claims.sub,
+            claims.email,
+        );
+        const myNick = pick(
+            currentUser?.userNickname,
+            currentUser?.nickname,
+            claims.userNickname,
+            claims.nickname,
+            claims.name,
+        );
+        const res = { myId: lower(myId), myNick: lower(myNick) };
+        if (process.env.NODE_ENV === 'development') console.debug('[ME]', res, { claims, currentUser });
+        return res;
+    }, [currentUser]);
+
+    const isPostAuthor = useMemo(() => {
+        if (!loginOk || !feedback) return false;
+
+        const postId = pick(
+            feedback.userId,
+            feedback.authorId,
+            feedback.writerId,
+            feedback.userNum,
+            feedback.user?.userId,
+            feedback.user?.userNum,
+        );
+        const postNick = pick(
+            feedback.userNickname,
+            feedback.authorNickname,
+            feedback.writerNickname,
+            feedback.userName,
+            feedback.user?.userNickname,
+            feedback.user?.userName,
+        );
+
+        const idMatch = me.myId && lower(postId) && me.myId === lower(postId);
+        const nickMatch = me.myNick && lower(postNick) && me.myNick === lower(postNick);
+        if (process.env.NODE_ENV === 'development')
+            console.debug('[POST AUTHOR CHECK]', { postId, postNick, idMatch, nickMatch });
+
+        return idMatch || (!idMatch && nickMatch);
+    }, [loginOk, feedback, me.myId, me.myNick]);
+
+    const isCommentAuthor = (c) => {
+        if (!loginOk || !c) return false;
+
+        const commentId = pick(
+            c.userId,
+            c.authorId,
+            c.writerId,
+            c.userNum,
+            c.user?.userId,
+            c.user?.userNum,
+        );
+        const commentNick = pick(
+            c.userNickname,
+            c.authorNickname,
+            c.writerNickname,
+            c.userName,
+            c.user?.userNickname,
+            c.user?.userName,
+        );
+
+        const idMatch = me.myId && lower(commentId) && me.myId === lower(commentId);
+        const nickMatch = me.myNick && lower(commentNick) && me.myNick === lower(commentNick);
+        if (process.env.NODE_ENV === 'development')
+            console.debug('[COMMENT AUTHOR CHECK]', { commentId, commentNick, idMatch, nickMatch, c });
+
+        return idMatch || (!idMatch && nickMatch);
+    };
+
     const handleAddComment = async () => {
         if (!input.trim()) return;
 
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
+        if (!loginOk) {
             alert('로그인이 필요합니다.');
             navigate('/signin');
             return;
@@ -65,37 +173,54 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
 
         try {
             await api.post('/comments', { communityNum, content: input });
-
             const commentRes = await api.get(`/comments/${communityNum}`);
-            setComments(commentRes.data);
+            setComments(commentRes.data || []);
             setInput('');
         } catch (err) {
-            console.error('댓글 등록 실패 (전체 에러 구조):', err);
-            if (err.response) {
-                alert(`댓글 등록 실패: ${err.response.data?.message || '서버 오류'}`);
-            } else if (err.request) {
-                alert('서버로부터 응답이 없습니다.');
-            } else {
-                alert(`요청 실패: ${err.message}`);
-            }
+            console.error('댓글 등록 실패:', err);
+            const msg = err.response?.data?.message
+                ? `댓글 등록 실패: ${err.response.data.message}`
+                : err.request
+                    ? '서버로부터 응답이 없습니다.'
+                    : `요청 실패: ${err.message}`;
+            alert(msg);
         }
     };
 
-    const handleDelete = async (commentNum) => {
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
+    const handleDeleteComment = async (commentNum) => {
+        if (!loginOk) {
             alert('로그인이 필요합니다.');
             navigate('/signin');
             return;
         }
-        if (window.confirm('댓글을 삭제하시겠습니까?')) {
-            try {
-                await api.delete(`/comments/${commentNum}`);
-                setComments((prev) => prev.filter((c) => c.commentNum !== commentNum));
-            } catch (err) {
-                console.error('댓글 삭제 실패:', err);
-                alert('댓글 삭제에 실패했습니다.');
-            }
+        if (!window.confirm('댓글을 삭제하시겠습니까?')) return;
+
+        try {
+            await api.delete(`/comments/${commentNum}`);
+            setComments((prev) => prev.filter((c) => c.commentNum !== commentNum));
+            alert('댓글이 삭제되었습니다.'); // ✅ 성공 알림
+        } catch (err) {
+            console.error('댓글 삭제 실패:', err);
+            alert(err.response?.data?.message || '댓글 삭제에 실패했습니다.');
+        }
+    };
+
+    const handleDeletePost = async () => {
+        if (!loginOk) {
+            alert('로그인이 필요합니다.');
+            navigate('/signin');
+            return;
+        }
+        if (!isPostAuthor) return;
+        if (!window.confirm('이 게시글을 삭제하시겠습니까?')) return;
+
+        try {
+            await api.delete(`/community/${communityNum}`);
+            alert('삭제되었습니다.');
+            navigate('/feedback');
+        } catch (err) {
+            console.error('게시글 삭제 실패:', err);
+            alert(err.response?.data?.message || '게시글 삭제에 실패했습니다.');
         }
     };
 
@@ -112,27 +237,46 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         );
     }
 
-    // ✅ DTO 필드 사용
     const author = feedback.userNickname || feedback.userName || feedback.userId || '알 수 없음';
 
     return (
         <div className="feedback-detail-container">
             <h2 className="detail-title">{feedback.title}</h2>
-            <p className="detail-writer">작성자: {author}</p>
-            <p className="detail-date">{formatTime(feedback.createdAt)}</p>
+
+            <div className="detail-meta">
+                <p className="detail-writer">작성자: {author}</p>
+                <p className="detail-date">{formatTime(feedback.createdAt)}</p>
+            </div>
+
+            {/* ✅ 게시글 삭제 버튼: 작성자만 (오른쪽 정렬 영역) */}
+            <div className="detail-actions">
+                {loginOk && isPostAuthor && (
+                    <button
+                        type="button"
+                        className="btn danger delete-post-btn"
+                        onClick={handleDeletePost}
+                        aria-label="게시글 삭제"
+                        // 최소한의 가시성 보장을 위한 안전 패딩(스타일 파일이 안 먹을 때도 형태 유지)
+                        style={{ minWidth: 120 }}
+                    >
+                        게시글 삭제
+                    </button>
+                )}
+            </div>
+
             <hr />
             <p className="detail-content">{feedback.content}</p>
 
             <div className="comment-section">
                 <h3>댓글</h3>
 
-                {isLoggedIn ? (
+                {loginOk ? (
                     <div className="comment-input">
             <textarea
                 placeholder="댓글을 입력하세요"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => {
+                onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         handleAddComment();
@@ -153,9 +297,13 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
                                 <span className="comment-time">{formatTime(c.commentDate)}</span>
                             </div>
                             <p>{c.content}</p>
-                            {isLoggedIn && currentUser?.userId === c.user?.userId && (
+
+                            {/* 댓글 삭제 버튼: 작성자만 */}
+                            {loginOk && isCommentAuthor(c) && (
                                 <div className="comment-buttons">
-                                    <button onClick={() => handleDelete(c.commentNum)}>삭제</button>
+                                    <button type="button" onClick={() => handleDeleteComment(c.commentNum)}>
+                                        삭제
+                                    </button>
                                 </div>
                             )}
                         </li>
@@ -173,4 +321,3 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
 };
 
 export default FeedBackDetail;
-

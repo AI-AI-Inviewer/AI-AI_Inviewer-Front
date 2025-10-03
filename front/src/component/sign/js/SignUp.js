@@ -77,7 +77,7 @@ const SignUp = () => {
         if (cooldown > 0) return;
         try {
             const res = await sendEmailCode(form.email);
-            if (res?.ok) {
+            if (res?.ok === true || res?.success === true) {
                 setIsEmailCodeSent(true);
                 setCooldown(COOLDOWN_SEC);
                 alert('인증 코드가 이메일로 전송되었습니다. 10분 내에 입력해 주세요.');
