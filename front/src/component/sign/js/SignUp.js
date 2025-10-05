@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import '../scss/SignUp.scss';
 import { registerUser, checkUserId, checkNickname, sendEmailCode, verifyEmailCode } from '../../../api/user';
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 
 const COOLDOWN_SEC = 60;
 
@@ -206,6 +206,21 @@ const SignUp = () => {
 
                 <button type="submit">회원가입</button>
             </form>
+            <div className="form-divider">
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-300" />
+                    </div>
+                    <div className="relative flex justify-center text-sm">
+                        <span className="bg-white px-2 text-gray-500">Already have an account?</span>
+                    </div>
+                </div>
+                <div className="signin-link">
+                    <Link to={`/signin`}>
+                        로그인으로 이동
+                    </Link>
+                </div>
+            </div>
         </div>
     );
 };

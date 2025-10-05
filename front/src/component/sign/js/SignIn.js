@@ -1,12 +1,12 @@
 // src/component/sign/js/SignIn.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import '../scss/SignIn.scss';
 
 const API_BASE = process.env.REACT_APP_API_BASE || '/api';
 
-const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
+const SignIn = ({ setIsLoggedIn, setUserNickname, ChangeEventHandler }) => {
     const [form, setForm] = useState({ userId: '', password: '' });
     const [showPassword, setShowPassword] = useState(false);
     const [saveId, setSaveId] = useState(false);
@@ -119,6 +119,11 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
                             onChange={() => setSaveId(!saveId)}
                         />
                     </label>
+                    <div >
+                        <Link to={`/signup`} className="move-signup">
+                            회원가입으로 이동
+                        </Link>
+                    </div>
                 </div>
 
                 {errorMsg && <p className="error-msg">{errorMsg}</p>}
