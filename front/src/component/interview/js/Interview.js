@@ -35,16 +35,19 @@ const toRawGithubUrl = (url) => {
 
 const buildSystemPrompt = (company, resumeSummary) => `
 당신은 '${company || '미지정'}' 회사의 면접관입니다.
-아래 자기소개서 요약을 참고해 1문1답으로 진행하세요.
+면접 진행 중에는 오직 **질문만** 하세요. 평가는 면접 종료 시에만 합니다.
 
-- 자기소개서 요약:
+- 참고 자료(자기소개서 요약):
 ${resumeSummary || '기본 자기소개서'}
 
-[응답 형식]
-1) 답변 분석(강점/약점/근거)
-2) 점수표(자연스러움/전문성/논리성, 0~100)
-3) 개선 제안(2~3가지)
-4) 다음 꼬리질문 1개
+[규칙]
+- 매 턴 질문 1문장만 한국어로 출력(20~100자).
+- 분석/점수/조언/서론/불릿/번호/이모지 금지.
+- 지원자의 답변이 짧거나 주제에서 벗어나면, 근거를 짧게 판단한 뒤 **다시 초점을 맞추는 질문**을 하되, 출력은 질문 1문장만.
+- 다른 텍스트를 출력하지 마세요.
+
+[출력 형식 — 이 줄만 사용]
+<QUESTION>여기에 다음 질문 한 문장?</QUESTION>
 `;
 
 const buildFinalEvalSystemPrompt = (company) => `
@@ -73,7 +76,7 @@ const buildFinalEvalSystemPrompt = (company) => `
 1. ...
 2. ...
 3. ...
-추천: <합격/보류/불합격> — <한 문장 이유>
+합격여부: <합격/보류/불합격> — <한 문장 이유>
 다음 준비 과제:
 - ...
 - ...
@@ -166,31 +169,25 @@ const speak = (text, { lang = 'ko-KR' } = {}) => {
     }
 };
 
-// ===== 꼬리질문 추출 =====
-function extractFollowUpQuestion(text) {
+// ===== 질문 태그 추출 =====
+function extractQuestion(text) {
     if (!text) return '';
-    const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
 
-    const p1 = lines.find(
-        (l) => /^4\)\s*/.test(l) || /^다음\s*꼬리질문/i.test(l) || /^follow[\s-]*up/i.test(l)
-    );
-    if (p1) {
-        let q = p1
-            .replace(/^4\)\s*/, '')
-            .replace(/^다음\s*꼬리질문[^:]*:\s*/i, '')
-            .replace(/^follow[\s-]*up[^:]*:\s*/i, '')
-            .trim();
+    // 1) 태그 우선: <QUESTION> ... </QUESTION>
+    const tag = text.match(/<\s*QUESTION\s*>([\s\S]*?)<\s*\/\s*QUESTION\s*>/i);
+    if (tag && tag[1]) {
+        let q = tag[1].trim();
+        q = q.replace(/^[\s\-–—•\d\.\)\(]+/, ''); // 앞머리 불릿/번호 제거
         if (!/[?？]$/.test(q) && q.length > 0) q += '?';
         return q;
     }
 
-    const bulletQ = lines.find((l) => /[?？]$/.test(l));
-    if (bulletQ) return bulletQ;
-
+    // 2) 폴백(보수적으로): 전체에서 ?로 끝나는 문장 중 마지막 1개
+    const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
     const merged = lines.join(' ');
     const parts = merged.split(/(?<=[?？])/).map((s) => s.trim()).filter(Boolean);
-    const first = parts.find((s) => /[?？]$/.test(s));
-    return first || '';
+    const lastQ = [...parts].reverse().find((s) => /[?？]$/.test(s));
+    return lastQ || '';
 }
 
 // === 최종 평가용 TTS 요약 추출 ===
@@ -204,6 +201,17 @@ function summarizeForTTS(evaluationText) {
 
     const firstSentence = (totalLine.split(/(?<=[.?!])\s+/)[0] || '').trim();
     return `최종 점수${score !== null ? `는 ${score}점` : ''}입니다. ${firstSentence || '평가 결과를 확인해 주세요.'}`;
+}
+
+// === 합격여부 문자열 파싱 (TTS/출력 안전화) ===
+function parseDecisionText(recText) {
+    const raw = (recText || '').toString().trim();
+    if (!raw) return { status: '', reason: '', raw };
+    const mStatus = raw.match(/(합격|불합격|보류)/);
+    const status = mStatus ? mStatus[1] : '';
+    const mReason = raw.match(/[—\-–:]\s*(.+)$/);
+    const reason = mReason ? mReason[1].trim() : '';
+    return { status, reason, raw };
 }
 
 const Interview = () => {
@@ -231,7 +239,9 @@ const Interview = () => {
 
     // 🔊 보이스 상태
     const [voices, setVoices] = useState([]); // {id, name, preview}
-    const [voiceId, setVoiceId] = useState('21m00Tcm4TlvDq8ikWAM');
+    const PREFERRED_VOICE_NAME = (process.env.REACT_APP_PREFERRED_VOICE_NAME || 'alice').toLowerCase();
+    const DEFAULT_VOICE_ID = process.env.REACT_APP_DEFAULT_VOICE_ID || null;
+    const [voiceId, setVoiceId] = useState(DEFAULT_VOICE_ID);
     const [modelId, setModelId] = useState('eleven_flash_v2_5');
     const audioRef = useRef(null);
 
@@ -350,10 +360,10 @@ const Interview = () => {
             : '';
 
         return `${headline}
-- 면접은 1문1답으로 진행됩니다.
-- 각 답변에 대해 강점/약점 분석, 점수표(자연스러움/전문성/논리성), 개선 제안을 제공합니다.
-${guideResume}
-이제 자기소개를 시작해주세요. 답변을 입력하거나 마이크로 말하면 AI가 평가와 피드백을 제공합니다.`;
+            - 진행 중에는 질문만 제시합니다.
+            - 면접 종료 시 최종 평가와 점수표를 제공합니다.
+            ${guideResume}
+            이제 자기소개를 시작해주세요. 답변을 입력하거나 마이크로 말하면 AI가 다음 질문을 이어갑니다.`;
     };
 
     // === 초기: 회사명 포함 환영 멘트 (LLM 호출 없음) ===
@@ -364,10 +374,10 @@ ${guideResume}
         (async () => {
             setLoading(true);
             try {
-                await loadVoices();
+                const selectedId = await loadVoices(); // ← 정렬+선택 완료, 선택 Voice ID 확보
                 const welcomeMsg = buildWelcomeMessage();
                 setChat((prev) => [...prev, { role: 'assistant', content: welcomeMsg }]);
-                await playTts(welcomeMsg);
+                await playTts(welcomeMsg, { voiceId: selectedId }); // ← 명시 전달로 레이스 차단
             } catch (e) {
                 setChat((prev) => [...prev, { role: 'assistant', content: e?.message || '초기 인사 생성 실패' }]);
             } finally {
@@ -379,7 +389,7 @@ ${guideResume}
 
     const loadVoices = async () => {
         let token = getAccessToken();
-        if (!token) return;
+        if (!token) return null;
         const doGet = (bearer) =>
             fetch(`${API_ROOT}/chat/voices`, {
                 headers: { Authorization: `Bearer ${bearer}` },
@@ -389,11 +399,11 @@ ${guideResume}
         let res = await doGet(token);
         if (res.status === 401) {
             const newToken = await refreshAccessToken();
-            if (!newToken) return;
+            if (!newToken) return null;
             token = newToken;
             res = await doGet(token);
         }
-        if (!res.ok) return;
+        if (!res.ok) return null;
 
         const json = await res.json().catch(async () => {
             const txt = await res.text();
@@ -403,17 +413,32 @@ ${guideResume}
                 return { voices: [] };
             }
         });
-        const list = Array.isArray(json.voices) ? json.voices : [];
-        setVoices(
-            list.map((v) => ({
-                id: v.voice_id,
-                name: v.name,
-                preview: v.preview_url,
-            }))
-        );
-        if (list.length > 0 && !list.find((v) => v.voice_id === voiceId)) {
-            setVoiceId(list[0].voice_id);
+        const raw = Array.isArray(json.voices) ? json.voices : [];
+
+        // 1) ID 고정(환경변수)이 있으면 최우선 → 2) 이름에 'alice' 포함 → 3) 그대로
+        const byId = DEFAULT_VOICE_ID ? raw.find((v) => v.voice_id === DEFAULT_VOICE_ID) : null;
+        const byName = raw.find((v) => (v.name || '').toLowerCase().includes(PREFERRED_VOICE_NAME));
+
+        let ordered;
+        if (byId) {
+            ordered = [byId, ...raw.filter((v) => v.voice_id !== byId.voice_id)];
+        } else if (byName) {
+            ordered = [byName, ...raw.filter((v) => v.voice_id !== byName.voice_id)];
+        } else {
+            ordered = raw;
         }
+
+        const prepared = ordered.map((v) => ({
+            id: v.voice_id,
+            name: v.name,
+            preview: v.preview_url,
+        }));
+        setVoices(prepared);
+
+        // 최초 선택: 기존 선택값 없으면 첫 항목으로 고정
+        const selected = voiceId ?? (prepared[0]?.id || null);
+        setVoiceId(selected);
+        return selected; // ★ 호출처에 선택된 보이스 ID 반환
     };
 
     // === GitHub 자기소개서 불러오기 ===
@@ -466,7 +491,7 @@ ${guideResume}
 
             // 개인화 환영 멘트 출력
             setChat((prev) => [...prev, { role: 'assistant', content: welcomeMsg }]);
-            await playTts(welcomeMsg);
+            await playTts(welcomeMsg); // 현재 선택된 voiceId 사용
 
             setResumeLoadState({ loading: false, error: '' });
             setResumeLoaded(true);
@@ -489,14 +514,16 @@ ${guideResume}
 
         try {
             const reply = await callBackendChat(updated);
-            setChat((prev) => [...prev, { role: 'assistant', content: reply }]);
 
-            const q = extractFollowUpQuestion(reply);
-            const merged = reply.replace(/\s+/g, ' ').trim();
-            const firstQ = (merged.split(/(?<=[?？])/).find((s) => /[?？]$/.test(s)) || '').trim();
-            const toSpeak = q || firstQ;
-            if (toSpeak) {
-                await playTts(toSpeak);
+            // 질문만 파싱해서 보여주고 읽는다
+            const q = extractQuestion(reply);
+            setChat((prev) => [
+                ...prev,
+                { role: 'assistant', content: q || '(질문을 생성하지 못했습니다. 다시 시도하세요.)' }
+            ]);
+
+            if (q) {
+                await playTts(q);
             }
         } catch (error) {
             setChat((prev) => [...prev, { role: 'assistant', content: error?.message || '오류가 발생했습니다.' }]);
@@ -558,8 +585,10 @@ ${guideResume}
     };
 
     // === 서버 TTS ===
-    const playTts = async (text) => {
-        const trimmed = String(text).split(/(?<=[?？.!])\s+/).slice(0, 2).join(' ').trim();
+    // override: { voiceId?: string, modelId?: string }
+    const playTts = async (text, override = {}) => {
+        const maxSentences = Number(override.maxSentences ?? 2); // ← 필요시 확장 가능
+        const trimmed = String(text).split(/(?<=[?？.!])\s+/).slice(0, maxSentences).join(' ').trim();
         if (!trimmed) return;
 
         let token = getAccessToken();
@@ -570,8 +599,8 @@ ${guideResume}
 
         const payload = {
             text: trimmed,
-            voiceId,
-            modelId,
+            voiceId: override.voiceId ?? voiceId,
+            modelId: override.modelId ?? modelId,
             stability: 0.4,
             similarityBoost: 0.7,
             outputFormat: 'mp3_44100_128',
@@ -633,31 +662,90 @@ ${guideResume}
     const handleEndInterview = async () => {
         if (ended) return;
         setLoading(true);
+
         try {
-            const evalSystem = buildFinalEvalSystemPrompt(company);
-            const payloadUser = [
-                `[회사] ${company || '미지정'}`,
-                `[자기소개서 요약]`,
+            // 1) 액세스 토큰 확보
+            let token = getAccessToken();
+            if (!token) throw new Error('로그인이 필요합니다.');
+
+            // 2) 평가 요청 페이로드
+            const payload = {
+                company: company || '미지정',
                 resumeSummary,
-                `[대화록]`,
-                buildTranscript(),
-            ].join('\n');
+                transcript: buildTranscript(),
+            };
 
-            const messages = [
-                { role: 'system', content: evalSystem },
-                { role: 'user', content: payloadUser },
-            ];
+            // 3) 호출 함수 (401 시 갱신 후 재시도)
+            const doEval = (bearer) =>
+                fetch(`${API_ROOT}/chat/eval`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${bearer}`,
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(payload),
+                });
 
-            const evaluation = await callBackendChat(messages);
+            let res = await doEval(token);
+            if (res.status === 401) {
+                const newToken = await refreshAccessToken();
+                if (!newToken) throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.');
+                token = newToken;
+                res = await doEval(token);
+            }
+            if (!res.ok) {
+                const msg = await res.text().catch(() => '');
+                throw new Error(`평가 실패: ${res.status} ${msg || res.statusText}`);
+            }
 
+            // 4) 결과 파싱
+            const json = await res.json();
+            const sc = json?.score || {};
+            const toInt = (v, d = 0) => (typeof v === 'number' ? v : parseInt(String(v || d), 10) || d);
+
+            // 5) 보기 좋게 문자열 구성 ("입니다" 중복 방지)
+            const recRaw = (json?.recommendation || '').toString().trim();
+            const pretty =
+                `최종 점수: ${toInt(sc.총점)}/100\n` +
+                `세부 점수:\n` +
+                `- 직무적합성: ${toInt(sc.직무적합성)}/25\n` +
+                `- 전문성: ${toInt(sc.전문성)}/25\n` +
+                `- 인성 및 태도: ${toInt(sc.인성및태도)}/25\n` +
+                `- 공직윤리: ${toInt(sc.공직윤리)}/25\n\n` +
+                `총평: ${json?.summary || ''}\n` +
+                (recRaw ? `합격여부: ${recRaw}\n` : '') +
+                (Array.isArray(json?.evidence) && json.evidence.length
+                    ? `근거:\n${json.evidence.map((e) => `- ${e}`).join('\n')}`
+                    : '');
+
+            // 6) 채팅에 출력
             setChat((prev) => [
                 ...prev,
                 { role: 'assistant', content: '✅ 면접을 종료합니다. 아래는 최종 평가 결과입니다.' },
-                { role: 'assistant', content: evaluation },
+                { role: 'assistant', content: pretty },
             ]);
 
-            const ttsLine = summarizeForTTS(evaluation);
-            if (ttsLine) await playTts(ttsLine);
+            // 7) 총평 1문장 + 합격여부 1문장 읽어주기 (playTts는 기본 2문장까지만 읽음)
+            const rawSummary = (json?.summary || '').toString().trim();
+            const summaryFirst = ((rawSummary.split(/(?<=[.?!])\s+/)[0] || rawSummary).trim());
+
+            const { status, reason, raw } = parseDecisionText(recRaw);
+            const stripPeriod = (s) => s.replace(/[.。]$/, '');
+            const ensurePeriod = (s) => (s ? stripPeriod(s) + '.' : '');
+
+            const s1 = summaryFirst ? `총평: ${ensurePeriod(summaryFirst)}` : '';
+
+            let s2 = '';
+            if (status) {
+                const statusPhrase = /입니다$/.test(status) ? status : `${status}입니다`;
+                s2 = `합격 여부는 ${statusPhrase}${reason ? `, 이유는 ${stripPeriod(reason)}입니다` : ''}.`;
+            } else if (raw) {
+                s2 = `합격 여부: ${ensurePeriod(raw)}`;
+            }
+
+            const ttsLine = [s1, s2].filter(Boolean).join(' ');
+            if (ttsLine.trim()) await playTts(ttsLine); // ← 정확히 두 문장 우선 전달
 
             setEnded(true);
         } catch (e) {
@@ -666,6 +754,7 @@ ${guideResume}
             setLoading(false);
         }
     };
+
 
     return (
         <div className="ai-interview-container">
@@ -715,7 +804,7 @@ ${guideResume}
                     <label>
                         <strong>읽어줄 목소리</strong>
                     </label>
-                    <select value={voiceId} onChange={(e) => setVoiceId(e.target.value)} disabled={ended}>
+                    <select value={voiceId || ''} onChange={(e) => setVoiceId(e.target.value)} disabled={ended}>
                         {voices.map((v) => (
                             <option key={v.id} value={v.id}>
                                 {v.name} ({v.id.slice(0, 6)}…)
@@ -809,4 +898,3 @@ ${guideResume}
 };
 
 export default Interview;
-
