@@ -1,177 +1,191 @@
-// src/component/cl/js/AiInviewer.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../scss/AiInviewer.scss';
 
-const categories = ['전체', 'AI', 'Web', 'Platform', 'Portal', 'Finance'];
+const regions = ['서울', '경기', '인천', '부산', '대구', '대전', '광주', '울산', '세종', '강원', '충청', '전라', '경상', '제주'];
+
+const categories = [
+    '기획·전략',
+    '마케팅·홍보·조사',
+    '회계·세무·재무',
+    '인사·노무·HRD',
+    '총무·법무·사무',
+    'IT개발·데이터',
+    '디자인',
+    '영업·판매·무역',
+    '고객상담·TM',
+    '구매·자재·물류',
+    '상품기획·MD',
+    '운전·운송·배송',
+    '서비스',
+    '생산',
+    '건설·건축',
+    '의료',
+    '연구·R&D',
+    '교육',
+    '미디어·문화·스포츠',
+    '금융·보험',
+    '공공·복지',
+];
 
 const companies = [
     {
         name: 'OpenAI',
-        category: 'AI',
-        description:
-            '대규모 언어모델(LLM)과 멀티모달 AI를 선도하는 연구·제품화 기업. ChatGPT, API 등으로 개발 생태계를 확장 중.',
+        category: 'IT개발·데이터',
+        region: '서울',
+        description: '대규모 언어모델(LLM)과 멀티모달 AI를 선도하는 글로벌 기업.',
         code: '// OpenAI 예시 코드',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/4/4d/OpenAI_Logo.svg',
     },
     {
-        name: 'Google',
-        category: 'Web',
-        description:
-            '검색·광고·클라우드·Android를 아우르는 글로벌 빅테크. 검색 품질, 웹 플랫폼 표준, 브라우저(Chrome) 생태계 기여로 유명.',
-        code: '// Google 예시 코드',
-        logo: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg',
-    },
-    {
         name: 'Samsung',
-        category: 'Platform',
-        description:
-            '반도체·모바일·가전을 아우르는 하드웨어 리더. One UI와 스마트싱스 등으로 디바이스 연동 경험을 확장.',
+        category: '생산',
+        region: '경기',
+        description: '반도체, 모바일, 가전 등 다양한 디바이스 생태계를 구축한 글로벌 하드웨어 기업.',
         code: '// Samsung 예시 코드',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg',
     },
     {
-        name: 'LG',
-        category: 'Platform',
-        description:
-            '가전과 디스플레이 분야 글로벌 리더. webOS, ThinQ 등 자체 플랫폼을 통한 생태계 확장에 주력.',
-        code: '// LG 예시 코드',
-        logo: 'https://cdn.worldvectorlogo.com/logos/lg-electronics.svg',
-    },
-    {
         name: 'Naver',
-        category: 'Portal',
-        description:
-            '검색·뉴스·쇼핑·웹툰 등 다양한 서비스를 제공하는 국내 대표 포털. 클라우드·AI·핀테크로도 확장 중.',
+        category: '마케팅·홍보·조사',
+        region: '경기',
+        description: '검색, 뉴스, 쇼핑 등 다양한 서비스를 제공하는 국내 대표 포털 기업.',
         code: '// Naver 예시 코드',
         logo: 'https://upload.wikimedia.org/wikipedia/commons/2/23/Naver_Logotype.svg',
     },
     {
         name: 'Kakao',
-        category: 'Portal',
-        description:
-            '카카오톡 메신저를 기반으로 한 슈퍼앱 생태계. 금융·모빌리티·엔터테인먼트까지 확장 중.',
+        category: '마케팅·홍보·조사',
+        region: '제주',
+        description: '카카오톡 기반 슈퍼앱 생태계를 구축한 플랫폼 기업.',
         code: '// Kakao 예시 코드',
         logo: 'https://cdn.worldvectorlogo.com/logos/kakao.svg',
     },
 ];
 
-
 const AiInviewer = () => {
     const navigate = useNavigate();
-    const [selectedCategory, setSelectedCategory] = useState('전체');
-    const [searchText, setSearchText] = useState('');
-    const [selectedCompany, setSelectedCompany] = useState(null);
-    const [bookmarkActive, setBookmarkActive] = useState(false);
+    const [tab, setTab] = useState('직무');
+    const [category, setCategory] = useState('');
+    const [region, setRegion] = useState('');
+    const [search, setSearch] = useState('');
     const [bookmarks, setBookmarks] = useState([]);
+    const [showBookmarkOnly, setShowBookmarkOnly] = useState(false);
 
-    // 필터링: 카테고리 + 검색 + 즐겨찾기
-    const filteredCompanies = companies.filter((company) => {
-        const categoryMatch = selectedCategory === '전체' || company.category === selectedCategory;
-        const searchMatch = company.name.toLowerCase().includes(searchText.toLowerCase());
-        const bookmarkMatch = !bookmarkActive || bookmarks.includes(company.name);
-        return categoryMatch && searchMatch && bookmarkMatch;
+    const filtered = companies.filter((c) => {
+        const matchSearch = c.name.toLowerCase().includes(search.toLowerCase());
+        const matchRegion = region === '' || c.region === region;
+        const matchCategory = category === '' || c.category === category;
+        const matchBookmark = !showBookmarkOnly || bookmarks.includes(c.name);
+        return matchSearch && matchRegion && matchCategory && matchBookmark;
     });
 
-    const handleStartInterview = () => {
-        if (selectedCompany) {
-            navigate('/interview', {
-                state: {
-                    company: selectedCompany.name, // ✅ 회사명 전달 (Interview.js에서 회사별 프롬프트 구성)
-                    initialCode: selectedCompany.code,
-                    codeIndex: companies.indexOf(selectedCompany),
-                    // resumeSummary는 필요 시 다른 페이지에서 함께 넘겨도 됩니다.
-                },
-            });
-        }
+    const handleInterview = (company) => {
+        navigate('/interview', {
+            state: { company: company.name, initialCode: company.code },
+        });
     };
 
-    const toggleBookmark = () => setBookmarkActive((v) => !v);
-
-    const toggleCompanyBookmark = (companyName) => {
+    const toggleBookmark = (name) => {
         setBookmarks((prev) =>
-            prev.includes(companyName) ? prev.filter((n) => n !== companyName) : [...prev, companyName]
+            prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
         );
     };
 
     return (
         <div className="aiinviewer-wrapper">
-            <aside className="aiinviewer-sidebar">
+            <div className="filter-bar">
                 <input
                     type="text"
-                    placeholder="회사 검색"
-                    className="sidebar-search"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
+                    placeholder="회사명을 검색하세요"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
-
-                <div className="category-select">
-                    <label htmlFor="category">카테고리</label>
-                    <select
-                        id="category"
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                    >
-                        {categories.map((cat) => (
-                            <option key={cat} value={cat}>
-                                {cat}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
                 <button
-                    className={`bookmark-btn ${bookmarkActive ? 'active' : ''}`}
-                    onClick={toggleBookmark}
+                    className={`bookmark-btn ${showBookmarkOnly ? 'active' : ''}`}
+                    onClick={() => setShowBookmarkOnly((v) => !v)}
                 >
-                    {bookmarkActive ? '★ 즐겨찾기만 보기' : '⭐ 즐겨찾기'}
+                    {showBookmarkOnly ? '★ 즐겨찾기만 보기' : '⭐ 즐겨찾기'}
                 </button>
-            </aside>
+            </div>
 
-            <main className="aiinviewer-main">
-                <h2>AI 면접 기업 목록</h2>
-                <div className="company-grid">
-                    {filteredCompanies.map((company) => (
-                        <div
-                            key={company.name}
-                            className="company-box"
-                            onClick={() => setSelectedCompany(company)}
+            {/* ====== 필터 탭 ====== */}
+            <div className="filter-tabs">
+                <button
+                    className={tab === '지역' ? 'active' : ''}
+                    onClick={() => setTab('지역')}
+                >
+                    지역 선택
+                </button>
+                <button
+                    className={tab === '직무' ? 'active' : ''}
+                    onClick={() => setTab('직무')}
+                >
+                    직무 선택
+                </button>
+            </div>
+
+            {/* ====== 지역 / 직무 필터 박스 ====== */}
+            {tab === '지역' ? (
+                <div className="job-category-box">
+                    {regions.map((r) => (
+                        <button
+                            key={r}
+                            className={`job-btn ${region === r ? 'active' : ''}`}
+                            onClick={() => setRegion(region === r ? '' : r)}
                         >
-                            <img src={company.logo} alt={company.name} className="company-logo" />
-                            <span>{company.name}</span>
-                            <button
-                                className={`bookmark-toggle ${bookmarks.includes(company.name) ? 'bookmarked' : ''}`}
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggleCompanyBookmark(company.name);
-                                }}
-                            >
-                                {bookmarks.includes(company.name) ? '★' : '☆'}
-                            </button>
-                        </div>
+                            {r}
+                        </button>
                     ))}
                 </div>
+            ) : (
+                <div className="job-category-box">
+                    {categories.map((cat) => (
+                        <button
+                            key={cat}
+                            className={`job-btn ${category === cat ? 'active' : ''}`}
+                            onClick={() => setCategory(category === cat ? '' : cat)}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            )}
 
-                {selectedCompany && (
-                    <div className="company-modal">
-                        <div className="modal-content">
-                            <img
-                                src={selectedCompany.logo}
-                                alt={selectedCompany.name}
-                                className="modal-logo"
-                            />
-                            <h3>{selectedCompany.name}</h3>
-                            <p>{selectedCompany.description}</p>
-                            <button onClick={handleStartInterview} className="interview-btn">
-                                AI 면접으로 이동
-                            </button>
-                            <button onClick={() => setSelectedCompany(null)} className="close-btn">
-                                닫기
-                            </button>
+            {/* ====== 회사 리스트 ====== */}
+            <div className="company-grid">
+                {filtered.length > 0 ? (
+                    filtered.map((c) => (
+                        <div key={c.name} className="company-card">
+                            <div className="company-top">
+                                <img src={c.logo} alt={c.name} />
+                                <div className="info">
+                                    <h3>{c.name}</h3>
+                                    <p>{c.description}</p>
+                                </div>
+                            </div>
+                            <div className="company-bottom">
+                <span className="badge">
+                  {c.region} · {c.category}
+                </span>
+                                <div className="actions">
+                                    <button className="interview-btn" onClick={() => handleInterview(c)}>
+                                        AI 면접 시작
+                                    </button>
+                                    <button
+                                        className="bookmark-toggle"
+                                        onClick={() => toggleBookmark(c.name)}
+                                    >
+                                        {bookmarks.includes(c.name) ? '★' : '☆'}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    ))
+                ) : (
+                    <p className="no-result">조건에 맞는 회사가 없습니다.</p>
                 )}
-            </main>
+            </div>
         </div>
     );
 };

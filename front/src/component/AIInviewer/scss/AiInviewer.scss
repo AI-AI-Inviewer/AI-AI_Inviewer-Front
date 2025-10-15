@@ -1,270 +1,219 @@
-// src/component/cl/scss/AiInviewer.scss
-
-// -------------------------------
-// Global Variables
-// -------------------------------
-$color-primary: #4f46e5;   // 인디고 블루
-$color-secondary: #6366f1; // 보라빛 블루
-$color-accent: #10b981;    // 에메랄드
-$color-bg: #f9fafb;
-$color-card: #ffffff;
-$color-border: #e5e7eb;
-$color-text: #111827;
-$color-text-light: #6b7280;
-$radius-lg: 0.75rem;
-$shadow-base: 0 4px 6px rgba(0, 0, 0, 0.1);
-
-// -------------------------------
-// Wrapper
-// -------------------------------
 .aiinviewer-wrapper {
-  display: flex;
-  gap: 2rem;
   padding: 2rem;
-  background: $color-bg;
+  background: #f5f6f8;
+  font-family: 'Noto Sans KR', sans-serif;
   min-height: 100vh;
-}
 
-// -------------------------------
-// Sidebar
-// -------------------------------
-.aiinviewer-sidebar {
-  flex: 0 0 260px;
-  background: $color-card;
-  border: 1px solid $color-border;
-  border-radius: $radius-lg;
-  padding: 1.5rem;
-  box-shadow: $shadow-base;
-  height: fit-content; // 스크롤 따라오지 않고 내용까지만
-  margin-top: 70px; // ✅ 헤더 높이만큼 내려줌 (헤더 높이에 맞게 조정)
+  .filter-bar {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    background: #fff;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 1.5rem;
+    position: sticky;
+    top: 70px;
+    z-index: 10;
 
-  .sidebar-search {
-    width: 100%;
-    padding: 0.7rem 1rem;
-    border: 1px solid $color-border;
-    border-radius: $radius-lg;
-    font-size: 0.95rem;
-    margin-bottom: 1.2rem;
-
-    &:focus {
-      border-color: $color-primary;
-      outline: none;
-      box-shadow: 0 0 0 2px rgba($color-primary, 0.3);
-    }
-  }
-
-  .category-select {
-    margin-bottom: 1.2rem;
-
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: $color-text;
-    }
-
-    select {
-      width: 100%;
+    input {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 8px;
       padding: 0.6rem 1rem;
-      border: 1px solid $color-border;
-      border-radius: $radius-lg;
       font-size: 0.95rem;
+    }
 
-      &:focus {
-        border-color: $color-primary;
-        outline: none;
+    .bookmark-btn {
+      background: #e9f5ff;
+      color: #007bff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+
+      &.active {
+        background: #007bff;
+        color: #fff;
+      }
+
+      &:hover {
+        opacity: 0.9;
       }
     }
   }
 
-  .bookmark-btn {
-    width: 100%;
-    padding: 0.7rem 1rem;
-    border: none;
-    border-radius: $radius-lg;
-    background: $color-bg;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.2s;
+  .filter-tabs {
+    display: flex;
+    justify-content: center;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    width: fit-content;
+    margin: 0 auto 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 
-    &:hover {
-      background: lighten($color-primary, 42%);
-    }
+    button {
+      border: none;
+      background: #f8f9fa;
+      padding: 0.7rem 1.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.95rem;
+      color: #555;
+      transition: all 0.2s ease;
 
-    &.active {
-      background: $color-primary;
-      color: #fff;
+      &.active {
+        background: #007bff;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      &:hover {
+        background: #e8f0fe;
+      }
     }
   }
-}
 
+  .job-category-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.8rem;
+    background: #fff;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
 
-// -------------------------------
-// Main Content
-// -------------------------------
-.aiinviewer-main {
-  flex: 1;
+    .job-btn {
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.8rem 0.5rem;
+      text-align: center;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #333;
+      transition: all 0.2s ease;
 
-  h2 {
-    font-size: 1.4rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-    color: $color-text;
+      &:hover {
+        border-color: #007bff;
+        color: #007bff;
+        background: #f5faff;
+      }
+
+      &.active {
+        background: #007bff;
+        color: #fff;
+        border-color: #007bff;
+        font-weight: bold;
+      }
+    }
   }
 
   .company-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
   }
 
-  .company-box {
-    background: $color-card;
-    border: 1px solid $color-border;
-    border-radius: $radius-lg;
-    padding: 1rem;
-    text-align: center;
-    box-shadow: $shadow-base;
-    cursor: pointer;
-    transition: 0.2s;
-    position: relative;
+  .company-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    transition: all 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 
     &:hover {
-      transform: translateY(-2px);
-      border-color: $color-primary;
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    .company-logo {
-      width: 60px;
-      height: 60px;
-      object-fit: contain;
-      margin-bottom: 0.8rem;
-    }
+    .company-top {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
 
-    span {
-      display: block;
-      font-weight: 600;
-      color: $color-text;
-      margin-bottom: 0.5rem;
-    }
-
-    .bookmark-toggle {
-      position: absolute;
-      top: 0.6rem;
-      right: 0.6rem;
-      background: transparent;
-      border: none;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: 0.2s;
-
-      &.bookmarked {
-        color: gold;
+      img {
+        width: 55px;
+        height: 55px;
+        object-fit: contain;
       }
-    }
-  }
-}
 
-// -------------------------------
-// Modal
-// -------------------------------
-.company-modal {
-  position: fixed;
-  inset: 0;
-  background: rgba(17, 24, 39, 0.6);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 50;
+      .info {
+        flex: 1;
 
-  .modal-content {
-    background: $color-card;
-    padding: 2rem;
-    border-radius: $radius-lg;
-    max-width: 500px;
-    width: 100%;
-    text-align: center;
-    box-shadow: $shadow-base;
-    animation: fadeIn 0.3s ease;
+        h3 {
+          font-size: 1.1rem;
+          margin-bottom: 0.4rem;
+          font-weight: 600;
+          color: #222;
+        }
 
-    .modal-logo {
-      width: 80px;
-      height: 80px;
-      object-fit: contain;
-      margin-bottom: 1rem;
-    }
-
-    h3 {
-      font-size: 1.4rem;
-      margin-bottom: 1rem;
-      font-weight: bold;
-      color: $color-text;
-    }
-
-    p {
-      font-size: 0.95rem;
-      color: $color-text-light;
-      margin-bottom: 1.5rem;
-    }
-
-    .interview-btn {
-      width: 100%;
-      padding: 0.8rem;
-      border: none;
-      border-radius: $radius-lg;
-      background: $color-primary;
-      color: #fff;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
-
-      &:hover {
-        background: darken($color-primary, 5%);
+        p {
+          font-size: 0.9rem;
+          color: #666;
+          line-height: 1.4;
+        }
       }
     }
 
-    //.job-posting {
-      //width: 100%;
-      //padding: 0.8rem;
-      //padding-top: 1rem;
-      //border: none;
-      //border-radius: $radius-lg;
-      //background: $color-primary;
-      //color: #fff;
-      //font-weight: 600;
-      //cursor: pointer;
-      //transition: 0.2s;
-
-      //&:hover {
-        //background: darken($color-primary, 5%);
-
-    .close-btn {
+    .company-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-top: 1rem;
-      padding: 0.6rem 1.2rem;
-      border: 1px solid $color-border;
-      border-radius: $radius-lg;
-      background: $color-bg;
-      cursor: pointer;
-      font-weight: 600;
 
-      &:hover {
-        background: $color-border;
+      .badge {
+        background: #e9f5ff;
+        color: #007bff;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        .interview-btn {
+          background: #007bff;
+          color: #fff;
+          border: none;
+          border-radius: 8px;
+          padding: 0.4rem 0.8rem;
+          cursor: pointer;
+          font-size: 0.85rem;
+          transition: 0.2s ease;
+
+          &:hover {
+            background: #0056b3;
+          }
+        }
+
+        .bookmark-toggle {
+          background: transparent;
+          border: none;
+          font-size: 1.2rem;
+          cursor: pointer;
+          color: #f4b400;
+        }
       }
     }
   }
-}
 
-// -------------------------------
-// Animation
-// -------------------------------
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
+  .no-result {
+    text-align: center;
+    color: #666;
+    font-size: 1rem;
+    margin-top: 2rem;
   }
 }
