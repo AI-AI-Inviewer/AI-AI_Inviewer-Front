@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@codemirror/lang-javascript": "^6.2.4",
+    "@heygen/streaming-avatar": "^2.1.0",
     "@pixiv/three-vrm": "^3.4.2",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/jest-dom": "^6.6.3",
