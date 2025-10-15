@@ -1,12 +1,12 @@
 // src/component/sign/js/SignIn.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import '../scss/SignIn.scss';
 
-const API_BASE = process.env.REACT_APP_API_BASE || 'http://localhost:10002';
+const API_BASE = process.env.REACT_APP_API_BASE || '/api';
 
-const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
+const SignIn = ({ setIsLoggedIn, setUserNickname, ChangeEventHandler }) => {
     const [form, setForm] = useState({ userId: '', password: '' });
     const [showPassword, setShowPassword] = useState(false);
     const [saveId, setSaveId] = useState(false);
@@ -28,7 +28,7 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
 
         try {
             // 서버 로그인 엔드포인트 (현재 프로젝트 기준)
-            const url = `${API_BASE}/api/user/login`;
+            const url = `${API_BASE}/user/login`;
             const res = await axios.post(
                 url,
                 { userId, userPassword: password },
@@ -119,6 +119,11 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
                             onChange={() => setSaveId(!saveId)}
                         />
                     </label>
+                    <div >
+                        <Link to={`/signup`} className="move-signup">
+                            회원가입으로 이동
+                        </Link>
+                    </div>
                 </div>
 
                 {errorMsg && <p className="error-msg">{errorMsg}</p>}

@@ -167,3 +167,47 @@
     padding: 2rem 1rem;
   }
 }
+/* ===== Password Modal (append-only for Mypage scope) ===== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 16px;
+}
+.modal-card {
+  width: min(480px, 92vw);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  padding: 18px 20px;
+}
+.modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 2px 2px 12px;
+  color: #1f2937;
+}
+.modal-body { display: flex; flex-direction: column; gap: 12px; }
+.form-label { display: flex; flex-direction: column; gap: 6px; }
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+/* 포커스 가시성 (선택) */
+input.form-control:focus {
+  outline: none;
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+}
+
+/* 반응형 (선택) */
+@media (max-width: 640px) {
+  .modal-card { width: 100%; border-radius: 10px; padding: 14px; }
+}

@@ -1,18 +1,22 @@
-import axios from './axiosInstance';
+// src/api/comment.js
+import api from './axiosInstance';
+
+const COMMENT_BASE = '/comments';
 
 // 댓글 작성
-export const createComment = async (communityNum, content) => {
-    return axios.post('/api/comments', null, {
-        params: { communityNum, content }
+export const createComment = (communityNum, content) => {
+    return api.post(COMMENT_BASE, null, {
+        params: { communityNum, content },
     });
 };
 
 // 댓글 삭제
-export const deleteComment = async (commentNum) => {
-    return axios.delete(`/api/comments/${commentNum}`);
+export const deleteComment = (commentNum) => {
+    return api.delete(`${COMMENT_BASE}/${commentNum}`);
 };
 
 // 댓글 목록 조회
-export const getCommentsByCommunity = async (communityNum) => {
-    return axios.get(`/api/comments/${communityNum}`);
+export const getCommentsByCommunity = (communityNum) => {
+    return api.get(`${COMMENT_BASE}/${communityNum}`);
 };
+

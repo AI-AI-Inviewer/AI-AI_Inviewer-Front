@@ -1,0 +1,87 @@
+
+.feedback-container,
+.feedback-detail-container {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  font-family: "Noto Sans KR", sans-serif;
+
+  h2,
+  .detail-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 0.5rem;
+  }
+
+  /* 폼 래퍼: 기존 edit-form & 새 feedback-form 동시 지원 */
+  .feedback-form,
+  .edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+
+    label,
+    .edit-label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #4a5568;
+
+      input,
+      textarea,
+      .edit-input,
+      .edit-textarea {
+        margin-top: 0.6rem;
+        padding: 0.8rem 1rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        resize: none;
+        transition: border 0.2s, box-shadow 0.2s;
+
+        &:focus {
+          border-color: #5a67d8;
+          box-shadow: 0 0 0 3px rgba(90, 103, 216, 0.2);
+          outline: none;
+        }
+      }
+
+      textarea,
+      .edit-textarea {
+        min-height: 150px;
+        line-height: 1.5;
+      }
+    }
+
+    /* 버튼: Bootstrap .btn도 오버라이드 */
+    button,
+    .btn {
+      margin-top: 1rem;
+      padding: 0.9rem 1.1rem;
+      background: #5a67d8;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #4c51bf;
+      }
+
+      &:active {
+        background: #434190;
+      }
+    }
+  }
+}

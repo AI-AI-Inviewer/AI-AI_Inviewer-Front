@@ -22,6 +22,7 @@ import PostScriptDetail from "./component/community/js/PostScriptDetail";
 import JobPosting from "./component/jobposting/js/JobPosting";
 import JobPostingDetail from "./component/jobposting/js/JobPostingDetail";
 import ScrollToTop from "./component/common/js/ScrollToTop";
+import FeedBackEdit from './component/community/js/FeedBackEdit';
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -31,6 +32,7 @@ function App() {
     const [isCheckHeader, setIsCheckHeader] = useState("True");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userNickname, setUserNickname] = useState("");
+    const [currentUser, setCurrentUser] = useState(null); // ✅ 추가
 
     function ChangeEventHandler(text) {
         setIsCheckHeader(text);
@@ -40,6 +42,7 @@ function App() {
         localStorage.removeItem("jwtToken");
         setIsLoggedIn(false);
         setUserNickname("");
+        setCurrentUser(null); // ✅ 추가
     }
 
     // 새로고침 시 로그인 유지
@@ -49,13 +52,15 @@ function App() {
             getMyInfo()
                 .then((data) => {
                     setIsLoggedIn(true);
-                    setUserNickname(data.userNickname);
+                    setUserNickname(data.userNickname ?? "");
+                    setCurrentUser(data); // ✅ 전체 사용자 정보 저장 (userId, userName, userNickname, userNum 등)
                 })
                 .catch(() => {
                     // 토큰 유효하지 않으면 초기화
                     localStorage.removeItem("jwtToken");
                     setIsLoggedIn(false);
                     setUserNickname("");
+                    setCurrentUser(null);
                 });
         }
     }, []);
@@ -80,6 +85,7 @@ function App() {
                         <Route path="/JobPosting/:id" element={<JobPostingDetail />} />
                         <Route path="/CL" element={<CL isCheckHeader={isCheckHeader} />} />
                         <Route path="/CL/:id" element={<CLDetail />} />
+
                         <Route
                             path="/feedback"
                             element={
@@ -103,7 +109,7 @@ function App() {
                             element={
                                 <FeedBackDetail
                                     isLoggedIn={isLoggedIn}
-                                    userNickname={userNickname}
+                                    currentUser={currentUser}  // ✅ 전달
                                 />
                             }
                         />
@@ -118,11 +124,22 @@ function App() {
                                 <SignIn
                                     setIsLoggedIn={setIsLoggedIn}
                                     setUserNickname={setUserNickname}
+                                    setCurrentUser={setCurrentUser} // ✅ 로그인 직후 갱신할 수 있게 전달
                                 />
                             }
                         />
                         <Route path="/signup" element={<SignUp isCheckHeader={isCheckHeader} />} />
                         <Route path="/interview" element={<Interview />} />
+
+                        <Route
+                            path="/feedback/:communityNum/edit"
+                            element={
+                                <FeedBackEdit
+                                    isLoggedIn={isLoggedIn}
+                                    currentUser={currentUser}  // ✅ 전달
+                                />
+                            }
+                        />
                     </Routes>
                 </main>
                 <Footer />

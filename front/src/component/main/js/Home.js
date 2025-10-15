@@ -1,15 +1,18 @@
+// src/component/main/js/Home.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../scss/Home.scss";
 
-const Home = () => {
+const Home = ({ isLoggedIn }) => {
     const navigate = useNavigate();
 
-    const goToLogin = () => {
-        navigate("/signin");
-    };
     const goToInterview = () => {
-        navigate("/AiInviewer");
+        if (isLoggedIn) {
+            navigate("/AiInviewer");
+        } else {
+            alert("로그인이 필요합니다. 로그인 페이지로 이동합니다.");
+            navigate("/signin", { replace: true, state: { from: "/AiInviewer" } });
+        }
     };
 
     return (
@@ -19,7 +22,7 @@ const Home = () => {
                 <div className="hero-content">
                     <h1>AI 면접 연습 플랫폼</h1>
                     <p>실제 면접처럼 준비하고 AI 피드백으로 성장하세요.</p>
-                    <button className="cta-btn" onClick={goToLogin}>
+                    <button className="cta-btn" onClick={goToInterview}>
                         지금 시작하기
                     </button>
                 </div>
