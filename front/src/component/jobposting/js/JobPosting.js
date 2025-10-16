@@ -1,46 +1,6 @@
 import React, { useState } from "react";
-import JobPostingCard from "./JobPostingCard";
-import JobPostingFilter from "./JobPostingFilter";
 import "../scss/JobPosting.scss";
-
-const sampleJobs = [
-    {
-        id: 1,
-        company: "Google",
-        location: "해외",
-        link: "https://www.incruit.com/company/1176521/job",
-    },
-    {
-        id: 2,
-        company: "Naver",
-        location: "국내",
-        link: "https://m.jobkorea.co.kr/start/groupagiguinlist/?G_ID=58&sort_type=2",
-    },
-    {
-        id: 3,
-        company: "Kakao",
-        location: "국내",
-        link: "https://careers.kakao.com/jobs?skillSet=&page=1&company=KAKAO&part=TECHNOLOGY&employeeType=&keyword=",
-    },
-    {
-        id: 4,
-        company: "Samsung",
-        location: "국내",
-        link: "https://www.samsungcareers.com/hr/",
-    },
-    {
-        id: 5,
-        company: "Microsoft",
-        location: "해외",
-        link: "https://www.catch.co.kr/Comp/RecruitInfo/600946",
-    },
-    {
-        id: 6,
-        company: "Oracle",
-        location: "해외",
-        link: "https://www.oracle.com/kr/careers/",
-    },
-];
+import { sampleJobs } from "../data/sampleJobs";
 
 const JobPosting = () => {
     const [searchText, setSearchText] = useState("");
@@ -48,34 +8,68 @@ const JobPosting = () => {
 
     const filteredJobs = sampleJobs.filter(job => {
         const matchesCategory = filteredCategory === "전체" || job.location === filteredCategory;
-        const matchesSearch = job.company.toLowerCase().includes(searchText.toLowerCase());
+        const matchesSearch = job.company.toLowerCase().includes(searchText.toLowerCase()) ||
+            job.title.toLowerCase().includes(searchText.toLowerCase());
         return matchesCategory && matchesSearch;
     });
 
     return (
-        <div className="jobposting-wrapper">
-            <aside className="jobposting-sidebar">
-                <JobPostingFilter
-                    searchText={searchText}
-                    setSearchText={setSearchText}
-                    filteredCategory={filteredCategory}
-                    setFilteredCategory={setFilteredCategory}
-                />
-            </aside>
-            <main className="jobposting-main">
-                <h2>채용 공고</h2>
-                {filteredJobs.length > 0 ? (
-                    <div className="jobposting-grid">
-                        {filteredJobs.map(job => (
-                            <JobPostingCard key={job.id} job={job} />
-                        ))}
+        <div className="job-posting-wrapper">
+            <div className="job-posting-container">
+                {/* ✨ 헤더 섹션 삭제 */}
+
+                {/* === 필터 컨트롤 === */}
+                <div className="filter-controls">
+                    <div className="search-box-wrapper">
+                        <svg className="search-icon" viewBox="0 0 24 24"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A8 8 0 1 0 10 18zm0-14a6 6 0 1 1-6 6 6 6 0 0 1 6-6z"></path></svg>
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="회사명 또는 포지션 검색"
+                            value={searchText}
+                            onChange={(e) => setSearchText(e.target.value)}
+                        />
                     </div>
-                ) : (
-                    <div className="no-results">
-                        <p>검색 결과가 없습니다.</p>
+                    <div className="category-buttons">
+                        <button className={filteredCategory === '전체' ? 'active' : ''} onClick={() => setFilteredCategory('전체')}>전체</button>
+                        <button className={filteredCategory === '국내' ? 'active' : ''} onClick={() => setFilteredCategory('국내')}>국내</button>
+                        <button className={filteredCategory === '해외' ? 'active' : ''} onClick={() => setFilteredCategory('해외')}>해외</button>
                     </div>
-                )}
-            </main>
+                </div>
+
+                {/* === 검색 결과 카운트 === */}
+                <div className="job-count">
+                    총 <strong>{filteredJobs.length}</strong>개의 공고가 있습니다.
+                </div>
+
+                {/* === 채용 공고 그리드 === */}
+                <div className="job-grid">
+                    {filteredJobs.length > 0 ? (
+                        filteredJobs.map(job => (
+                            <a href={job.link} key={job.id} target="_blank" rel="noopener noreferrer" className="job-card-link">
+                                <div className="job-card">
+                                    <div className="job-card-header">
+                                        <img src={job.logo} alt={`${job.company} logo`} className="company-logo" />
+                                        <div className="company-info">
+                                            <h3>{job.title}</h3>
+                                            <p>{job.company}</p>
+                                        </div>
+                                    </div>
+                                    <div className="job-card-tags">
+                                        <span className="tag location">{job.location}</span>
+                                        <span className="tag type">{job.type}</span>
+                                        {job.tags.map(tag => (
+                                            <span key={tag} className="tag skill">{tag}</span>
+                                        ))}
+                                    </div>
+                                </div>
+                            </a>
+                        ))
+                    ) : (
+                        <p className="no-result">검색 결과에 맞는 채용 공고가 없습니다.</p>
+                    )}
+                </div>
+            </div>
         </div>
     );
 };

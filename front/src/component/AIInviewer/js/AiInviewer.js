@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import "../scss/AiInviewer.scss";
-import companies, { regions } from "../../data/Companies.js";
+import companies, { regions } from "../data/Companies.js";
 
 // 면접 방식 선택 모달
 const ModeSelectModal = ({ open, company, onClose, onSelect }) => {

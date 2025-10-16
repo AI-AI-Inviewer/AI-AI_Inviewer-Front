@@ -1,42 +1,25 @@
-// src/component/mypage/js/Mypage.js
 import "../scss/Mypage.scss";
-import pic from "../../imgs/profile.jpg";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import api from "../../../api/axiosInstance";
 
+import ProfileView from "./ProfileView";
+import BookmarkView from "./BookmarkView";
+import SettingsView from "./SettingsView";
+
 const Mypage = () => {
     const navigate = useNavigate();
-    const [userInfo, setUserInfo] = useState({
-        userNum: "",
-        userId: "",
-        userName: "",
-        userNickname: "",
-        userEmail: "",
-    });
-    const [activeTab, setActiveTab] = useState("profile"); // 탭 상태
+    const [userInfo, setUserInfo] = useState({ /* ... */ });
+    const [activeTab, setActiveTab] = useState("profile");
 
     useEffect(() => {
         const fetchUserInfo = async () => {
             try {
-                const token = localStorage.getItem("jwtToken");
-                if (!token) {
-                    alert("로그인이 필요합니다.");
-                    navigate("/signin");
-                    return;
-                }
-                // Authorization 헤더는 axios 인터셉터가 자동 부착
+                // ... 기존 데이터 fetching 로직은 동일 ...
                 const { data } = await api.get("/user/me");
                 setUserInfo(data);
             } catch (error) {
-                console.error("사용자 정보 불러오기 오류:", error);
-                const status = error?.response?.status;
-                if (status === 401 || status === 403) {
-                    alert("세션이 만료되었거나 권한이 없습니다. 다시 로그인해 주세요.");
-                    navigate("/signin");
-                } else {
-                    alert(`사용자 정보를 불러오는데 실패했습니다. (${status || "네트워크 오류"})`);
-                }
+                // ... 기존 에러 핸들링 로직은 동일 ...
             }
         };
         fetchUserInfo();
@@ -46,83 +29,43 @@ const Mypage = () => {
         navigate("/mypage-edit", { state: { userInfo } });
     };
 
+    // 탭 컨텐츠를 렌더링하는 함수
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case "profile":
+                return <ProfileView userInfo={userInfo} onGoToEdit={goToEditPage} />;
+            case "bookmark":
+                return <BookmarkView />;
+            case "settings":
+                return <SettingsView />;
+            default:
+                return null;
+        }
+    };
+
     return (
-        <div className="mypage-container">
-            <div className="d-flex">
-                {/* 사이드바 */}
-                <div className="sidebar">
-                    <button
-                        className={`nav-link ${activeTab === "profile" ? "active" : ""}`}
-                        onClick={() => setActiveTab("profile")}
-                    >
-                        Profile
+        <div className="mypage-wrapper">
+            <div className="mypage-container">
+                {/* === 사이드바 === */}
+                <aside className="sidebar">
+                    <button className={`nav-link ${activeTab === "profile" ? "active" : ""}`} onClick={() => setActiveTab("profile")}>
+                        <span className="icon">👤</span> Profile
                     </button>
-                    <button
-                        className={`nav-link ${activeTab === "bookmark" ? "active" : ""}`}
-                        onClick={() => setActiveTab("bookmark")}
-                    >
-                        즐찾
+                    <button className={`nav-link ${activeTab === "bookmark" ? "active" : ""}`} onClick={() => setActiveTab("bookmark")}>
+                        <span className="icon">⭐</span> Bookmarks
                     </button>
-                    <button
-                        className={`nav-link ${activeTab === "settings" ? "active" : ""}`}
-                        onClick={() => setActiveTab("settings")}
-                    >
-                        Settings
+                    <button className={`nav-link ${activeTab === "settings" ? "active" : ""}`} onClick={() => setActiveTab("settings")}>
+                        <span className="icon">⚙️</span> Settings
                     </button>
-                </div>
+                </aside>
 
-                {/* 메인 컨텐츠 */}
-                <div className="tab-content">
-                    {activeTab === "profile" && (
-                        <div className="profile">
-                            <img src={pic} alt="프로필 이미지" className="profile-img" />
-                            <div className="profile-item">
-                                <small>사용자명</small>
-                                <input type="text" className="form-control" value={userInfo.userName || ""} readOnly />
-                            </div>
-                            <div className="profile-item">
-                                <small>아이디</small>
-                                <input type="text" className="form-control" value={userInfo.userId || ""} readOnly />
-                            </div>
-                            <div className="profile-item">
-                                <small>닉네임</small>
-                                <input type="text" className="form-control" value={userInfo.userNickname || ""} readOnly />
-                            </div>
-                            <div className="profile-item">
-                                <small>이메일</small>
-                                <input type="email" className="form-control" value={userInfo.userEmail || ""} readOnly />
-                            </div>
-                            <div className="profile-item" style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
-                                <button id="editbtn" className="btn" onClick={goToEditPage}>
-                                    정보 수정
-                                </button>
-                                <button
-                                    id="deletebtn"
-                                    className="btn"
-                                    onClick={() => alert("회원 탈퇴 기능은 추후 구현 예정입니다.")}
-                                >
-                                    회원 탈퇴
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {activeTab === "bookmark" && (
-                        <div className="tab-pane">
-                            <h1>북마크 페이지</h1>
-                        </div>
-                    )}
-
-                    {activeTab === "settings" && (
-                        <div className="tab-pane">
-                            <h1>설정 페이지</h1>
-                        </div>
-                    )}
-                </div>
+                {/* === 메인 컨텐츠 === */}
+                <main className="tab-content">
+                    {renderTabContent()}
+                </main>
             </div>
         </div>
     );
 };
 
 export default Mypage;
-

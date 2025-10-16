@@ -1,57 +1,168 @@
-$primary-color: #5a67d8;
-$border-color: #e2e8f0;
-$text-color: #2d3748;
-$background-color: #f7fafc;
-$card-background: #ffffff;
-$font-family: "Noto Sans KR", sans-serif;
+/* 변수 */
+:root {
+  --primary-color: #5865f2;
+  --border-color: #e3e5e8;
+  --background-color: #f8f9fa;
+  --text-dark: #212529;
+  --text-light: #5c677d;
+  --white-color: #ffffff;
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
 
-.jobposting-wrapper {
+.job-posting-wrapper {
+  background-color: var(--background-color);
+  padding: 4rem 1rem 2rem; /* ✨ 상단 여백 수정 */
+  min-height: 100%;
+}
+
+.job-posting-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* 헤더 - 삭제되었으므로 스타일도 제거 */
+// .jp-header { ... }
+
+/* 필터 컨트롤 */
+.filter-controls {
   display: flex;
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 3rem auto;
-  padding: 0 2rem;
-  padding-top: 2rem;
-  font-family: $font-family;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
 
-  .jobposting-sidebar {
-    flex: 0 0 240px;
+  .search-box-wrapper {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: var(--white-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 0 1rem;
+    min-width: 250px;
 
-    .jobposting-filter {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    .search-icon { width: 1.25rem; height: 1.25rem; color: var(--text-light); fill: currentColor; }
+    .search-input { width: 100%; border: none; outline: none; padding: 0.75rem 0; font-size: 1rem; background: transparent; }
+  }
 
-      input, select {
-        padding: 10px;
-        border: 1px solid $border-color;
-        border-radius: 8px;
+  .category-buttons {
+    display: flex;
+    gap: 0.5rem;
+    background-color: #e9ecef;
+    padding: 4px;
+    border-radius: 10px;
+
+    button {
+      padding: 0.5rem 1.25rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-light);
+      transition: all 0.2s;
+
+      &.active {
+        background-color: var(--white-color);
+        color: var(--primary-color);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
       }
     }
   }
+}
 
-  .jobposting-main {
-    flex: 1;
+/* 검색 결과 카운트 */
+.job-count {
+  margin-bottom: 1.5rem;
+  padding-left: 0.5rem;
+  color: var(--text-light);
+  font-size: 0.95rem;
+  strong { color: var(--text-dark); }
+}
 
-    h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 1.5rem;
-      color: $text-color;
+/* 채용 공고 그리드 */
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+
+  .no-result {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--text-light);
+  }
+}
+
+/* 채용 공고 카드 */
+.job-card-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.job-card {
+  background-color: var(--white-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+    border-color: var(--primary-color);
+  }
+
+  .job-card-header {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+
+    .company-logo {
+      width: 50px;
+      height: 50px;
+      border-radius: 8px;
+      object-fit: contain;
+      border: 1px solid #f1f3f5;
     }
 
-    .jobposting-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
+    .company-info {
+      h3 { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem; }
+      p { font-size: 0.95rem; color: var(--text-light); margin: 0; }
+    }
+  }
+
+  .job-card-tags {
+    margin-top: auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .tag {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
     }
 
-    .no-results {
-      text-align: center;
-      padding: 4rem 2rem;
-      color: #718096;
-      border: 1px dashed $border-color;
-      border-radius: 12px;
-    }
+    .location { background-color: #e7f5ff; color: #1971c2; }
+    .type { background-color: #fff0f6; color: #d6336c; }
+    .skill { background-color: #f1f3f5; color: #495057; }
+  }
+}
+
+// 반응형
+@media (max-width: 768px) {
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
