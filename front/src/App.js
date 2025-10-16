@@ -26,13 +26,24 @@ import FeedBackEdit from './component/community/js/FeedBackEdit';
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { getMyInfo } from "./api/user"; // JWT 기반 내 정보 조회
+import { getMyInfo } from "./api/user";
 
 function App() {
     const [isCheckHeader, setIsCheckHeader] = useState("True");
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userNickname, setUserNickname] = useState("");
-    const [currentUser, setCurrentUser] = useState(null); // ✅ 추가
+    const [currentUser, setCurrentUser] = useState(null);
+
+    // 🎯 전역 즐겨찾기 상태
+    const [aiBookmarks, setAiBookmarks] = useState(() => {
+        const stored = localStorage.getItem('aiBookmarks');
+        return stored ? JSON.parse(stored) : [];
+    });
+
+    // 즐겨찾기 변경 시 LocalStorage 저장
+    useEffect(() => {
+        localStorage.setItem('aiBookmarks', JSON.stringify(aiBookmarks));
+    }, [aiBookmarks]);
 
     function ChangeEventHandler(text) {
         setIsCheckHeader(text);
@@ -42,10 +53,9 @@ function App() {
         localStorage.removeItem("jwtToken");
         setIsLoggedIn(false);
         setUserNickname("");
-        setCurrentUser(null); // ✅ 추가
+        setCurrentUser(null);
     }
 
-    // 새로고침 시 로그인 유지
     useEffect(() => {
         const token = localStorage.getItem("jwtToken");
         if (token) {
@@ -53,10 +63,9 @@ function App() {
                 .then((data) => {
                     setIsLoggedIn(true);
                     setUserNickname(data.userNickname ?? "");
-                    setCurrentUser(data); // ✅ 전체 사용자 정보 저장 (userId, userName, userNickname, userNum 등)
+                    setCurrentUser(data);
                 })
                 .catch(() => {
-                    // 토큰 유효하지 않으면 초기화
                     localStorage.removeItem("jwtToken");
                     setIsLoggedIn(false);
                     setUserNickname("");
@@ -68,7 +77,6 @@ function App() {
     return (
         <div className="App" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
             <BrowserRouter>
-                {/* 페이지 이동 시 스크롤 초기화 */}
                 <ScrollToTop />
                 <Header
                     isCheckHeader={isCheckHeader}
@@ -80,66 +88,32 @@ function App() {
                 <main style={{ flex: 1 }}>
                     <Routes>
                         <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
-                        <Route path="/AiInviewer" element={<AiInviewer isCheckHeader={isCheckHeader} />} />
+                        <Route
+                            path="/AiInviewer"
+                            element={<AiInviewer bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />}
+                        />
                         <Route path="/JobPosting" element={<JobPosting isCheckHeader={isCheckHeader} />} />
                         <Route path="/JobPosting/:id" element={<JobPostingDetail />} />
                         <Route path="/CL" element={<CL isCheckHeader={isCheckHeader} />} />
                         <Route path="/CL/:id" element={<CLDetail />} />
-
-                        <Route
-                            path="/feedback"
-                            element={
-                                <FeedBack
-                                    isCheckHeader={isCheckHeader}
-                                    isLoggedIn={isLoggedIn}
-                                />
-                            }
-                        />
-                        <Route
-                            path="/feedback/write"
-                            element={
-                                <FeedBackWrite
-                                    isLoggedIn={isLoggedIn}
-                                    userNickname={userNickname}
-                                />
-                            }
-                        />
-                        <Route
-                            path="/feedback/:communityNum"
-                            element={
-                                <FeedBackDetail
-                                    isLoggedIn={isLoggedIn}
-                                    currentUser={currentUser}  // ✅ 전달
-                                />
-                            }
-                        />
+                        <Route path="/feedback" element={<FeedBack isCheckHeader={isCheckHeader} isLoggedIn={isLoggedIn} />} />
+                        <Route path="/feedback/write" element={<FeedBackWrite isLoggedIn={isLoggedIn} userNickname={userNickname} />} />
+                        <Route path="/feedback/:communityNum" element={<FeedBackDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
                         <Route path="/postscript" element={<PostScript />} />
                         <Route path="/postscript/write" element={<PostScriptWrite />} />
                         <Route path="/postscript/:id" element={<PostScriptDetail />} />
                         <Route path="/mypage" element={<Mypage isCheckHeader={isCheckHeader} />} />
                         <Route path="/mypage-edit" element={<MypageEdit />} />
-                        <Route
-                            path="/signin"
-                            element={
-                                <SignIn
-                                    setIsLoggedIn={setIsLoggedIn}
-                                    setUserNickname={setUserNickname}
-                                    setCurrentUser={setCurrentUser} // ✅ 로그인 직후 갱신할 수 있게 전달
-                                />
-                            }
-                        />
+                        <Route path="/signin" element={
+                            <SignIn
+                                setIsLoggedIn={setIsLoggedIn}
+                                setUserNickname={setUserNickname}
+                                setCurrentUser={setCurrentUser}
+                            />
+                        } />
                         <Route path="/signup" element={<SignUp isCheckHeader={isCheckHeader} />} />
                         <Route path="/interview" element={<Interview />} />
-
-                        <Route
-                            path="/feedback/:communityNum/edit"
-                            element={
-                                <FeedBackEdit
-                                    isLoggedIn={isLoggedIn}
-                                    currentUser={currentUser}  // ✅ 전달
-                                />
-                            }
-                        />
+                        <Route path="/feedback/:communityNum/edit" element={<FeedBackEdit isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
                     </Routes>
                 </main>
                 <Footer />

@@ -223,15 +223,97 @@ h2 {
   }
 }
 
-// 반응형
-@media (max-width: 768px) {
+// ===== 반응형 =====
+@media (max-width: 1440px) {
+  .features .features-grid,
+  .how-it-works .steps-grid {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 30px;
+  }
+
+  .hero-content h1 {
+    font-size: 2.6rem;
+  }
+
+  .hero-content p {
+    font-size: 1.1rem;
+  }
+
+  .cta-btn {
+    padding: 14px 32px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 1200px) {
+  .features .features-grid,
+  .how-it-works .steps-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+
+  .hero-content h1 {
+    font-size: 2.4rem;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+
+  .cta-btn {
+    padding: 12px 28px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 992px) {
+  .features .features-grid,
+  .how-it-works .steps-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+  }
+
   .hero-content h1 {
     font-size: 2.2rem;
   }
+
+  .hero-content p {
+    font-size: 0.95rem;
+  }
+
+  .cta-btn {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
   .features, .how-it-works, .testimonials, .join-us {
     padding: 60px 20px;
   }
+
+  .hero-content h1 {
+    font-size: 2rem;
+  }
+
+  .hero-content p {
+    font-size: 0.9rem;
+  }
+
+  .cta-btn {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+
   .how-it-works .steps-grid {
     grid-template-columns: 1fr;
+  }
+
+  .features .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .testimonials .testimonials-grid {
+    flex-direction: column;
+    gap: 20px;
   }
 }

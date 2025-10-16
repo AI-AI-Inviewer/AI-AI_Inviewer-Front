@@ -1,219 +1,297 @@
-.aiinviewer-wrapper {
-  padding: 2rem;
-  background: #f5f6f8;
-  font-family: 'Noto Sans KR', sans-serif;
-  min-height: 100vh;
+$primary-color: #5865f2;
+$border-color: #e3e5e8;
+$background-color: #f8f9fa;
+$text-color: #2e3338;
+$text-light-color: #5c677d;
+$white-color: #fff;
+$font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+$shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+$shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+$radius: 8px;
 
-  .filter-bar {
+body {
+  background-color: $background-color;
+}
+
+.aiinviewer-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  padding: 1rem 2rem;
+  font-family: $font-family;
+  box-sizing: border-box;
+}
+
+/* 검색창 & 초기화 버튼 바 스타일 */
+.search-reset-bar {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+
+  .search-box-wrapper {
+    flex-grow: 1;
     display: flex;
-    gap: 1rem;
     align-items: center;
-    background: #fff;
-    padding: 1rem 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-bottom: 1.5rem;
-    position: sticky;
-    top: 70px;
-    z-index: 10;
+    gap: 0.75rem;
+    background-color: $white-color;
+    border: 1px solid $border-color;
+    border-radius: $radius;
+    padding: 0 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
 
-    input {
-      flex: 1;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
-      font-size: 0.95rem;
+    &:focus-within {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.15);
     }
 
-    .bookmark-btn {
-      background: #e9f5ff;
-      color: #007bff;
+    .search-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: $text-light-color;
+      flex-shrink: 0;
+    }
+
+    .search-input {
+      width: 100%;
       border: none;
-      border-radius: 8px;
-      padding: 0.6rem 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s;
-
-      &.active {
-        background: #007bff;
-        color: #fff;
-      }
-
-      &:hover {
-        opacity: 0.9;
-      }
+      outline: none;
+      padding: 0.75rem 0;
+      font-size: 1rem;
+      background-color: transparent;
     }
   }
 
-  .filter-tabs {
+  .reset-btn {
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    background-color: $white-color;
+    color: $text-light-color;
+    border: 1px solid $border-color;
+    border-radius: $radius;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+
+    &:hover {
+      background-color: #f1f3f5;
+      color: $text-color;
+    }
+  }
+}
+
+/* 다중 컬럼 필터 */
+.filter-container {
+  display: flex;
+  border: 1px solid $border-color;
+  background-color: $white-color;
+  border-radius: $radius;
+  box-shadow: $shadow-sm;
+  min-height: 320px;
+}
+
+.category-column {
+  flex: 1;
+  border-right: 1px solid $border-color;
+  &:last-child { border-right: none; }
+
+  ul { list-style: none; padding: 8px; margin: 0; height: 100%; }
+
+  li {
     display: flex;
-    justify-content: center;
-    background: #fff;
-    border-radius: 10px;
-    overflow: hidden;
-    width: fit-content;
-    margin: 0 auto 1rem;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: $text-light-color;
+    transition: background-color 0.15s, color 0.15s;
+
+    &:hover { background-color: rgba($primary-color, 0.08); color: $primary-color; }
+    &.active { background-color: $primary-color; color: $white-color; font-weight: 600; }
+    &.active span:first-child::after { content: '›'; font-weight: 700; margin-left: 8px; color: $white-color; }
+    .count { font-size: 0.8rem; color: $text-light-color; background-color: #f1f3f5; padding: 2px 6px; border-radius: 4px; }
+    &.active .count { background-color: rgba(255, 255, 255, 0.2); color: $white-color; }
+  }
+}
+
+/* 즐겨찾기 필터 & 결과 카운트 */
+.filter-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 2rem;
+  padding: 0 0.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.result-count {
+  color: $text-light-color;
+  font-size: 0.95rem;
+  strong { color: $primary-color; font-size: 1.1rem; }
+}
+
+/* 토글 스위치 UI */
+.bookmark-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  .toggle-label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: $text-color;
+  }
+
+  .switch-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+    cursor: pointer;
+
+    input { display: none; }
+
+    .switch {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      border-radius: 12px;
+      transition: background-color 0.2s ease;
+
+      &::before {
+        content: "";
+        position: absolute;
+        height: 18px; width: 18px;
+        left: 3px; top: 3px;
+        background-color: white;
+        border-radius: 50%;
+        transition: transform 0.2s ease;
+      }
+    }
+
+    input:checked + .switch {
+      background-color: $primary-color;
+      &::before {
+        transform: translateX(20px);
+      }
+    }
+  }
+}
+
+/* 선택된 필터 태그 */
+.selected-tags-container {
+  margin-top: 1.5rem;
+  .filter-tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #e7e7ff;
+    color: $primary-color;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin: 0 8px 8px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
 
     button {
-      border: none;
-      background: #f8f9fa;
-      padding: 0.7rem 1.5rem;
+      background: none; border: none;
+      color: $primary-color;
+      margin-left: 8px;
       cursor: pointer;
-      font-weight: 500;
-      font-size: 0.95rem;
-      color: #555;
-      transition: all 0.2s ease;
-
-      &.active {
-        background: #007bff;
-        color: #fff;
-        font-weight: 600;
-      }
-
-      &:hover {
-        background: #e8f0fe;
-      }
+      font-size: 1rem;
+      opacity: 0.6;
+      &:hover { opacity: 1; }
     }
   }
+}
 
-  .job-category-box {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 0.8rem;
-    background: #fff;
-    padding: 1rem;
-    border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-bottom: 2rem;
+/* 기업 카드 */
+.company-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.75rem;
+  margin-top: 1.5rem;
+}
 
-    .job-btn {
-      border: 1px solid #ddd;
-      background: #fff;
-      border-radius: 8px;
-      padding: 0.8rem 0.5rem;
-      text-align: center;
-      cursor: pointer;
-      font-size: 0.9rem;
-      color: #333;
-      transition: all 0.2s ease;
+.company-card {
+  border: 1px solid transparent;
+  border-radius: $radius;
+  padding: 1.25rem;
+  background-color: $white-color;
+  box-shadow: $shadow-sm;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out, border-color 0.2s;
 
-      &:hover {
-        border-color: #007bff;
-        color: #007bff;
-        background: #f5faff;
-      }
+  &:hover { transform: translateY(-5px); box-shadow: $shadow-md; border-color: rgba($primary-color, 0.5); }
+  img { height: 40px; width: auto; max-width: 120px; object-fit: contain; margin-bottom: 1rem; }
+  .company-info h4 { font-size: 1.1rem; font-weight: 700; margin: 0 0 0.25rem 0; color: $text-color; }
+  .company-info p { font-size: 0.9rem; color: $text-light-color; margin: 0; }
 
-      &.active {
-        background: #007bff;
-        color: #fff;
-        border-color: #007bff;
-        font-weight: bold;
-      }
-    }
+  .card-actions {
+    margin-top: 1.25rem;
+    display: flex;
+    gap: 0.75rem;
+
+    button { padding: 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s; }
+    .fav-btn { flex: 0 0 auto; width: 44px; background: transparent; border: 1px solid $border-color; color: $text-light-color; &:hover { background-color: #f1f3f5; } &.active { color: #fcc419; border-color: #fcc419; } }
+    .ai-btn { flex: 1; background-color: $primary-color; border: 1px solid $primary-color; color: $white-color; &:hover { opacity: 0.85; } }
+  }
+}
+
+// 1. 넓은 데스크톱 (1400px 이상)
+@media (min-width: 1400px) {
+  .company-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+// 2. 일반 노트북 및 데스크톱 (1200px 미만)
+@media (max-width: 1200px) {
+  .aiinviewer-container {
+    padding: 1rem 1.5rem;
+  }
+}
+
+// 3. 작은 노트북 (992px 미만)
+@media (max-width: 992px) {
+  .category-column li {
+    padding: 9px 10px;
+    font-size: 0.85rem;
   }
 
   .company-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 1.5rem;
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .aiinviewer-container {
+    padding: 1rem;
   }
 
-  .company-card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    transition: all 0.2s ease-in-out;
-    display: flex;
+  .filter-container {
     flex-direction: column;
-    justify-content: space-between;
+    min-height: auto;
+  }
 
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
+  .category-column {
+    border-right: none;
+    border-bottom: 1px solid $border-color;
 
-    .company-top {
-      display: flex;
-      gap: 1rem;
-      align-items: flex-start;
-
-      img {
-        width: 55px;
-        height: 55px;
-        object-fit: contain;
-      }
-
-      .info {
-        flex: 1;
-
-        h3 {
-          font-size: 1.1rem;
-          margin-bottom: 0.4rem;
-          font-weight: 600;
-          color: #222;
-        }
-
-        p {
-          font-size: 0.9rem;
-          color: #666;
-          line-height: 1.4;
-        }
-      }
-    }
-
-    .company-bottom {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 1rem;
-
-      .badge {
-        background: #e9f5ff;
-        color: #007bff;
-        padding: 0.3rem 0.6rem;
-        border-radius: 6px;
-        font-size: 0.8rem;
-        font-weight: 500;
-      }
-
-      .actions {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        .interview-btn {
-          background: #007bff;
-          color: #fff;
-          border: none;
-          border-radius: 8px;
-          padding: 0.4rem 0.8rem;
-          cursor: pointer;
-          font-size: 0.85rem;
-          transition: 0.2s ease;
-
-          &:hover {
-            background: #0056b3;
-          }
-        }
-
-        .bookmark-toggle {
-          background: transparent;
-          border: none;
-          font-size: 1.2rem;
-          cursor: pointer;
-          color: #f4b400;
-        }
-      }
+    &:last-child {
+      border-bottom: none;
     }
   }
 
-  .no-result {
-    text-align: center;
-    color: #666;
-    font-size: 1rem;
-    margin-top: 2rem;
+  .search-reset-bar {
+    flex-direction: column;
   }
 }
