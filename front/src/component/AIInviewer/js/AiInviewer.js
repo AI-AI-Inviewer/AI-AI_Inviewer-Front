@@ -115,7 +115,7 @@ const AiInviewer = ({ bookmarks, setBookmarks }) => {
         setModeOpen(false);
         if (!selectedCompany) return;
         const route = mode === 'chat' ? '/interview' : '/voice-interview';
-        navigate(route, { state: { companyName: selectedCompany.name } });
+        navigate(route, { state: { company: selectedCompany.name } });
     };
 
     return (
