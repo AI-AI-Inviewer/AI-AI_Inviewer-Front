@@ -7,6 +7,13 @@ import '../scss/Interview.scss';
 const API_ROOT = process.env.REACT_APP_API_BASE || '/api';
 const GH_TOKEN = process.env.REACT_APP_GH_TOKEN || null;
 
+/** UI/TTS 표시용: 회사명에서 괄호(… ) 제거 */
+const sanitizeCompanyName = (name) =>
+    String(name || '')
+        .replace(/\s*\([^)]*\)\s*/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
 const toRawGithubUrl = (url) => {
     try {
         const u = new URL(url.trim());
@@ -216,7 +223,12 @@ function parseDecisionText(recText) {
 
 const Interview = () => {
     const location = useLocation();
-    const { resumeSummary: initSummary = '기본 자기소개서', company } = location.state || {};
+    const {
+        resumeSummary: initSummary = '기본 자기소개서',
+        company: companyFromState,
+        companyName: companyNameFromState,
+    } = location.state || {};
+    const company = companyFromState || companyNameFromState || '미지정';
 
     const [resumeSummary, setResumeSummary] = useState(initSummary);
 
@@ -351,9 +363,11 @@ const Interview = () => {
     // ===== 환영 메시지 빌더 =====
     const buildWelcomeMessage = (opts = {}) => {
         const { companyName = company, personName = null, needResume = !resumeLoaded } = opts;
+        const companyDisplay = sanitizeCompanyName(companyName);
+
         const headline = personName
-            ? `안녕하세요 ${personName}님, ${companyName || '미지정'} 회사 면접에 오신 것을 환영합니다.`
-            : `안녕하세요! ${companyName || '미지정'} 회사 면접에 오신 것을 환영합니다.`;
+            ? `안녕하세요 ${personName}님, ${companyDisplay || '미지정'} 회사 면접에 오신 것을 환영합니다.`
+            : `안녕하세요! ${companyDisplay || '미지정'} 회사 면접에 오신 것을 환영합니다.`;
 
         const guideResume = needResume
             ? `- 아직 이력서/깃허브가 연결되지 않았네요. 상단 입력칸에 GitHub 이력서 링크를 불러와 주세요.\n  (예: README.md / resume.md)\n`
@@ -755,7 +769,6 @@ const Interview = () => {
         }
     };
 
-
     return (
         <div className="ai-interview-container">
             <div className="resume-section">
@@ -797,7 +810,7 @@ const Interview = () => {
             </div>
 
             <div className="chat-section">
-                <h3>AI 면접 시뮬레이션{company ? ` — ${company}` : ''}</h3>
+                <h3>AI 면접 시뮬레이션{company ? ` — ${sanitizeCompanyName(company)}` : ''}</h3>
 
                 {/* 🔊 음성/모델 선택 */}
                 <div className="voice-row" style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>

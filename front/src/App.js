@@ -81,6 +81,7 @@ function App() {
                             {/* --- 코어 페이지 --- */}
                             <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
                             <Route path="/AiInviewer" element={<AiInviewer bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />} />
+                            {/* ★ 대소문자 주의: Header.jsx에서 /JobPosting 으로 링크 */}
                             <Route path="/JobPosting" element={<JobPosting />} />
 
                             {/* --- AI 면접 및 자소서 관련 --- */}
