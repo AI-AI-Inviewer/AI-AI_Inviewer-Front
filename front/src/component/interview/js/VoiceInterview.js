@@ -7,6 +7,13 @@ import { createAvatar, destroyAvatar } from '../../../lib/avatarClient';
 const API_ROOT = process.env.REACT_APP_API_BASE || '/api';
 const GH_TOKEN  = process.env.REACT_APP_GH_TOKEN || null;
 
+/** UI/TTS 표시용: 회사명에서 괄호(… ) 제거 */
+const sanitizeCompanyName = (name) =>
+    String(name || '')
+        .replace(/\s*\([^)]*\)\s*/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+        .trim();
+
 const toRawGithubUrl = (url) => {
     try {
         const u = new URL(url.trim());
@@ -42,6 +49,8 @@ const fetchWithTimeout = (url, options, timeout = 20000) =>
     ]);
 
 // ============ 간단 녹음 훅 ============
+// (동일)
+// ============ 간단 녹음 훅 ============
 const useRecorder = () => {
     const mediaRef = useRef(null);
     const chunksRef = useRef([]);
@@ -51,13 +60,15 @@ const useRecorder = () => {
         if (recording) return;
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-            ? 'audio/webm;codecs=opus' : 'audio/webm';
+            ? 'audio/webm;codecs=opus'
+            : 'audio/webm';
         const mr = new MediaRecorder(stream, { mimeType });
         mediaRef.current = mr;
         chunksRef.current = [];
         mr.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunksRef.current.push(e.data); };
         mr.onstop = () => setRecording(false);
-        mr.start(); setRecording(true);
+        mr.start();
+        setRecording(true);
     };
 
     const stop = async () => {
@@ -75,7 +86,9 @@ const useRecorder = () => {
     };
 
     return { start, stop, recording };
+    //
 };
+
 
 // ============ 프롬프트 ============
 const buildSystemPrompt = (company, resumeSummary) => `
@@ -131,7 +144,8 @@ const fmt = (sec) => {
 
 const VoiceInterview = () => {
     const location = useLocation();
-    const { company = '미지정' } = location.state || {};
+    const { company: companyFromState, companyName: companyNameFromState } = location.state || {};
+    const company = companyFromState || companyNameFromState || '미지정';
 
     const videoRef = useRef(null);
     const avatarRef = useRef(null);
@@ -159,7 +173,7 @@ const VoiceInterview = () => {
     const [voiceId, setVoiceId] = useState(null);
 
     const AVATAR_BY_VOICE = useMemo(() => ({
-        alice: 'Grace',   // 실제 HeyGen 공개 아바타 이름 예시
+        alice: 'Grace',
         bella: 'Sophia',
         rachel: 'Isabella',
         adam : 'Ethan',
@@ -204,15 +218,14 @@ const VoiceInterview = () => {
                 const ctrl = await createAvatar({
                     videoEl: videoRef.current,
                     clientToken,
-                    // mode는 SPEAK(텍스트를 그대로 읽기 전용)로 설정하는 래퍼 구현을 권장
-                    avatarName: 'Grace', // 시작 기본 아바타명
+                    avatarName: 'Grace',
                     language: 'ko'
                 });
                 avatarRef.current = ctrl;
 
-                // 간단 환영 멘트
+                // 간단 환영 멘트 (표시용/음성은 괄호 제거된 회사명 사용)
                 await avatarRef.current?.sayText(
-                    `안녕하세요. ${company} AI 면접관입니다. 왼쪽에서 이력서를 불러온 뒤, 오른쪽의 '면접 시작' 버튼을 눌러 진행해 주세요.`
+                    `안녕하세요. ${sanitizeCompanyName(company)} AI 면접관입니다. 왼쪽에서 이력서를 불러온 뒤, 오른쪽의 '면접 시작' 버튼을 눌러 진행해 주세요.`
                 );
             } catch (e) {
                 console.warn('초기화 실패:', e);
@@ -409,7 +422,7 @@ const VoiceInterview = () => {
 
     return (
         <div className="vi-grid">
-            {/* 좌(빨간) — 이력서 영역 */}
+            {/* 좌 — 이력서 영역 */}
             <aside className="vi-left">
                 <h3>이력서 준비</h3>
 
@@ -435,14 +448,14 @@ const VoiceInterview = () => {
                 </div>
             </aside>
 
-            {/* 중앙 상단(초록) — 아바타 스테이지 */}
+            {/* 중앙 상단 — 아바타 스테이지 */}
             <section className="vi-stage">
                 <div className="stage-inner">
                     <video ref={videoRef} autoPlay playsInline />
                 </div>
             </section>
 
-            {/* 중앙 하단(파랑) — 대화 로그 */}
+            {/* 중앙 하단 — 대화 로그 */}
             <section className="vi-chat">
                 <h3>대화 기록</h3>
                 <div className="log">
@@ -456,7 +469,7 @@ const VoiceInterview = () => {
                 </div>
             </section>
 
-            {/* 우(분홍) — 컨트롤 & 타이머 */}
+            {/* 우 — 컨트롤 & 타이머 */}
             <aside className="vi-right">
                 <h3>컨트롤</h3>
                 <div className="vi-card">
