@@ -56,7 +56,6 @@ $header-height: 96px;
   }
 }
 
-/* ✨ [충돌 해결] 드롭다운 공통 스타일 선택자를 .header-dropdown으로 변경 */
 .header-dropdown {
   position: relative;
 
@@ -89,6 +88,7 @@ $header-height: 96px;
     visibility: hidden;
     pointer-events: none;
     transition: all 0.25s;
+    z-index: 1100;
 
     li {
       width: 100%;
@@ -189,7 +189,7 @@ $header-height: 96px;
       gap: 0;
       li {
         width: 100%;
-        a, .dropdown-toggle {
+        a { // ✨ [수정] .dropdown-toggle은 아래 .header-dropdown에서 별도 처리
           display: block;
           padding: 1rem 0;
         }
@@ -200,14 +200,42 @@ $header-height: 96px;
       margin-top: 1rem;
       border-top: 1px solid $border-color;
     }
-    .header-dropdown .dropdown-menu {
-      position: static;
-      opacity: 1;
-      visibility: visible;
-      box-shadow: none;
-      border: none;
+
+    // ✨ [수정] 모바일 드롭다운 로직 (아코디언)
+    .header-dropdown {
       width: 100%;
-      padding-left: 1rem;
+
+      .dropdown-toggle {
+        display: flex;
+        justify-content: space-between; // 화살표를 오른쪽으로
+        align-items: center;
+        width: 100%;
+        padding: 1rem 0;
+      }
+
+      .dropdown-menu {
+        position: static; // 데스크톱 스타일 덮어쓰기
+        transform: none;
+        left: auto;
+        top: auto;
+        opacity: 1; // max-height로 제어하므로 opacity/visibility는 불필요
+        visibility: visible;
+        box-shadow: none;
+        border: none;
+        width: 100%;
+        padding: 0 0 0 1rem; // 닫혔을 때 top/bottom 패딩 제거
+        max-height: 0; // [수정] 기본적으로 닫힘
+        overflow: hidden; // [수정] 내용 숨김
+        transition: all 0.3s ease-in-out;
+      }
+
+      // 모바일에서 .open 클래스가 적용되었을 때
+      &.open {
+        .dropdown-menu {
+          max-height: 500px; // [수정] 충분한 높이로 펼침
+          padding: 0.75rem 0 0.75rem 1rem; // [수정] 열렸을 때 패딩 적용
+        }
+      }
     }
   }
 }

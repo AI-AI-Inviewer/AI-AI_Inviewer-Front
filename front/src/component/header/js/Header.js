@@ -57,15 +57,14 @@ const Header = ({ isLoggedIn, userNickname, onLogout }) => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // ✨ [오류 수정] 클릭 이벤트 전파를 막는 핸들러로 교체
     const toggleMainDropdown = (e) => {
-        e.stopPropagation(); // document로 클릭 이벤트가 전파되는 것을 막아 충돌을 방지합니다.
+        e.stopPropagation();
         setProfileDropdown(false);
         setMainDropdown(prev => !prev);
     };
 
     const toggleProfileDropdown = (e) => {
-        e.stopPropagation(); // document로 클릭 이벤트가 전파되는 것을 막아 충돌을 방지합니다.
+        e.stopPropagation();
         setMainDropdown(false);
         setProfileDropdown(prev => !prev);
     };
@@ -86,7 +85,6 @@ const Header = ({ isLoggedIn, userNickname, onLogout }) => {
                         <li><AuthLink to="/AiInviewer" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>AI 면접연습</AuthLink></li>
                         <li><AuthLink to="/jobposting" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>채용 공고</AuthLink></li>
                         <li><AuthLink to="/CL" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>자소서</AuthLink></li>
-                        {/* ✨ [충돌 해결] className을 'header-dropdown'으로 변경 */}
                         <li className={`header-dropdown ${mainDropdown ? "open" : ""}`} ref={mainDropdownRef}>
                             <button className="dropdown-toggle" onClick={toggleMainDropdown}>
                                 전체 게시판
@@ -111,7 +109,6 @@ const Header = ({ isLoggedIn, userNickname, onLogout }) => {
                     {/* --- 로그인/프로필 메뉴 --- */}
                     <ul className="nav-list login-menu">
                         {isLoggedIn ? (
-                            // ✨ [충돌 해결] className을 'header-dropdown'으로 변경
                             <li className={`header-dropdown ${profileDropdown ? "open" : ""}`} ref={profileRef}>
                                 <button className="dropdown-toggle profile-circle" onClick={toggleProfileDropdown}>
                                     {userNickname?.[0]?.toUpperCase() || "U"}
