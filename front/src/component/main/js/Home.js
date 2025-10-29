@@ -1,4 +1,3 @@
-// src/component/main/js/Home.jsx
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../scss/Home.scss";

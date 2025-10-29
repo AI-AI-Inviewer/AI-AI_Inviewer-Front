@@ -79,7 +79,6 @@ const CL = () => {
             </aside>
 
             <main className="cl-main">
-                <h2>자소서 샘플 목록</h2>
                 <div className="cl-grid">
                     {filteredCl.map((item) => (
                         <div key={item.id} className="cl-card-wrapper">

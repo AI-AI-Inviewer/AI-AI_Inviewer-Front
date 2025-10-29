@@ -1,0 +1,212 @@
+/* =========================================
+   global.scss
+   - 모든 페이지 기본 스타일
+   - 공통 레이아웃
+   - PC/노트북 전용 반응형 (1024px 이상)
+   - 다크/라이트 모드 지원
+========================================= */
+
+/* -------------------------------
+   CSS 변수
+--------------------------------- */
+:root {
+  /* 라이트 모드 컬러 */
+  --color-bg: #f5f5f5;
+  --color-bg-alt: #ffffff;
+  --color-text: #222222;
+  --color-primary: #4a90e2;
+  --color-secondary: #888888;
+  --color-header: #ffffff;
+  --color-footer: #ececec;
+  --color-border: #dddddd;
+}
+
+[data-theme='dark'] {
+  --color-bg: #121212;
+  --color-bg-alt: #1e1e1e;
+  --color-text: #f0f0f0;
+  --color-primary: #4a90e2;
+  --color-secondary: #aaaaaa;
+  --color-header: #1e1e1e;
+  --color-footer: #1a1a1a;
+  --color-border: #333333;
+}
+
+/* -------------------------------
+   공통 기본 스타일
+--------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+
+ul {
+  list-style: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* -------------------------------
+   PC/노트북 전용 반응형
+--------------------------------- */
+@media screen and (min-width: 1024px) {
+  /* Header */
+  .header {
+    background-color: var(--color-header);
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid var(--color-border);
+    height: 70px; /* 헤더 높이 */
+    font-size: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+
+  .logo {
+    font-size: 26px; /* 로고 크기 */
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+  }
+
+  .nav-list {
+    display: flex;
+    align-items: center;
+    gap: 24px; /* 메뉴 간격 */
+  }
+
+  .header-dropdown {
+    position: relative;
+
+    .dropdown-toggle {
+      background: none;
+      border: none;
+      color: var(--color-text);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: var(--color-bg-alt);
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      min-width: 180px;
+      padding: 10px 0;
+      display: none;
+      flex-direction: column;
+      z-index: 99;
+    }
+
+    &.open .dropdown-menu {
+      display: flex;
+    }
+
+    .icon-svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--color-text);
+    }
+  }
+
+  .profile-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: #fff;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    border-radius: 4px;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  /* Footer */
+  .footer {
+    background-color: var(--color-footer);
+    color: var(--color-text);
+    padding: 30px 20px;
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    gap: 20px;
+  }
+
+  .footer-section h3,
+  .footer-section h4 {
+    margin-bottom: 12px;
+  }
+
+  .footer-section a {
+    color: var(--color-text);
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  .footer-bottom {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    color: var(--color-secondary);
+  }
+}

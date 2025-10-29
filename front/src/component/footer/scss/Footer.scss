@@ -1,107 +1,61 @@
-/* Footer.scss */
 .footer {
-  background: #f4f7f6; // 푸터 전체 배경은 밝게 유지
-  color: #555;
-  padding: 50px 20px 0; // 하단 패딩은 footer-bottom에 적용
-  font-family: "Noto Sans KR", sans-serif;
+  background-color: #2f3542;
+  color: #dfe4ea;
+  padding: 2rem 3rem;
+  text-align: center;
 
   .footer-content {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     max-width: 1200px;
-    margin: 0 auto 50px; // 하단 여백 추가
+    margin: 0 auto;
     flex-wrap: wrap;
-    gap: 30px;
-  }
+    gap: 2rem;
 
-  .footer-section {
-    flex: 1;
-    min-width: 150px;
+    .footer-section {
+      flex: 1;
+      min-width: 250px;
 
-    h3, h4 {
-      color: #333;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
+      h3, h4 {
+        color: #70a1ff;
+        margin-bottom: 1rem;
+      }
 
-    p {
-      font-size: 0.9rem;
-      line-height: 1.6;
-    }
+      p, a, li {
+        color: #dfe4ea;
+        font-size: 0.95rem;
+        line-height: 1.5;
+      }
 
-    &.company {
-      max-width: 300px;
-    }
+      a:hover {
+        color: #70a1ff;
+      }
 
-    &.links {
       ul {
         list-style: none;
         padding: 0;
-        margin: 0;
+      }
 
-        li {
-          margin-bottom: 10px;
+      .social-icons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+
+        img {
+          opacity: 0.8;
+          transition: opacity 0.3s;
+          &:hover {
+            opacity: 1;
+          }
         }
       }
     }
   }
 
-  a {
-    color: #6c63ff;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.3s ease;
-
-    &:hover {
-      color: #836fff;
-      text-decoration: underline;
-    }
-  }
-
-  .social-icons {
-    display: flex;
-    gap: 15px;
-
-    img {
-      width: 24px;
-      height: 24px;
-      filter: invert(40%) sepia(85%) saturate(300%) hue-rotate(240deg);
-      transition: transform 0.3s ease;
-
-      &:hover {
-        transform: translateY(-3px);
-      }
-    }
-  }
-
-  // 하단 저작권 섹션 스타일
   .footer-bottom {
-    background: #1e1e2f; // 배경을 어둡게 설정
-    color: #bbb;
-    padding: 20px 0;
-    text-align: center;
-    font-size: 0.8rem;
-
-    .copyright {
-      color: #bbb; // 텍스트 색상 통일
-      font-weight: 500;
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .footer-content {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-
-    .footer-section {
-      margin-bottom: 30px;
-    }
-
-    .social-icons {
-      justify-content: center;
-    }
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: #a4b0be;
   }
 }

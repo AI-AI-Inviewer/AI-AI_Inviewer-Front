@@ -1,241 +1,265 @@
-/* 변수 */
-$primary-color: #5865f2;
-$header-bg: #ffffff;
-$text-dark: #212529;
-$text-light: #5c677d;
-$border-color: #e3e5e8;
-$header-height: 96px;
-
+/* ===== Header.scss ===== */
 .header {
-  background-color: $header-bg;
-  height: $header-height;
-  border-bottom: 1px solid $border-color;
+  width: 100%;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
   position: sticky;
   top: 0;
   z-index: 1000;
-}
 
-.header-container {
-  max-width: 1200px;
-  height: 100%;
-  margin: 0 auto;
-  padding: 0 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.logo {
-  font-size: 2rem;
-  font-weight: 800;
-  color: $primary-color;
-  text-decoration: none;
-}
-
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
-  .nav-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  .header-container {
+    max-width: 1280px;
+    margin: 0 auto;
     display: flex;
     align-items: center;
-    gap: 2.5rem;
-
-    li, a, .dropdown-toggle {
-      font-size: 1.15rem;
-      font-weight: 600;
-      color: $text-light;
-      cursor: pointer;
-      transition: color 0.2s;
-      text-decoration: none;
-      &:hover { color: $text-dark; }
-    }
+    justify-content: space-between;
+    padding: 14px 32px;
   }
-}
 
-.header-dropdown {
-  position: relative;
+  .logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #222;
+    text-decoration: none;
+    transition: color 0.2s ease;
 
-  .dropdown-toggle {
-    border: none; background: none; padding: 0.5rem;
-    font: inherit; color: inherit;
-    display: flex; align-items: center;
-    gap: 0.5rem;
-
-    &::after {
-      content: '▼';
-      font-size: 0.7em;
-      transition: transform 0.25s ease;
+    &:hover {
+      color: #007bff;
     }
   }
 
-  .dropdown-menu {
-    position: absolute;
-    top: calc(100% + 24px);
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: $header-bg;
-    border: 1px solid $border-color;
-    border-radius: 10px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    padding: 0.75rem;
-    list-style: none;
-    width: 230px;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: all 0.25s;
-    z-index: 1100;
-
-    li {
-      width: 100%;
-      a, .btn-logout {
-        display: flex; align-items: center; gap: 0.75rem;
-        padding: 0.9rem 1rem;
-        border-radius: 8px; color: $text-dark; font-weight: 500;
-        width: 100%; text-align: left;
-        &:hover { background-color: #f8f9fa; }
-      }
-      .btn-logout { border: none; background: none; }
-    }
-  }
-
-  &.open {
-    .dropdown-toggle::after {
-      transform: rotate(180deg);
-    }
-    .dropdown-menu {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      top: calc(100% + 18px);
-    }
-  }
-}
-
-.icon-svg {
-  width: 22px;
-  height: 22px;
-  fill: $primary-color;
-  flex-shrink: 0;
-}
-
-/* 프로필 드롭다운 */
-.profile-circle {
-  width: 52px;
-  height: 52px;
-  border-radius: 50%;
-  background-color: $primary-color;
-  color: #fff;
-  display: grid;
-  place-items: center;
-  font-weight: 700;
-  font-size: 1.5rem;
-  &::after { display: none; }
-}
-
-.login-menu {
-  .signup-btn {
-    background-color: $primary-color;
-    color: #fff !important;
-    padding: 0.8rem 1.6rem;
-    border-radius: 50px;
-    &:hover { color: #fff !important; opacity: 0.9; }
-  }
-}
-
-.hamburger { display: none; }
-
-/* 반응형 */
-@media (max-width: 992px) {
+  /* --- 햄버거 버튼 (PC에서는 숨김) --- */
   .hamburger {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-    cursor: pointer;
-    span {
-      width: 25px;
-      height: 3px;
-      background-color: $text-dark;
-      border-radius: 3px;
-    }
+    display: none;
   }
+
+  /* --- 네비게이션 --- */
   .nav {
-    position: absolute;
-    top: $header-height;
-    left: 0;
-    width: 100%;
-    background-color: $header-bg;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem 2rem;
-    border-top: 1px solid $border-color;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
-    &.show {
-      max-height: 500px;
-    }
+    display: flex;
+    align-items: center;
+    gap: 40px;
+
     .nav-list {
-      flex-direction: column;
-      align-items: flex-start;
-      width: 100%;
-    }
-    .main-menu {
-      gap: 0;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 28px;
+      margin: 0;
+      padding: 0;
+
       li {
-        width: 100%;
-        a { // ✨ [수정] .dropdown-toggle은 아래 .header-dropdown에서 별도 처리
-          display: block;
-          padding: 1rem 0;
+        position: relative;
+
+        a,
+        button {
+          background: none;
+          border: none;
+          outline: none;
+          font-size: 1rem;
+          font-weight: 500;
+          color: #333;
+          text-decoration: none;
+          cursor: pointer;
+          transition: color 0.2s ease;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+
+          &:hover {
+            color: #007bff;
+          }
+        }
+
+        /* === 전체 게시판 드롭다운 === */
+        &.header-dropdown {
+          .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            /* ▼ 대신 svg 화살표 사용 */
+            &::after {
+              content: "";
+              width: 10px;
+              height: 10px;
+              background-image: url("data:image/svg+xml,%3Csvg fill='black' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+              background-repeat: no-repeat;
+              background-position: center;
+              background-size: contain;
+              margin-left: 4px;
+              transition: transform 0.2s ease;
+              opacity: 0.7;
+            }
+          }
+
+          &.open .dropdown-toggle::after {
+            transform: rotate(180deg);
+          }
+
+          .dropdown-menu {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 42px;
+            left: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-width: 180px;
+            padding: 8px 0;
+            z-index: 10;
+
+            li {
+              width: 100%;
+
+              a {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 16px;
+                font-size: 0.95rem;
+                color: #333;
+                transition: background 0.2s ease;
+
+                &:hover {
+                  background-color: #f1f5f9;
+                  color: #007bff;
+                }
+
+                .icon-svg {
+                  width: 18px;
+                  height: 18px;
+                  fill: #666;
+                  transition: fill 0.2s ease;
+                }
+
+                &:hover .icon-svg {
+                  fill: #007bff;
+                }
+              }
+            }
+          }
+
+          &.open .dropdown-menu {
+            display: flex;
+          }
         }
       }
-    }
-    .login-menu {
-      padding-top: 1rem;
-      margin-top: 1rem;
-      border-top: 1px solid $border-color;
-    }
 
-    // ✨ [수정] 모바일 드롭다운 로직 (아코디언)
-    .header-dropdown {
-      width: 100%;
+      /* === 로그인 / 프로필 메뉴 === */
+      &.login-menu {
+        gap: 20px;
+        position: relative;
 
-      .dropdown-toggle {
-        display: flex;
-        justify-content: space-between; // 화살표를 오른쪽으로
-        align-items: center;
-        width: 100%;
-        padding: 1rem 0;
-      }
+        .signup-btn {
+          background-color: #007bff;
+          color: #fff;
+          padding: 6px 16px;
+          border-radius: 20px;
+          font-weight: 600;
+          transition: background 0.2s ease;
 
-      .dropdown-menu {
-        position: static; // 데스크톱 스타일 덮어쓰기
-        transform: none;
-        left: auto;
-        top: auto;
-        opacity: 1; // max-height로 제어하므로 opacity/visibility는 불필요
-        visibility: visible;
-        box-shadow: none;
-        border: none;
-        width: 100%;
-        padding: 0 0 0 1rem; // 닫혔을 때 top/bottom 패딩 제거
-        max-height: 0; // [수정] 기본적으로 닫힘
-        overflow: hidden; // [수정] 내용 숨김
-        transition: all 0.3s ease-in-out;
-      }
+          &:hover {
+            background-color: #0056b3;
+          }
+        }
 
-      // 모바일에서 .open 클래스가 적용되었을 때
-      &.open {
-        .dropdown-menu {
-          max-height: 500px; // [수정] 충분한 높이로 펼침
-          padding: 0.75rem 0 0.75rem 1rem; // [수정] 열렸을 때 패딩 적용
+        .profile-circle {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background-color: #007bff;
+          color: #fff;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          font-size: 1rem;
+          border: none;
+          outline: none;
+          transition: background 0.2s ease;
+
+          &:hover {
+            background-color: #0056b3;
+          }
+        }
+
+        /* === 프로필 드롭다운 === */
+        .header-dropdown {
+          .dropdown-toggle {
+            /* ▼ 아이콘 제거 */
+            &::after {
+              display: none;
+            }
+          }
+
+          .dropdown-menu {
+            right: 0; /* ✅ 오른쪽 정렬로 잘림 방지 */
+            left: auto;
+            top: 42px;
+            position: absolute;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            min-width: 160px;
+            display: none;
+            flex-direction: column;
+            z-index: 10;
+            overflow: hidden;
+
+            li {
+              width: 100%;
+
+              a,
+              button {
+                width: 100%;
+                text-align: left;
+                padding: 10px 16px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 0.95rem;
+                color: #333;
+                transition: background 0.2s ease;
+                border: none;
+                background: none;
+
+                &:hover {
+                  background-color: #f1f5f9;
+                  color: #007bff;
+                }
+
+                .icon-svg {
+                  width: 18px;
+                  height: 18px;
+                  fill: #666;
+                  transition: fill 0.2s ease;
+                }
+
+                &:hover .icon-svg {
+                  fill: #007bff;
+                }
+              }
+
+              .btn-logout {
+                color: #dc3545;
+                &:hover {
+                  background-color: #ffe6e6;
+                  color: #b30000;
+                }
+              }
+            }
+          }
+
+          &.open .dropdown-menu {
+            display: flex;
+          }
         }
       }
     }
   }
 }
+

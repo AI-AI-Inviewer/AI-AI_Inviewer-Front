@@ -1,19 +1,24 @@
-$primary-color: #5a67d8;
-$border-color: #e2e8f0;
-$text-color: #2d3748;
-$text-light: #718096;
-$background-color: #f7fafc;
-$card-background: #ffffff;
+/*==================================================
+  공통 변수
+==================================================*/
+$primary-color: #0071ce; // 버튼, 강조 색
+$border-color: #e1e1e1;  // 카드/선
+$text-color: #333;        // 메인 텍스트
+$text-light: #666;        // 서브 텍스트
+$background-color: #f5f6f8; // 페이지 배경
+$card-background: #fff;
 $bookmark-color: #f6e05e;
 $font-family: "Noto Sans KR", sans-serif;
 
+/*==================================================
+  전체 레이아웃
+==================================================*/
 .cl-wrapper {
   display: flex;
   gap: 2rem;
   max-width: 1200px;
   margin: 3rem auto;
-  padding: 0 2rem;
-  padding-top: 50px;
+  padding: 50px 2rem 0;
   font-family: $font-family;
 }
 
@@ -22,8 +27,8 @@ $font-family: "Noto Sans KR", sans-serif;
 
   .sidebar-search {
     width: 100%;
-    padding: 12px 15px;
-    border-radius: 8px;
+    padding: 10px 12px;
+    border-radius: 4px;
     border: 1px solid $border-color;
     font-size: 1rem;
     margin-bottom: 1.5rem;
@@ -48,8 +53,8 @@ $font-family: "Noto Sans KR", sans-serif;
 
     select {
       width: 100%;
-      padding: 12px;
-      border-radius: 8px;
+      padding: 10px 12px;
+      border-radius: 4px;
       border: 1px solid $border-color;
       background-color: $card-background;
       font-size: 1rem;
@@ -59,11 +64,11 @@ $font-family: "Noto Sans KR", sans-serif;
 
   .bookmark-btn {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     font-size: 1rem;
     font-weight: 600;
     border: 1px solid $border-color;
-    border-radius: 8px;
+    border-radius: 4px;
     cursor: pointer;
     background-color: $card-background;
     color: $text-color;
@@ -75,9 +80,8 @@ $font-family: "Noto Sans KR", sans-serif;
     }
 
     &.active {
-      background-color: $bookmark-color;
-      border-color: $bookmark-color;
-      color: $text-color;
+      background-color: $primary-color;
+      color: #fff;
       font-weight: 700;
     }
   }
@@ -92,14 +96,14 @@ $font-family: "Noto Sans KR", sans-serif;
     margin-top: 0;
     margin-bottom: 2rem;
     color: $text-color;
-    padding-bottom: 1rem;
+    padding-bottom: 0.8rem;
     border-bottom: 2px solid $border-color;
   }
 
   .cl-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: 1rem;
   }
 
   .cl-card-wrapper {
@@ -110,25 +114,25 @@ $font-family: "Noto Sans KR", sans-serif;
       flex-direction: column;
       justify-content: space-between;
       height: 100%;
-      padding: 1.5rem;
+      padding: 1.2rem;
       background: $card-background;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
       text-decoration: none;
       color: $text-color;
       transition: all 0.2s ease-in-out;
-      border: 1px solid transparent;
+      border: 1px solid $border-color;
 
       &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         border-color: $primary-color;
       }
 
       .cl-card-title {
-        font-weight: 600;
+        font-weight: 700;
         font-size: 1.1rem;
-        margin-bottom: 1rem;
+        margin-bottom: 0.6rem;
         line-height: 1.4;
       }
 
@@ -140,10 +144,10 @@ $font-family: "Noto Sans KR", sans-serif;
         color: $text-light;
 
         span:first-child {
-          background-color: #ebf4ff;
-          color: #3182ce;
-          padding: 4px 10px;
-          border-radius: 20px;
+          background-color: $primary-color;
+          color: #fff;
+          padding: 3px 8px;
+          border-radius: 12px;
           font-weight: 500;
         }
       }
@@ -151,16 +155,14 @@ $font-family: "Noto Sans KR", sans-serif;
 
     .bookmark-toggle {
       position: absolute;
-      top: 12px;
-      right: 12px;
+      top: 10px;
+      right: 10px;
       background: none;
       border: none;
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       cursor: pointer;
       color: #cbd5e0;
       transition: all 0.2s ease;
-      padding: 5px;
-      line-height: 1;
 
       &:hover {
         transform: scale(1.2);
@@ -178,7 +180,7 @@ $font-family: "Noto Sans KR", sans-serif;
     padding: 4rem 2rem;
     color: $text-light;
     background-color: #fdfdfd;
-    border: 1px dashed $border-color;
+    border: 1px solid $border-color;
     border-radius: 12px;
 
     p {
@@ -188,3 +190,33 @@ $font-family: "Noto Sans KR", sans-serif;
     }
   }
 }
+
+/*==================================================
+  다크 모드
+==================================================*/
+body.dark-mode {
+  background-color: #1a1a1a;
+  color: #eee;
+
+  .cl-wrapper, .cl-card {
+    background-color: #2a2a2a;
+    color: #eee;
+    border-color: #444;
+  }
+
+  .cl-sidebar .bookmark-btn.active {
+    background-color: #f6e05e;
+    color: #333;
+  }
+
+  .cl-card-info span:first-child {
+    background-color: #3182ce;
+    color: #fff;
+  }
+
+  .no-results {
+    background-color: #222;
+    border-color: #444;
+  }
+}
+

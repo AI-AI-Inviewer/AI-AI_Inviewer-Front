@@ -173,20 +173,3 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     }
   }
 }
-
-/* 반응형 */
-@media (max-width: 768px) {
-  .mypage-container {
-    flex-direction: column;
-  }
-  .sidebar {
-    flex-direction: row;
-    flex: 1;
-    width: 100%;
-    justify-content: space-around;
-    .nav-link {
-      flex: 1;
-      justify-content: center;
-    }
-  }
-}

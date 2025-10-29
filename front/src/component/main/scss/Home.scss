@@ -206,30 +206,3 @@
     }
   }
 }
-
-@media (max-width: 1200px) {
-  .home section { padding: 80px 30px; }
-  .home h2 { font-size: 2.2rem; }
-  .hero-content h1 { font-size: 2.8rem; }
-}
-
-@media (max-width: 992px) {
-  .home h2 { font-size: 2rem; }
-  .how-it-works .steps-grid,
-  .features .features-grid,
-  .testimonials .testimonials-grid {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-  }
-  .how-it-works .steps-grid::before {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .home section { padding: 60px 20px; }
-  .hero { padding: 100px 20px; }
-  .hero-content h1 { font-size: 2.2rem; }
-  .hero-content p { font-size: 1.1rem; }
-  .search-reset-bar, .filter-controls { flex-direction: column; }
-}
