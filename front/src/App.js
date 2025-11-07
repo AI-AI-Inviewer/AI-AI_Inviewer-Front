@@ -7,7 +7,6 @@ import { ThemeProvider } from './component/common/js/ThemeContext';
 
 import Header from './component/header/js/Header';
 import Footer from './component/footer/js/Footer';
-import AppLayout from './component/common/js/AppLayout';
 
 import Home from './component/main/js/Home';
 import SignIn from "./component/sign/js/SignIn";
@@ -25,6 +24,7 @@ import PostScriptWrite from "./component/community/js/PostScript-write";
 import PostScriptDetail from "./component/community/js/PostScriptDetail";
 import JobPosting from "./component/jobposting/js/JobPosting";
 import ScrollToTop from "./component/common/js/ScrollToTop";
+import AppLayout from './component/common/js/AppLayout';
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";

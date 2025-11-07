@@ -1,16 +1,4 @@
-/* =========================================
-   global.scss
-   - 모든 페이지 기본 스타일
-   - 공통 레이아웃
-   - PC/노트북 전용 반응형 (1024px 이상)
-   - 다크/라이트 모드 지원
-========================================= */
-
-/* -------------------------------
-   CSS 변수
---------------------------------- */
 :root {
-  /* 라이트 모드 컬러 */
   --color-bg: #f5f5f5;
   --color-bg-alt: #ffffff;
   --color-text: #222222;
@@ -22,14 +10,14 @@
 }
 
 [data-theme='dark'] {
-  --color-bg: #121212;
-  --color-bg-alt: #1e1e1e;
-  --color-text: #f0f0f0;
+  --color-bg: #333333;
+  --color-bg-alt: #333333;
+  --color-text: #ffffff;
   --color-primary: #4a90e2;
-  --color-secondary: #aaaaaa;
-  --color-header: #1e1e1e;
-  --color-footer: #1a1a1a;
-  --color-border: #333333;
+  --color-secondary: #cecece;
+  --color-header: #333333;
+  --color-footer: #333333;
+  --color-border: #888888;
 }
 
 /* -------------------------------
@@ -69,13 +57,12 @@ button {
    PC/노트북 전용 반응형
 --------------------------------- */
 @media screen and (min-width: 1024px) {
-  /* Header */
   .header {
     background-color: var(--color-header);
     display: flex;
     justify-content: center;
     border-bottom: 1px solid var(--color-border);
-    height: 70px; /* 헤더 높이 */
+    height: 70px;
     font-size: 16px;
     position: sticky;
     top: 0;
@@ -92,7 +79,7 @@ button {
   }
 
   .logo {
-    font-size: 26px; /* 로고 크기 */
+    font-size: 26px;
     font-weight: 700;
     color: var(--color-text);
   }
@@ -105,7 +92,7 @@ button {
   .nav-list {
     display: flex;
     align-items: center;
-    gap: 24px; /* 메뉴 간격 */
+    gap: 24px;
   }
 
   .header-dropdown {
@@ -174,7 +161,6 @@ button {
     }
   }
 
-  /* Footer */
   .footer {
     background-color: var(--color-footer);
     color: var(--color-text);

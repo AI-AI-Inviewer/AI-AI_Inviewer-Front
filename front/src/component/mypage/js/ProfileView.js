@@ -1,6 +1,7 @@
 import pic from "../../imgs/profile.jpg";
 
 const ProfileView = ({ userInfo, onGoToEdit }) => {
+
     return (
         <div className="profile-view">
             <h2 className="tab-title">내 프로필</h2>
