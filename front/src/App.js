@@ -29,6 +29,8 @@ import AppLayout from './component/common/js/AppLayout';
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getMyInfo } from "./api/user";
+import Interview from "./component/interview/js/Interview";
+import VoiceInterview from "./component/interview/js/VoiceInterview";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -80,6 +82,8 @@ function App() {
                                 <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
                                 <Route path="/AiInviewer" element={<AiInviewer bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />} />
                                 <Route path="/JobPosting" element={<JobPosting />} />
+                                <Route path="/Interview" element={<Interview />} />
+                                <Route path="/VoiceInterview" element={<VoiceInterview />} />
                                 <Route path="/CL" element={<CL />} />
                                 <Route path="/CL/:id" element={<CLDetail />} />
                                 <Route path="/feedback" element={<FeedBack isLoggedIn={isLoggedIn} />} />
