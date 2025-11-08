@@ -173,3 +173,117 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     }
   }
 }
+
+/* =========================================================
+   ProfileView 전용 모달 스타일 (네임스페이스: pv-*)
+   - 기존 스타일과 충돌 방지를 위해 모든 클래스에 pv- 접두어 사용
+   - 컴포넌트에서는 .modal-* 대신 .pv-modal-* 클래스를 사용하세요
+   ========================================================= */
+
+.pv-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100; // 상단 보장
+  padding: 16px;
+}
+
+.pv-modal-card {
+  width: min(480px, 92vw);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  padding: 18px 20px;
+
+  // 모달 내부 입력/라벨 공통 스타일 (국소 적용)
+  .pv-form-label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    small {
+      font-size: 0.85rem;
+      color: $text-light-color;
+      font-weight: 600;
+    }
+
+    input,
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: #fff;
+
+      &:focus {
+        outline: none;
+        border-color: #6c63ff;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+      }
+    }
+  }
+}
+
+.pv-modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 2px 2px 12px;
+  color: #1f2937;
+}
+
+.pv-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pv-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+
+  .pv-btn {
+    min-width: 110px;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    &.pv-outline {
+      background: #eef2ff;
+      color: #374151;
+    }
+
+    &.pv-primary {
+      background: $primary-color;
+      color: #fff;
+    }
+
+    &.pv-danger {
+      background: #ef4444;
+      color: #fff;
+    }
+  }
+}
+
+/* 반응형 (모달) */
+@media (max-width: 640px) {
+  .pv-modal-card {
+    width: 100%;
+    border-radius: 10px;
+    padding: 14px;
+  }
+}

@@ -45,7 +45,7 @@ const FeedBackWrite = () => {
 
     return (
         <div className="feedback-container">
-            <h2>피드백 작성</h2>
+            <h2>글 작성</h2>
             <form onSubmit={handleSubmit} className="feedback-form">
                 <label>
                     제목
