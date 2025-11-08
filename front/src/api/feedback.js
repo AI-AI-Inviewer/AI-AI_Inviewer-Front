@@ -1,4 +1,3 @@
-// src/api/feedback.js
 import api from './axiosInstance';
 
 const FEEDBACK_BASE = '/community';

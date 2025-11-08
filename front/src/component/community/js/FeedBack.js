@@ -1,7 +1,6 @@
-// src/component/community/js/FeedBack.js
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import api from '../../../api/axiosInstance'; // ← 공통 axios 인스턴스
+import api from '../../../api/axiosInstance';
 import '../scss/FeedBack.scss';
 
 const FeedBack = ({ isLoggedIn }) => {

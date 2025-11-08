@@ -1,160 +1,175 @@
-/* 변수 */
-:root {
-  --primary-color: #5865f2;
-  --border-color: #e3e5e8;
-  --background-color: #f8f9fa;
-  --text-dark: #212529;
-  --text-light: #5c677d;
-  --white-color: #ffffff;
-  --radius: 12px;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-}
+$primary-color: #5865f2;
+$border-color: #e3e5e8;
+$background-color: #f8f9fa;
+$text-color: #2e3338;
+$text-light-color: #5c677d;
+$white-color: #fff;
+$font-family: 'Pretendard', sans-serif;
+$radius: 8px;
 
 .job-posting-wrapper {
-  background-color: var(--background-color);
-  padding: 4rem 1rem 2rem; /* ✨ 상단 여백 수정 */
-  min-height: 100%;
+  width: 100%;
+  max-width: 1200px;
+  margin: 1.5rem auto;
+  padding: 1rem 2rem;
+  font-family: $font-family;
+  box-sizing: border-box;
 }
 
-.job-posting-container {
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-/* 헤더 - 삭제되었으므로 스타일도 제거 */
-// .jp-header { ... }
-
-/* 필터 컨트롤 */
 .filter-controls {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  justify-content: space-between;
   margin-bottom: 1.5rem;
-  flex-wrap: wrap;
 
   .search-box-wrapper {
     flex-grow: 1;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    background-color: var(--white-color);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius);
+    background-color: $white-color;
+    border: 1px solid $border-color;
+    border-radius: $radius;
     padding: 0 1rem;
-    min-width: 250px;
+    transition: all 0.2s;
 
-    .search-icon { width: 1.25rem; height: 1.25rem; color: var(--text-light); fill: currentColor; }
-    .search-input { width: 100%; border: none; outline: none; padding: 0.75rem 0; font-size: 1rem; background: transparent; }
+    &:focus-within {
+      border-color: $primary-color;
+      box-shadow: 0 0 0 3px rgba($primary-color, 0.15);
+    }
+
+    .search-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: $text-light-color;
+      flex-shrink: 0;
+      fill: currentColor;
+    }
+
+    .search-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      padding: 0.75rem 0;
+      font-size: 1rem;
+      background: transparent;
+    }
   }
 
   .category-buttons {
     display: flex;
     gap: 0.5rem;
-    background-color: #e9ecef;
-    padding: 4px;
-    border-radius: 10px;
+    margin-left: 1rem;
 
     button {
-      padding: 0.5rem 1.25rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border: 1px solid $border-color;
+      border-radius: $radius;
+      background-color: $white-color;
+      font-weight: 500;
+      color: $text-light-color;
       cursor: pointer;
-      background: transparent;
-      color: var(--text-light);
       transition: all 0.2s;
 
       &.active {
-        background-color: var(--white-color);
-        color: var(--primary-color);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        border-color: $primary-color;
+        color: $primary-color;
+        font-weight: 600;
+      }
+
+      &:hover {
+        background-color: $background-color;
       }
     }
   }
 }
 
-/* 검색 결과 카운트 */
 .job-count {
-  margin-bottom: 1.5rem;
-  padding-left: 0.5rem;
-  color: var(--text-light);
-  font-size: 0.95rem;
-  strong { color: var(--text-dark); }
+  color: $text-light-color;
+  margin-bottom: 1rem;
+
+  strong {
+    color: $primary-color;
+  }
 }
 
-/* 채용 공고 그리드 */
 .job-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.75rem;
 
   .no-result {
     grid-column: 1 / -1;
     text-align: center;
     padding: 4rem 0;
-    color: var(--text-light);
-  }
-}
-
-/* 채용 공고 카드 */
-.job-card-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.job-card {
-  background-color: var(--white-color);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  padding: 1.5rem;
-  transition: all 0.2s ease-in-out;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow);
-    border-color: var(--primary-color);
+    color: $text-light-color;
   }
 
-  .job-card-header {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
+  .job-card-link {
+    text-decoration: none;
+    color: inherit;
 
-    .company-logo {
-      width: 50px;
-      height: 50px;
-      border-radius: 8px;
-      object-fit: contain;
-      border: 1px solid #f1f3f5;
+    .job-card {
+      background-color: $white-color;
+      border-radius: $radius;
+      padding: 1.25rem;
+      border: 1px solid $border-color;
+      transition: all 0.2s;
+
+      &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      .job-card-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+
+        .company-logo {
+          width: 50px;
+          height: 50px;
+          object-fit: contain;
+          border: 1px solid #f1f3f5;
+          border-radius: 4px;
+        }
+
+        .company-info {
+          h3 {
+            margin: 0 0 0.25rem;
+            font-size: 1.1rem;
+          }
+          p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: $text-color;
+          }
+        }
+      }
+
+      .job-card-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        .tag {
+          font-size: 0.8rem;
+          padding: 2px 6px;
+          border-radius: 4px;
+          background-color: #f1f3f5;
+          &.location {
+            background-color: #e3e5e8;
+          }
+          &.type {
+            background-color: $primary-color;
+            color: $white-color;
+          }
+          &.skill {
+            background-color: #f8f9fa;
+          }
+        }
+      }
     }
-
-    .company-info {
-      h3 { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.25rem; }
-      p { font-size: 0.95rem; color: var(--text-light); margin: 0; }
-    }
-  }
-
-  .job-card-tags {
-    margin-top: auto;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-
-    .tag {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-
-    .location { background-color: #e7f5ff; color: #1971c2; }
-    .type { background-color: #fff0f6; color: #d6336c; }
-    .skill { background-color: #f1f3f5; color: #495057; }
   }
 }

@@ -1,222 +1,144 @@
-/*==================================================
-  공통 변수
-==================================================*/
-$primary-color: #0071ce; // 버튼, 강조 색
-$border-color: #e1e1e1;  // 카드/선
-$text-color: #333;        // 메인 텍스트
-$text-light: #666;        // 서브 텍스트
-$background-color: #f5f6f8; // 페이지 배경
-$card-background: #fff;
-$bookmark-color: #f6e05e;
-$font-family: "Noto Sans KR", sans-serif;
-
-/*==================================================
-  전체 레이아웃
-==================================================*/
 .cl-wrapper {
   display: flex;
-  gap: 2rem;
-  max-width: 1200px;
-  margin: 3rem auto;
-  padding: 50px 2rem 0;
-  font-family: $font-family;
-}
+  gap: 1rem;
+  padding: 2rem;
+  font-family: 'Noto Sans KR', sans-serif;
 
-.cl-sidebar {
-  flex: 0 0 240px;
-
-  .sidebar-search {
-    width: 100%;
-    padding: 10px 12px;
-    border-radius: 4px;
-    border: 1px solid $border-color;
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-    box-sizing: border-box;
-
-    &:focus {
-      outline: none;
-      border-color: $primary-color;
-      box-shadow: 0 0 0 3px rgba($primary-color, 0.2);
-    }
-  }
-
-  .category-select {
-    margin-bottom: 1.5rem;
-
-    label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: $text-color;
-    }
-
-    select {
-      width: 100%;
-      padding: 10px 12px;
-      border-radius: 4px;
-      border: 1px solid $border-color;
-      background-color: $card-background;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-  }
-
-  .bookmark-btn {
-    width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    font-weight: 600;
-    border: 1px solid $border-color;
-    border-radius: 4px;
-    cursor: pointer;
-    background-color: $card-background;
-    color: $text-color;
-    transition: all 0.2s ease;
-
-    &:hover {
-      border-color: $primary-color;
-      color: $primary-color;
-    }
-
-    &.active {
-      background-color: $primary-color;
-      color: #fff;
-      font-weight: 700;
-    }
-  }
-}
-
-.cl-main {
-  flex: 1;
-
-  h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-top: 0;
-    margin-bottom: 2rem;
-    color: $text-color;
-    padding-bottom: 0.8rem;
-    border-bottom: 2px solid $border-color;
-  }
-
-  .cl-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  .cl-sidebar {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
-  }
 
-  .cl-card-wrapper {
-    position: relative;
+    input.sidebar-search {
+      padding: 0.5rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      outline: none;
+      transition: border-color 0.3s;
 
-    .cl-card {
+      &:focus {
+        border-color: #6b5ddc;
+      }
+    }
+
+    .category-select {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      height: 100%;
-      padding: 1.2rem;
-      background: $card-background;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      text-decoration: none;
-      color: $text-color;
-      transition: all 0.2s ease-in-out;
-      border: 1px solid $border-color;
+      gap: 0.3rem;
 
-      &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        border-color: $primary-color;
-      }
+      select {
+        padding: 0.5rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        cursor: pointer;
+        transition: border-color 0.3s;
 
-      .cl-card-title {
-        font-weight: 700;
-        font-size: 1.1rem;
-        margin-bottom: 0.6rem;
-        line-height: 1.4;
-      }
-
-      .cl-card-info {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 0.85rem;
-        color: $text-light;
-
-        span:first-child {
-          background-color: $primary-color;
-          color: #fff;
-          padding: 3px 8px;
-          border-radius: 12px;
-          font-weight: 500;
+        &:focus {
+          border-color: #6b5ddc;
         }
       }
     }
 
-    .bookmark-toggle {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: none;
+    .bookmark-btn {
+      padding: 0.5rem;
+      border-radius: 8px;
       border: none;
-      font-size: 1.4rem;
+      background: #f0f0f0;
       cursor: pointer;
-      color: #cbd5e0;
-      transition: all 0.2s ease;
+      font-weight: bold;
+      transition: background 0.3s;
+
+      &.active {
+        background: #ffe58a;
+      }
 
       &:hover {
-        transform: scale(1.2);
-        color: $bookmark-color;
-      }
-
-      &.bookmarked {
-        color: $bookmark-color;
+        background: #e0e0e0;
       }
     }
   }
 
-  .no-results {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: $text-light;
-    background-color: #fdfdfd;
-    border: 1px solid $border-color;
-    border-radius: 12px;
+  .cl-main {
+    flex: 1;
 
-    p {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 500;
+    .cl-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+
+      .cl-card-wrapper {
+        .cl-card {
+          display: flex;
+          flex-direction: column;
+          background: #ffffff;
+          border-radius: 12px;
+          padding: 1rem;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+          text-decoration: none;
+          color: #333;
+          transition: transform 0.2s, box-shadow 0.2s;
+
+          &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+          }
+
+          .cl-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .cl-card-title {
+              font-size: 1.1rem;
+              font-weight: 600;
+              margin-bottom: 0.5rem;
+            }
+
+            .bookmark-toggle {
+              font-size: 1.2rem;
+              background: none;
+              border: none;
+              cursor: pointer;
+              transition: transform 0.2s;
+
+              &:hover {
+                transform: scale(1.2);
+              }
+
+              &.bookmarked {
+                color: #ffd700;
+              }
+            }
+          }
+
+          .cl-card-content {
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            color: #666;
+          }
+
+          .cl-card-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #999;
+
+            .cl-category {
+              background: #f5f5f5;
+              padding: 0.2rem 0.5rem;
+              border-radius: 6px;
+            }
+          }
+        }
+      }
+
+      .no-results {
+        grid-column: 1/-1;
+        text-align: center;
+        color: #999;
+        font-size: 1rem;
+      }
     }
   }
 }
-
-/*==================================================
-  다크 모드
-==================================================*/
-body.dark-mode {
-  background-color: #1a1a1a;
-  color: #eee;
-
-  .cl-wrapper, .cl-card {
-    background-color: #2a2a2a;
-    color: #eee;
-    border-color: #444;
-  }
-
-  .cl-sidebar .bookmark-btn.active {
-    background-color: #f6e05e;
-    color: #333;
-  }
-
-  .cl-card-info span:first-child {
-    background-color: #3182ce;
-    color: #fff;
-  }
-
-  .no-results {
-    background-color: #222;
-    border-color: #444;
-  }
-}
-

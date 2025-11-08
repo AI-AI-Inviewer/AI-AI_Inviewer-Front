@@ -1,163 +1,94 @@
-/* src/scss/SignUp.scss */
 .signup-container {
-  max-width: 480px;
-  margin: 6rem auto;
-  padding: 3rem 2.5rem;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  font-family: "Noto Sans KR", sans-serif;
-  color: #222;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  font-family: 'Noto Sans KR', sans-serif;
 
-  h2 {
+  .signup-card {
+    background: #fff;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    width: 400px;
     text-align: center;
-    font-size: 1.8rem;
-    font-weight: 600;
-    margin-bottom: 2rem;
-    color: #111;
-  }
+    transition: transform 0.2s;
+    &:hover { transform: translateY(-3px); }
 
-  .signup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
+    h2 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      font-weight: 600;
+      color: #333;
+    }
 
-    label {
+    .signup-form {
       display: flex;
       flex-direction: column;
-      font-size: 0.9rem;
-      font-weight: 500;
-      color: #555;
+      gap: 18px;
 
-      input {
-        width: 100%;
-        padding: 0.8rem 1rem;
-        margin-top: 0.5rem;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        font-size: 0.95rem;
-        transition: border-color 0.2s, box-shadow 0.2s;
-
-        &:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
-          outline: none;
-        }
-      }
-
-      /* 아이디/닉네임 중복 확인 버튼 구역 */
-      div {
+      .input-label {
         display: flex;
-        gap: 0.6rem;
-        margin-top: 0.5rem;
+        flex-direction: column;
+        text-align: left;
+        font-size: 14px;
+        color: #555;
 
         input {
-          flex: 1;
-        }
-
-        button {
-          flex-shrink: 0;
-          padding: 0.7rem 1rem;
-          border-radius: 10px;
-          border: none;
-          background-color: #2563eb;
-          color: #fff;
-          font-size: 0.85rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: background 0.3s, transform 0.1s;
-
-          &:hover {
-            background-color: #1e40af;
-          }
-
-          &:active {
-            transform: scale(0.97);
+          margin-top: 6px;
+          padding: 12px 14px;
+          border-radius: 8px;
+          border: 1px solid #ddd;
+          font-size: 14px;
+          transition: border 0.2s;
+          &:focus {
+            border-color: #5b9fff;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(91, 159, 255, 0.2);
           }
         }
+
+        .input-with-btn {
+          display: flex;
+          gap: 8px;
+          input { flex: 1; }
+          button {
+            padding: 0 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #5b9fff;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.2s;
+            &:hover { background-color: #4080ff; }
+            &:disabled { background-color: #aaa; cursor: not-allowed; }
+          }
+        }
+      }
+
+      .signup-btn {
+        margin-top: 10px;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background-color: #5b9fff;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.2s, transform 0.2s;
+        &:hover { background-color: #4080ff; transform: translateY(-2px); }
       }
     }
 
-    /* 에러 메시지 */
-    .error-msg {
-      color: #ef4444;
-      font-size: 0.85rem;
-      text-align: center;
-      margin-top: -0.5rem;
-    }
-
-    /* 회원가입 버튼 */
-    button[type="submit"] {
-      margin-top: 1rem;
-      padding: 0.9rem 0;
-      border: none;
-      border-radius: 10px;
-      background-color: #2563eb;
-      color: #fff;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.1s;
-
-      &:hover {
-        background-color: #1e40af;
-      }
-
-      &:active {
-        transform: scale(0.98);
-      }
-    }
-  }
-
-  .form-divider {
-    position: relative;
-    text-align: center;
-    margin-top: 2rem;
-
-    /* 구분선 라인 */
-    &::before {
-      content: '';
-      position: absolute;
-      top: 30%;
-      left: 0;
-      width: 100%;
-      border-top: 1px solid #d1d5db;
-      z-index: 1;
-    }
-
-    /* 구분선 위의 텍스트 */
-    span {
-      position: relative;
-      z-index: 2;
-      background-color: #ffffff;
-      padding: 0 0.75rem;
-      color: #6b7280;
-      font-size: 0.875rem;
-    }
-  }
-
-  .signin-link {
-    margin-top: 2rem;
-
-    a {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100%;
-      padding: 0.75rem 1rem;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      background-color: #ffffff;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-      color: #374151;
-      font-size: 0.875rem;
-      font-weight: 500;
-      text-decoration: none;
-      transition: background-color 0.2s;
-
-      &:hover {
-        background-color: #f9fafb;
-
+    .form-footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #555;
+      a {
+        color: #5b9fff;
+        text-decoration: none;
+        &:hover { text-decoration: underline; }
       }
     }
   }

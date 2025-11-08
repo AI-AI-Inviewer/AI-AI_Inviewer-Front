@@ -1,4 +1,3 @@
-// src/api/comment.js
 import api from './axiosInstance';
 
 const COMMENT_BASE = '/comments';

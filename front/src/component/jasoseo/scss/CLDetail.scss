@@ -1,77 +1,93 @@
-/* CLDetail.scss */
+$primary-color: #5865f2;
+$border-color: #e3e5e8;
+$background-color: #f8f9fa;
+$text-color: #2e3338;
+$text-light-color: #5c677d;
+$white-color: #fff;
+$font-family: 'Pretendard', sans-serif;
+$radius: 8px;
+
 .cl-detail-container {
   max-width: 800px;
-  margin: 3rem auto;
+  margin: 2rem auto;
   padding: 2rem;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.05);
-  font-family: "Noto Sans KR", sans-serif;
+  background-color: $white-color;
+  border-radius: $radius;
+  border: 1px solid $border-color;
+  font-family: $font-family;
+  box-sizing: border-box;
 
   .cl-detail-title {
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    color: #333;
     margin-bottom: 0.5rem;
+    color: $text-color;
   }
 
   .cl-detail-meta {
     font-size: 0.9rem;
-    color: #888;
+    color: $text-light-color;
     margin-bottom: 1.5rem;
   }
 
   .cl-detail-content {
     font-size: 1rem;
     line-height: 1.6;
-    color: #444;
+    color: $text-color;
     margin-bottom: 1.5rem;
+    white-space: pre-line; /* 줄바꿈 유지 */
   }
 
   .cl-preview {
     margin-bottom: 1.5rem;
-
     img {
       width: 100%;
-      border-radius: 12px;
+      border-radius: $radius;
+      border: 1px solid $border-color;
     }
   }
 
   .cl-download {
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
 
     .download-btn {
       display: inline-block;
-      padding: 0.6rem 1.2rem;
-      background: #007bff;
-      color: #fff;
-      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      background-color: $primary-color;
+      color: $white-color;
+      border-radius: $radius;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 500;
       transition: all 0.2s;
 
       &:hover {
-        background: #0056b3;
+        background-color: darken($primary-color, 10%);
       }
     }
   }
 
   .btn-wrapper {
-    text-align: right;
+    display: flex;
+    justify-content: flex-start;
 
     .back-btn {
       display: inline-block;
       padding: 0.5rem 1rem;
-      background: #f0f0f0;
-      color: #333;
-      border-radius: 8px;
+      border: 1px solid $border-color;
+      border-radius: $radius;
+      background-color: $white-color;
+      color: $text-color;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 500;
       transition: all 0.2s;
 
       &:hover {
-        background: #e0e0e0;
+        background-color: $background-color;
       }
     }
+  }
+
+  p {
+    margin: 0;
   }
 }

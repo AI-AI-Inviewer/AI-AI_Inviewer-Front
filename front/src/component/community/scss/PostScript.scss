@@ -1,4 +1,3 @@
-/* src/component/community/scss/PostScript.scss */
 .postscript-container {
   max-width: 900px;
   margin: 2rem auto;
@@ -14,7 +13,6 @@
     padding-bottom: 0.5rem;
   }
 
-  /* 검색창 */
   .search-container {
     display: flex;
     margin-bottom: 1.5rem;
@@ -26,6 +24,7 @@
       border-radius: 8px 0 0 8px;
       outline: none;
       font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
 
       &:focus {
         border-color: #5a67d8;
@@ -49,7 +48,6 @@
     }
   }
 
-  /* 한 줄 리스트 (FeedBack 스타일 매칭) */
   .postscript-list {
     display: grid;
     gap: 0.75rem;
@@ -59,7 +57,6 @@
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-
       background: #fff;
       padding: 0.9rem 1.1rem;
       border-radius: 12px;
@@ -79,8 +76,6 @@
         font-size: 1.05rem;
         font-weight: 600;
         color: #2d3748;
-
-        /* 한 줄 말줄임 */
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -93,8 +88,8 @@
         font-size: 0.86rem;
         color: #718096;
 
-        .author {}
-        .date {}
+        .author,
+        .date,
         .views {}
       }
     }
@@ -106,7 +101,6 @@
     }
   }
 
-  /* 페이지네이션 */
   .pagination {
     display: flex;
     justify-content: center;
@@ -119,8 +113,8 @@
       text-decoration: none;
       color: #4a5568;
       font-weight: 500;
-      transition: all 0.2s;
       border: 1px solid #cbd5e0;
+      transition: all 0.2s;
 
       &:hover {
         background: #edf2f7;
@@ -134,7 +128,6 @@
     }
   }
 
-  /* 글쓰기 버튼 (Floating Action Button) */
   .write-btn {
     position: fixed;
     right: 2rem;
@@ -151,10 +144,36 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     transition: background 0.2s;
     text-decoration: none;
-    z-index: 1000; /* 가림 방지 */
+    z-index: 1000;
 
     &:hover {
       background: #4c51bf;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .postscript-container {
+    padding: 0 1rem;
+
+    .search-container {
+      flex-direction: column;
+
+      .search-input,
+      .search-btn {
+        width: 100%;
+        border-radius: 8px;
+      }
+
+      .search-btn {
+        margin-top: 0.5rem;
+      }
+    }
+
+    .postscript-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
     }
   }
 }

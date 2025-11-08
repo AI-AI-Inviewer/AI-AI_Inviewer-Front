@@ -236,7 +236,8 @@ $radius: 8px;
     justify-content: space-between;
     align-items: center;
     .badge {
-      background-color: #f1f3f5;
+      background-color: $primary-color;
+      color: $white-color;
       padding: 4px 8px;
       border-radius: 4px;
       font-size: 0.8rem;

@@ -1,5 +1,5 @@
 .postscript-container {
-  font-family: 'Noto Sans KR', sans-serif; // ✅ 폰트 적용
+  font-family: 'Noto Sans KR', sans-serif;
   max-width: 700px;
   margin: 40px auto;
   padding: 25px;
@@ -68,6 +68,19 @@
 
       &:active {
         transform: scale(0.97);
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .postscript-container {
+    padding: 20px;
+
+    .postscript-form {
+      button {
+        width: 100%;
+        align-self: stretch;
       }
     }
   }

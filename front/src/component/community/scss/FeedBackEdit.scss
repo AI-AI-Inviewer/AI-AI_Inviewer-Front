@@ -1,4 +1,3 @@
-
 .feedback-container,
 .feedback-detail-container {
   max-width: 700px;
@@ -20,7 +19,6 @@
     padding-bottom: 0.5rem;
   }
 
-  /* 폼 래퍼: 기존 edit-form & 새 feedback-form 동시 지원 */
   .feedback-form,
   .edit-form {
     display: flex;
@@ -61,7 +59,6 @@
       }
     }
 
-    /* 버튼: Bootstrap .btn도 오버라이드 */
     button,
     .btn {
       margin-top: 1rem;
@@ -81,6 +78,21 @@
 
       &:active {
         background: #434190;
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .feedback-container,
+  .feedback-detail-container {
+    padding: 1.5rem 1rem;
+
+    .feedback-form,
+    .edit-form {
+      button,
+      .btn {
+        width: 100%;
       }
     }
   }

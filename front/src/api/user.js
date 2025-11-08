@@ -1,4 +1,3 @@
-// src/api/user.js
 import api from './axiosInstance';
 
 const USER_BASE = '/user';

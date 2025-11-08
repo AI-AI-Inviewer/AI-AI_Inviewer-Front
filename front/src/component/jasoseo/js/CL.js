@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../scss/CL.scss';
 
-// 카테고리 목록 (데이터에 맞춰 추가)
 const categories = ['전체', '개발', '기획', '마케팅', '디자인', '영업', '데이터'];
 
-// 데이터 샘플 확장 및 'category' 필드 추가
 const coverLetters = [
     {id: 1, title: "[개발] 백엔드 신입 개발자 자소서", content: "마이크로서비스 아키텍처 경험을 강조한 백엔드 개발자 자소서 샘플입니다.", date: "2025-06-15", writer: "dev_master", category: "개발", file: "jasoseo_file/개발자 자소서.docx", jasoseo_name: "백엔드 신입 개발자 자소서.docx"},
     {id: 2, title: "[기획] 신사업 기획자 자소서", content: "시장 분석과 데이터 기반 의사결정 능력을 어필한 기획 직무 자소서 샘플입니다.", date: "2025-06-01", writer: "planner_lee", category: "기획", file: "jasoseo_file/기획자 자소서.docx", jasoseo_name: "신사업 기획자 자소서.docx"},
@@ -19,22 +17,18 @@ const coverLetters = [
     {id: 10, title: "[개발] 안드로이드 개발자 경력 자소서", content: "Kotlin 기반 앱 성능 최적화 및 신규 기능 개발 리딩 경험을 어필했습니다.", date: "2025-07-01", writer: "android_pro", category: "개발", file: "jasoseo_file/개발자 자소서.docx", jasoseo_name: "안드로이드 개발자 경.docx"},
 ];
 
-
 const CL = () => {
     const [selectedCategory, setSelectedCategory] = useState('전체');
     const [searchText, setSearchText] = useState('');
-    const [bookmarkActive, setBookmarkActive] = useState(false);
     const [bookmarks, setBookmarks] = useState([]);
+    const [bookmarkActive, setBookmarkActive] = useState(false);
 
-    // 필터링 로직: 카테고리 + 검색어 + 즐겨찾기
     const filteredCl = coverLetters.filter((cl) => {
         const categoryMatch = selectedCategory === '전체' || cl.category === selectedCategory;
         const searchMatch = cl.title.toLowerCase().includes(searchText.toLowerCase());
         const bookmarkMatch = !bookmarkActive || bookmarks.includes(cl.id);
         return categoryMatch && searchMatch && bookmarkMatch;
     });
-
-    const toggleBookmark = () => setBookmarkActive(!bookmarkActive);
 
     const toggleItemBookmark = (clId) => {
         if (bookmarks.includes(clId)) {
@@ -54,7 +48,6 @@ const CL = () => {
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
                 />
-
                 <div className="category-select">
                     <label htmlFor="category">직무 카테고리</label>
                     <select
@@ -63,16 +56,13 @@ const CL = () => {
                         onChange={(e) => setSelectedCategory(e.target.value)}
                     >
                         {categories.map((cat) => (
-                            <option key={cat} value={cat}>
-                                {cat}
-                            </option>
+                            <option key={cat} value={cat}>{cat}</option>
                         ))}
                     </select>
                 </div>
-
                 <button
                     className={`bookmark-btn ${bookmarkActive ? 'active' : ''}`}
-                    onClick={toggleBookmark}
+                    onClick={() => setBookmarkActive(!bookmarkActive)}
                 >
                     {bookmarkActive ? '★ 즐겨찾기만 보기' : '⭐ 즐겨찾기'}
                 </button>
@@ -83,31 +73,31 @@ const CL = () => {
                     {filteredCl.map((item) => (
                         <div key={item.id} className="cl-card-wrapper">
                             <Link to={`/cl/${item.id}`} state={item} className="cl-card">
-                                <div className="cl-card-title">{item.title}</div>
-                                <div className="cl-card-info">
-                                    <span>{item.category}</span>
-                                    <span>{item.date}</span>
+                                <div className="cl-card-header">
+                                    <h3 className="cl-card-title">{item.title}</h3>
+                                    <button
+                                        className={`bookmark-toggle ${bookmarks.includes(item.id) ? 'bookmarked' : ''}`}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            toggleItemBookmark(item.id);
+                                        }}
+                                    >
+                                        {bookmarks.includes(item.id) ? '★' : '☆'}
+                                    </button>
+                                </div>
+                                <p className="cl-card-content">{item.content}</p>
+                                <div className="cl-card-footer">
+                                    <span className="cl-category">{item.category}</span>
+                                    <span className="cl-date">{item.date}</span>
                                 </div>
                             </Link>
-                            <button
-                                className={`bookmark-toggle ${
-                                    bookmarks.includes(item.id) ? 'bookmarked' : ''
-                                }`}
-                                onClick={(e) => {
-                                    e.stopPropagation(); // Link 이동 방지
-                                    toggleItemBookmark(item.id);
-                                }}
-                            >
-                                {bookmarks.includes(item.id) ? '★' : '☆'}
-                            </button>
                         </div>
                     ))}
+                    {filteredCl.length === 0 && (
+                        <div className="no-results">검색 결과가 없습니다.</div>
+                    )}
                 </div>
-                {filteredCl.length === 0 && (
-                    <div className="no-results">
-                        <p>검색 결과가 없습니다.</p>
-                    </div>
-                )}
             </main>
         </div>
     );
