@@ -36,17 +36,17 @@ const getClaimsFromJwt = () => {
     return b64urlToJson(payload);
 };
 
-const norm = (x) => (x ?? '').toString().trim();
+const norm  = (x) => (x ?? '').toString().trim();
 const lower = (x) => norm(x).toLowerCase();
-const pick = (...vals) => vals.find((v) => v !== undefined && v !== null && norm(v) !== '');
+const pick  = (...vals) => vals.find((v) => v !== undefined && v !== null && norm(v) !== '');
 
 const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
-    const { communityNum } = useParams(); // route: /feedback/:communityNum
+    const { communityNum } = useParams(); // /feedback/:communityNum
     const navigate = useNavigate();
 
-    const [feedback, setFeedback] = useState(null);
-    const [comments, setComments] = useState([]);
-    const [input, setInput] = useState('');
+    const [feedback, setFeedback]   = useState(null);
+    const [comments, setComments]   = useState([]);
+    const [input, setInput]         = useState('');
 
     useEffect(() => {
         (async () => {
@@ -54,8 +54,8 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
                 const { data } = await api.get(`/community/${communityNum}`);
                 setFeedback(data);
 
-                const commentRes = await api.get(`/comments/${communityNum}`);
-                setComments(commentRes.data || []);
+                const res = await api.get(`/comments/${communityNum}`);
+                setComments(res.data || []);
             } catch (err) {
                 console.error('게시글/댓글 불러오기 오류:', err);
                 alert('게시글을 불러오는데 실패했습니다.');
@@ -68,11 +68,7 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         const d = parseDate(dateLike);
         return d
             ? d.toLocaleString('ko-KR', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
+                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
             })
             : '-';
     };
@@ -82,106 +78,59 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
     const me = useMemo(() => {
         const claims = getClaimsFromJwt();
         const myId = pick(
-            currentUser?.userId,
-            currentUser?.id,
-            currentUser?.userNum,
-            currentUser?.username,
-            claims.userId,
-            claims.id,
-            claims.userNum,
-            claims.username,
-            claims.sub,
-            claims.email,
+            currentUser?.userId, currentUser?.id, currentUser?.userNum, currentUser?.username,
+            claims.userId, claims.id, claims.userNum, claims.username, claims.sub, claims.email,
         );
         const myNick = pick(
-            currentUser?.userNickname,
-            currentUser?.nickname,
-            claims.userNickname,
-            claims.nickname,
-            claims.name,
+            currentUser?.userNickname, currentUser?.nickname,
+            claims.userNickname, claims.nickname, claims.name,
         );
-        const res = { myId: lower(myId), myNick: lower(myNick) };
-        if (process.env.NODE_ENV === 'development') console.debug('[ME]', res, { claims, currentUser });
-        return res;
+        return { myId: lower(myId), myNick: lower(myNick) };
     }, [currentUser]);
 
     const isPostAuthor = useMemo(() => {
         if (!loginOk || !feedback) return false;
 
         const postId = pick(
-            feedback.userId,
-            feedback.authorId,
-            feedback.writerId,
-            feedback.userNum,
-            feedback.user?.userId,
-            feedback.user?.userNum,
+            feedback.userId, feedback.authorId, feedback.writerId, feedback.userNum,
+            feedback.user?.userId, feedback.user?.userNum,
         );
         const postNick = pick(
-            feedback.userNickname,
-            feedback.authorNickname,
-            feedback.writerNickname,
-            feedback.userName,
-            feedback.user?.userNickname,
-            feedback.user?.userName,
+            feedback.userNickname, feedback.authorNickname, feedback.writerNickname, feedback.userName,
+            feedback.user?.userNickname, feedback.user?.userName,
         );
 
-        const idMatch = me.myId && lower(postId) && me.myId === lower(postId);
+        const idMatch   = me.myId && lower(postId)   && me.myId   === lower(postId);
         const nickMatch = me.myNick && lower(postNick) && me.myNick === lower(postNick);
-        if (process.env.NODE_ENV === 'development')
-            console.debug('[POST AUTHOR CHECK]', { postId, postNick, idMatch, nickMatch });
-
         return idMatch || (!idMatch && nickMatch);
     }, [loginOk, feedback, me.myId, me.myNick]);
 
     const isCommentAuthor = (c) => {
         if (!loginOk || !c) return false;
-
-        const commentId = pick(
-            c.userId,
-            c.authorId,
-            c.writerId,
-            c.userNum,
-            c.user?.userId,
-            c.user?.userNum,
-        );
-        const commentNick = pick(
-            c.userNickname,
-            c.authorNickname,
-            c.writerNickname,
-            c.userName,
-            c.user?.userNickname,
-            c.user?.userName,
-        );
-
-        const idMatch = me.myId && lower(commentId) && me.myId === lower(commentId);
-        const nickMatch = me.myNick && lower(commentNick) && me.myNick === lower(commentNick);
-        if (process.env.NODE_ENV === 'development')
-            console.debug('[COMMENT AUTHOR CHECK]', { commentId, commentNick, idMatch, nickMatch, c });
-
+        const cid  = pick(c.userId, c.authorId, c.writerId, c.userNum, c.user?.userId, c.user?.userNum);
+        const cnick= pick(c.userNickname, c.authorNickname, c.writerNickname, c.userName, c.user?.userNickname, c.user?.userName);
+        const idMatch   = me.myId && lower(cid)   && me.myId   === lower(cid);
+        const nickMatch = me.myNick && lower(cnick) && me.myNick === lower(cnick);
         return idMatch || (!idMatch && nickMatch);
     };
 
     const handleAddComment = async () => {
         if (!input.trim()) return;
-
         if (!loginOk) {
             alert('로그인이 필요합니다.');
             navigate('/signin');
             return;
         }
-
         try {
-            await api.post('/comments', { communityNum, content: input });
-            const commentRes = await api.get(`/comments/${communityNum}`);
-            setComments(commentRes.data || []);
+            await api.post('/comments', { communityNum, content: input.trim() });
+            const res = await api.get(`/comments/${communityNum}`);
+            setComments(res.data || []);
             setInput('');
         } catch (err) {
             console.error('댓글 등록 실패:', err);
             const msg = err.response?.data?.message
                 ? `댓글 등록 실패: ${err.response.data.message}`
-                : err.request
-                    ? '서버로부터 응답이 없습니다.'
-                    : `요청 실패: ${err.message}`;
+                : err.request ? '서버로부터 응답이 없습니다.' : `요청 실패: ${err.message}`;
             alert(msg);
         }
     };
@@ -197,7 +146,6 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
         try {
             await api.delete(`/comments/${commentNum}`);
             setComments((prev) => prev.filter((c) => c.commentNum !== commentNum));
-            alert('댓글이 삭제되었습니다.');
         } catch (err) {
             console.error('댓글 삭제 실패:', err);
             alert(err.response?.data?.message || '댓글 삭제에 실패했습니다.');
@@ -228,9 +176,7 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
             <div className="feedback-detail-container">
                 <p className="not-found-msg">게시글을 불러오는 중입니다...</p>
                 <div className="btn-wrapper">
-                    <Link to="/feedback" className="btn back-btn">
-                        ← 목록으로
-                    </Link>
+                    <Link to="/feedback" className="btn back-btn btn-slim">← 목록으로</Link>
                 </div>
             </div>
         );
@@ -243,38 +189,36 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
             <h2 className="detail-title">{feedback.title}</h2>
 
             <div className="detail-meta">
-                <p className="detail-writer">작성자: {author}</p>
-                <p className="detail-date">{formatTime(feedback.createdAt)}</p>
+                <span className="detail-writer">작성자: {author}</span>
+                <span className="dot">•</span>
+                <span className="detail-date">{formatTime(feedback.createdAt)}</span>
             </div>
 
-            {/* ✅ 수정/삭제: 작성자만 */}
-            <div className="detail-actions">
-                {loginOk && isPostAuthor && (
-                    <>
-                        <button
-                            type="button"
-                            className="btn edit-btn"
-                            onClick={() => navigate(`/feedback/${communityNum}/edit`, { state: feedback })}
-                            aria-label="게시글 수정"
-                            style={{ minWidth: 120, marginRight: 8 }}
-                        >
-                            게시글 수정
-                        </button>
-                        <button
-                            type="button"
-                            className="btn danger delete-post-btn"
-                            onClick={handleDeletePost}
-                            aria-label="게시글 삭제"
-                            style={{ minWidth: 120 }}
-                        >
-                            게시글 삭제
-                        </button>
-                    </>
-                )}
-            </div>
+            <div className="detail-content">{feedback.content}</div>
 
-            <hr />
-            <p className="detail-content">{feedback.content}</p>
+            {loginOk && isPostAuthor && (
+                <div className="detail-actions bottom-actions">
+                    <Link
+                        to={`/feedback/${communityNum}/edit`}
+                        state={feedback}
+                        className="btn btn-primary btn-slim"
+                        aria-label="게시글 수정"
+                    >
+                        <span className="btn-icon" aria-hidden>✏️</span>
+                        수정
+                    </Link>
+
+                    <button
+                        type="button"
+                        className="btn btn-danger btn-slim"
+                        onClick={handleDeletePost}
+                        aria-label="게시글 삭제"
+                    >
+                        <span className="btn-icon" aria-hidden>🗑️</span>
+                        삭제
+                    </button>
+                </div>
+            )}
 
             <div className="comment-section">
                 <h3>댓글</h3>
@@ -292,7 +236,10 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
                     }
                 }}
             />
-                        <button onClick={handleAddComment}>등록</button>
+                        <button className="btn btn-primary btn-slim" onClick={handleAddComment}>
+                            <span className="btn-icon" aria-hidden>💬</span>
+                            등록
+                        </button>
                     </div>
                 ) : (
                     <p className="login-alert">로그인 후 댓글을 작성할 수 있습니다.</p>
@@ -309,7 +256,12 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
 
                             {loginOk && isCommentAuthor(c) && (
                                 <div className="comment-buttons">
-                                    <button type="button" onClick={() => handleDeleteComment(c.commentNum)}>
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger btn-slim btn-soft"
+                                        onClick={() => handleDeleteComment(c.commentNum)}
+                                    >
+                                        <span className="btn-icon" aria-hidden>🗑️</span>
                                         삭제
                                     </button>
                                 </div>
@@ -320,9 +272,7 @@ const FeedBackDetail = ({ isLoggedIn, currentUser }) => {
             </div>
 
             <div className="btn-wrapper">
-                <Link to="/feedback" className="btn back-btn">
-                    ← 목록으로
-                </Link>
+                <Link to="/feedback" className="btn back-btn btn-slim">← 목록으로</Link>
             </div>
         </div>
     );

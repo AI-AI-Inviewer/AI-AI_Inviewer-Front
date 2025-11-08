@@ -1,9 +1,7 @@
-// src/component/community/js/PostScriptDetail.js
-import React, { useEffect, useState } from 'react';
-import { useLocation, Link, useParams, useNavigate } from 'react-router-dom';
-import '../scss/PostScriptDetail.scss';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../../../api/axiosInstance';
-import { getMyInfo } from '../../../api/user';
+import '../scss/FeedBackDetail.scss';
 
 const parseDate = (v) => {
     if (!v) return null;
@@ -14,93 +12,124 @@ const parseDate = (v) => {
     return new Date(v);
 };
 
-const fmt = (date) =>
-    date
-        ? date.toLocaleString('ko-KR', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-        })
-        : '-';
+const b64urlToJson = (b64) => {
+    try {
+        const pad = '='.repeat((4 - (b64.length % 4)) % 4);
+        const base64 = (b64 + pad).replace(/-/g, '+').replace(/_/g, '/');
+        const str = atob(base64);
+        return JSON.parse(
+            decodeURIComponent(
+                Array.prototype
+                    .map.call(str, (c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                    .join(''),
+            ),
+        );
+    } catch {
+        return {};
+    }
+};
 
-const PostScriptDetail = () => {
-    const location = useLocation();
+const getClaimsFromJwt = () => {
+    const t = localStorage.getItem('jwtToken');
+    if (!t || !t.includes('.')) return {};
+    const [, payload] = t.split('.');
+    return b64urlToJson(payload);
+};
+
+const norm  = (x) => (x ?? '').toString().trim();
+const lower = (x) => norm(x).toLowerCase();
+const pick  = (...vals) => vals.find((v) => v !== undefined && v !== null && norm(v) !== '');
+
+const PostScriptDetail = ({ isLoggedIn, currentUser }) => {
+    const { postscriptNum, id } = useParams(); // /postscript/:postscriptNum 또는 :id
+    const psId = postscriptNum ?? id;
     const navigate = useNavigate();
-    const { id } = useParams(); // route: /postscript/:id
 
-    // 목록 화면에서 넘어온 state(없을 수도 있음)
-    const statePost = location.state;
-
-    const [post, setPost] = useState(statePost || null);
+    const [post, setPost]       = useState(null);
     const [comments, setComments] = useState([]);
-    const [input, setInput] = useState('');
-    const [editingId, setEditingId] = useState(null);
-    const [editingText, setEditingText] = useState('');
-    const [currentUser, setCurrentUser] = useState(null);
+    const [input, setInput]     = useState('');
 
-    // 로그인 사용자 정보 로드(토큰 있으면)
     useEffect(() => {
-        const token = localStorage.getItem('jwtToken');
-        if (!token) return;
         (async () => {
             try {
-                const me = await getMyInfo();
-                setCurrentUser(me);
-            } catch {
-                // ignore
-            }
-        })();
-    }, []);
+                const { data } = await api.get(`/postscript/${psId}`);
+                setPost(data);
 
-    // 게시글 + 댓글 조회
-    useEffect(() => {
-        const load = async () => {
-            try {
-                // 상세 데이터 (state 없거나 새로고침 대비)
-                if (!statePost) {
-                    const { data } = await api.get(`/postscript/${id}`);
-                    setPost(data);
-                }
-
-                // 댓글 목록
-                const { data: cmt } = await api.get(`/postscript/${id}/comments`);
-                setComments(Array.isArray(cmt) ? cmt : cmt?.content ?? []);
-            } catch (e) {
-                console.error('후기/댓글 조회 실패:', e);
-                alert('게시글을 불러오지 못했습니다.');
+                const { data: cmt } = await api.get(`/postscript-comments/${psId}`);
+                setComments(Array.isArray(cmt) ? cmt : []);
+            } catch (err) {
+                console.error('면접후기/댓글 불러오기 오류:', err);
+                alert('면접후기를 불러오는데 실패했습니다.');
                 navigate('/postscript');
             }
-        };
-        load();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id]);
+        })();
+    }, [psId, navigate]);
+
+    const formatTime = (dateLike) => {
+        const d = parseDate(dateLike);
+        return d
+            ? d.toLocaleString('ko-KR', {
+                year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+            })
+            : '-';
+    };
+
+    const loginOk = isLoggedIn || !!localStorage.getItem('jwtToken');
+
+    const me = useMemo(() => {
+        const claims = getClaimsFromJwt();
+        const myId = pick(
+            currentUser?.userId, currentUser?.id, currentUser?.userNum, currentUser?.username,
+            claims.userId, claims.id, claims.userNum, claims.username, claims.sub, claims.email,
+        );
+        const myNick = pick(
+            currentUser?.userNickname, currentUser?.nickname,
+            claims.userNickname, claims.nickname, claims.name,
+        );
+        return { myId: lower(myId), myNick: lower(myNick) };
+    }, [currentUser]);
+
+    const isPostAuthor = useMemo(() => {
+        if (!loginOk || !post) return false;
+        const postId   = pick(post.userId, post.userNum, post.user?.userId, post.user?.userNum);
+        const postNick = pick(post.userNickname, post.userName, post.user?.userNickname, post.user?.userName);
+        const idMatch   = me.myId && lower(postId)   && me.myId   === lower(postId);
+        const nickMatch = me.myNick && lower(postNick) && me.myNick === lower(postNick);
+        return idMatch || (!idMatch && nickMatch);
+    }, [loginOk, post, me.myId, me.myNick]);
+
+    const isCommentAuthor = (c) => {
+        if (!loginOk || !c) return false;
+        const commentId   = pick(c.userId, c.userNum, c.user?.userId, c.user?.userNum);
+        const commentNick = pick(c.userNickname, c.userName, c.user?.userNickname, c.user?.userName);
+        const idMatch   = me.myId && lower(commentId) && me.myId === lower(commentId);
+        const nickMatch = me.myNick && lower(commentNick) && me.myNick === lower(commentNick);
+        return idMatch || (!idMatch && nickMatch);
+    };
 
     const handleAddComment = async () => {
         if (!input.trim()) return;
-
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
+        if (!loginOk) {
             alert('로그인이 필요합니다.');
             navigate('/signin');
             return;
         }
-
         try {
-            await api.post(`/postscript/${id}/comments`, { content: input });
-            const { data } = await api.get(`/postscript/${id}/comments`);
-            setComments(Array.isArray(data) ? data : data?.content ?? []);
+            await api.post('/postscript-comments', { postscriptNum: psId, content: input.trim() });
+            const { data } = await api.get(`/postscript-comments/${psId}`);
+            setComments(Array.isArray(data) ? data : []);
             setInput('');
-        } catch (e) {
-            console.error('댓글 등록 실패:', e);
-            alert('댓글 등록에 실패했습니다.');
+        } catch (err) {
+            console.error('댓글 등록 실패:', err);
+            const msg = err.response?.data?.message
+                ? `댓글 등록 실패: ${err.response.data.message}`
+                : err.request ? '서버로부터 응답이 없습니다.' : `요청 실패: ${err.message}`;
+            alert(msg);
         }
     };
 
-    const handleDelete = async (commentId) => {
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
+    const handleDeleteComment = async (pscommentNum) => {
+        if (!loginOk) {
             alert('로그인이 필요합니다.');
             navigate('/signin');
             return;
@@ -108,181 +137,138 @@ const PostScriptDetail = () => {
         if (!window.confirm('댓글을 삭제하시겠습니까?')) return;
 
         try {
-            await api.delete(`/postscript/${id}/comments/${commentId}`);
-            setComments((prev) => prev.filter((c) => (c.id ?? c.commentId) !== commentId));
-        } catch (e) {
-            console.error('댓글 삭제 실패:', e);
-            alert('댓글 삭제에 실패했습니다.');
+            await api.delete(`/postscript-comments/${pscommentNum}`);
+            setComments((prev) => prev.filter((c) => c.pscommentNum !== pscommentNum));
+        } catch (err) {
+            console.error('댓글 삭제 실패:', err);
+            alert(err.response?.data?.message || '댓글 삭제에 실패했습니다.');
         }
     };
 
-    const handleEdit = (commentId, text) => {
-        setEditingId(commentId);
-        setEditingText(text);
-    };
-
-    const handleEditSubmit = async () => {
-        if (!editingText.trim()) return;
-
-        const token = localStorage.getItem('jwtToken');
-        if (!token) {
+    const handleDeletePost = async () => {
+        if (!loginOk) {
             alert('로그인이 필요합니다.');
             navigate('/signin');
             return;
         }
+        if (!isPostAuthor) return;
+        if (!window.confirm('이 게시글을 삭제하시겠습니까?')) return;
 
         try {
-            await api.put(`/postscript/${id}/comments/${editingId}`, { content: editingText });
-            setComments((prev) =>
-                prev.map((c) =>
-                    (c.id ?? c.commentId) === editingId ? { ...c, text: editingText, content: editingText } : c
-                )
-            );
-            setEditingId(null);
-            setEditingText('');
-        } catch (e) {
-            console.error('댓글 수정 실패:', e);
-            alert('댓글 수정에 실패했습니다.');
+            await api.delete(`/postscript/${psId}`);
+            alert('삭제되었습니다.');
+            navigate('/postscript');
+        } catch (err) {
+            console.error('면접후기 삭제 실패:', err);
+            alert(err.response?.data?.message || '면접후기 삭제에 실패했습니다.');
         }
     };
 
     if (!post) {
         return (
-            <div className="postscript-detail-container">
-                <p className="not-found-msg">게시글을 불러오는 중입니다...</p>
+            <div className="feedback-detail-container">
+                <p className="not-found-msg">면접후기를 불러오는 중입니다...</p>
                 <div className="btn-wrapper">
-                    <Link to="/postscript" className="btn back-btn">
-                        ← 목록으로
-                    </Link>
+                    <Link to="/postscript" className="btn back-btn btn-slim">← 목록으로</Link>
                 </div>
             </div>
         );
     }
 
-    const postId = post.id ?? post.postscriptId ?? post.communityNum ?? id;
-    const author = post.userNickname || post.writer || post.userName || post.userId || '알 수 없음';
-    const created = fmt(parseDate(post.date ?? post.createdAt));
-
-    // 댓글 필드 가변 대응
-    const getCmtId = (c) => c.id ?? c.commentId ?? c.commentNum;
-    const getCmtAuthor = (c) => c.userNickname || c.userName || c.userId || c.writer || '익명';
-    const getCmtText = (c) => c.text ?? c.content ?? '';
-    const getCmtTime = (c) => fmt(parseDate(c.time ?? c.commentDate ?? c.createdAt));
-
-    const isMyComment = (c) => {
-        if (!currentUser) return false;
-        // 백엔드 응답에 따라 userId/username 둘 다 대비
-        return (
-            currentUser.userId === c.user?.userId ||
-            currentUser.userId === c.userId ||
-            currentUser.username === c.username ||
-            currentUser.userNickname === c.userNickname
-        );
-    };
-
-    const canEditPost =
-        currentUser &&
-        (currentUser.userId === post.userId ||
-            currentUser.userNickname === post.userNickname ||
-            currentUser.username === post.writer);
+    const author = post.userNickname || post.userName || post.userId || '알 수 없음';
 
     return (
-        <div className="postscript-detail-container">
+        <div className="feedback-detail-container">
             <h2 className="detail-title">{post.title}</h2>
-            <p className="detail-writer">작성자: {author}</p>
-            <p className="detail-date">{created}</p>
-            <hr />
-            <p className="detail-content">{post.content}</p>
 
-            {canEditPost && (
-                <div className="post-buttons">
-                    <button
-                        className="btn edit-btn"
-                        onClick={() => navigate(`/postscript/${postId}/edit`, { state: post })}
+            <div className="detail-meta">
+                <span className="detail-writer">작성자: {author}</span>
+                <span className="dot">•</span>
+                <span className="detail-date">{formatTime(post.createdAt)}</span>
+            </div>
+
+            <div className="detail-content">{post.content}</div>
+
+            {loginOk && isPostAuthor && (
+                <div className="detail-actions bottom-actions">
+                    <Link
+                        to={`/postscript/${psId}/edit`}
+                        state={post}
+                        className="btn btn-primary btn-slim"
+                        aria-label="게시글 수정"
                     >
-                        게시글 수정
-                    </button>
+                        <span className="btn-icon" aria-hidden>✏️</span>
+                        수정
+                    </Link>
+
                     <button
-                        className="btn delete-btn"
-                        onClick={async () => {
-                            if (!window.confirm('게시글을 삭제하시겠습니까?')) return;
-                            try {
-                                await api.delete(`/postscript/${postId}`);
-                                alert('삭제되었습니다.');
-                                navigate('/postscript');
-                            } catch (e) {
-                                console.error('게시글 삭제 실패:', e);
-                                alert('게시글 삭제에 실패했습니다.');
-                            }
-                        }}
+                        type="button"
+                        className="btn btn-danger btn-slim"
+                        onClick={handleDeletePost}
+                        aria-label="게시글 삭제"
                     >
-                        게시글 삭제
+                        <span className="btn-icon" aria-hidden>🗑️</span>
+                        삭제
                     </button>
                 </div>
             )}
 
             <div className="comment-section">
                 <h3>댓글</h3>
-                <div className="comment-input">
-          <textarea
-              placeholder="댓글을 입력하세요"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                      e.preventDefault();
-                      handleAddComment();
-                  }
-              }}
-          />
-                    <button onClick={handleAddComment}>등록</button>
-                </div>
+
+                {loginOk ? (
+                    <div className="comment-input">
+            <textarea
+                placeholder="댓글을 입력하세요"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleAddComment();
+                    }
+                }}
+            />
+                        <button className="btn btn-primary btn-slim" onClick={handleAddComment}>
+                            <span className="btn-icon" aria-hidden>💬</span>
+                            등록
+                        </button>
+                    </div>
+                ) : (
+                    <p className="login-alert">로그인 후 댓글을 작성할 수 있습니다.</p>
+                )}
 
                 <ul className="comment-list">
-                    {comments.map((c) => {
-                        const cid = getCmtId(c);
-                        const mine = isMyComment(c);
-                        return (
-                            <li key={cid} className="comment-item">
-                                <div className="comment-meta">
-                                    <strong>{getCmtAuthor(c)}</strong>
-                                    <span className="comment-time">{getCmtTime(c)}</span>
-                                </div>
+                    {comments.map((c) => (
+                        <li key={c.pscommentNum} className="comment-item">
+                            <div className="comment-meta">
+                                <strong>{c.userNickname || c.userName || c.userId || '익명'}</strong>
+                                <span className="comment-time">{formatTime(c.pscommentDate)}</span>
+                            </div>
+                            <p>{c.content}</p>
 
-                                {editingId === cid ? (
-                                    <>
-                    <textarea
-                        value={editingText}
-                        onChange={(e) => setEditingText(e.target.value)}
-                    />
-                                        <button onClick={handleEditSubmit}>저장</button>
-                                        <button onClick={() => setEditingId(null)}>취소</button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <p>{getCmtText(c)}</p>
-                                        {mine && (
-                                            <div className="comment-buttons">
-                                                <button onClick={() => handleEdit(cid, getCmtText(c))}>수정</button>
-                                                <button onClick={() => handleDelete(cid)}>삭제</button>
-                                            </div>
-                                        )}
-                                    </>
-                                )}
-                            </li>
-                        );
-                    })}
+                            {loginOk && isCommentAuthor(c) && (
+                                <div className="comment-buttons">
+                                    <button
+                                        type="button"
+                                        className="btn btn-danger btn-slim btn-soft"
+                                        onClick={() => handleDeleteComment(c.pscommentNum)}
+                                    >
+                                        <span className="btn-icon" aria-hidden>🗑️</span>
+                                        삭제
+                                    </button>
+                                </div>
+                            )}
+                        </li>
+                    ))}
                 </ul>
             </div>
 
             <div className="btn-wrapper">
-                <Link to="/postscript" className="btn back-btn">
-                    ← 목록으로
-                </Link>
+                <Link to="/postscript" className="btn back-btn btn-slim">← 목록으로</Link>
             </div>
         </div>
     );
 };
 
 export default PostScriptDetail;
-

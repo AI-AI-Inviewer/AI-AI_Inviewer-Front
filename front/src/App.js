@@ -19,9 +19,12 @@ import FeedBack from "./component/community/js/FeedBack";
 import FeedBackWrite from "./component/community/js/FeedBack-write";
 import FeedBackDetail from "./component/community/js/FeedBackDetail";
 import FeedBackEdit from './component/community/js/FeedBackEdit';
+
 import PostScript from "./component/community/js/PostScript";
 import PostScriptWrite from "./component/community/js/PostScript-write";
 import PostScriptDetail from "./component/community/js/PostScriptDetail";
+import PostScriptEdit from "./component/community/js/PostScriptEdit"; // ✅ 추가
+
 import JobPosting from "./component/jobposting/js/JobPosting";
 import ScrollToTop from "./component/common/js/ScrollToTop";
 import AppLayout from './component/common/js/AppLayout';
@@ -84,15 +87,24 @@ function App() {
                                 <Route path="/JobPosting" element={<JobPosting />} />
                                 <Route path="/Interview" element={<Interview />} />
                                 <Route path="/VoiceInterview" element={<VoiceInterview />} />
+
                                 <Route path="/CL" element={<CL />} />
                                 <Route path="/CL/:id" element={<CLDetail />} />
+
+                                {/* 자유게시판 */}
                                 <Route path="/feedback" element={<FeedBack isLoggedIn={isLoggedIn} />} />
                                 <Route path="/feedback/write" element={<FeedBackWrite isLoggedIn={isLoggedIn} userNickname={userNickname} />} />
                                 <Route path="/feedback/:communityNum" element={<FeedBackDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
                                 <Route path="/feedback/:communityNum/edit" element={<FeedBackEdit isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
-                                <Route path="/postscript" element={<PostScript />} />
-                                <Route path="/postscript/write" element={<PostScriptWrite />} />
-                                <Route path="/postscript/:id" element={<PostScriptDetail />} />
+
+                                {/* 면접 후기 */}
+                                <Route path="/postscript" element={<PostScript isLoggedIn={isLoggedIn} />} />
+                                <Route path="/postscript/write" element={<PostScriptWrite isLoggedIn={isLoggedIn} />} />
+                                {/* 호환을 위해 두 파라미터 이름 모두 지원 */}
+                                <Route path="/postscript/:postscriptNum" element={<PostScriptDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
+                                <Route path="/postscript/:id" element={<PostScriptDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
+                                <Route path="/postscript/:postscriptNum/edit" element={<PostScriptEdit isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
+
                                 <Route path="/mypage" element={<Mypage />} />
                                 <Route path="/signin" element={<SignIn setIsLoggedIn={setIsLoggedIn} setUserNickname={setUserNickname} setCurrentUser={setCurrentUser} />} />
                                 <Route path="/signup" element={<SignUp />} />
