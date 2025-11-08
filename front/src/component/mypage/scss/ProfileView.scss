@@ -1,0 +1,282 @@
+/* 변수 */
+$primary-color: #5865f2;
+$border-color: #e3e5e8;
+$background-color: #f8f9fa;
+$text-color: #2e3338;
+$text-light-color: #5c677d;
+$white-color: #fff;
+$radius: 12px;
+$shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+
+.mypage-wrapper {
+  background-color: $background-color;
+  padding: 2rem;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.mypage-container {
+  width: 100%;
+  max-width: 1000px;
+  display: flex;
+  gap: 2rem;
+}
+
+/* === 사이드바 === */
+.sidebar {
+  flex: 0 0 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.25rem;
+    border-radius: $radius;
+    border: none;
+    background-color: transparent;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 600;
+    color: $text-light-color;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+
+    .icon {
+      font-size: 1.2rem;
+    }
+
+    &:hover {
+      background-color: #e9ecef;
+      color: $text-color;
+    }
+
+    &.active {
+      background-color: $primary-color;
+      color: $white-color;
+    }
+  }
+}
+
+/* === 메인 컨텐츠 === */
+.tab-content {
+  flex: 1;
+  background-color: $white-color;
+  border-radius: $radius;
+  box-shadow: $shadow;
+  border: 1px solid $border-color;
+}
+
+.tab-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid $border-color;
+  margin: 0;
+}
+
+/* 프로필 뷰 */
+.profile-view {
+  .profile-card {
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 2rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  }
+
+  .profile-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    text-align: left;
+    margin-bottom: 2.5rem;
+  }
+
+  .info-item {
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: $text-light-color;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    p {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 0;
+      background-color: #f8f9fa;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+    }
+  }
+
+  .profile-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid $border-color;
+
+    .btn-primary {
+      background-color: $primary-color;
+      color: $white-color;
+      border: none;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      &:hover { opacity: 0.9; }
+    }
+
+    .btn-text {
+      background: none;
+      border: none;
+      color: $text-light-color;
+      cursor: pointer;
+      text-decoration: underline;
+      &:hover { color: #dc3545; }
+    }
+  }
+}
+
+/* 즐겨찾기, 설정 Placeholder */
+.placeholder-view {
+  .placeholder-content {
+    padding: 4rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    color: $text-light-color;
+
+    .icon {
+      font-size: 4rem;
+    }
+    p {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+  }
+}
+
+.pv-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 16px;
+}
+
+.pv-modal-card {
+  width: min(480px, 92vw);
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  padding: 18px 20px;
+
+  .pv-form-label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    small {
+      font-size: 0.85rem;
+      color: $text-light-color;
+      font-weight: 600;
+    }
+
+    input,
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background-color: #fff;
+
+      &:focus {
+        outline: none;
+        border-color: #6c63ff;
+        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+      }
+    }
+  }
+}
+
+.pv-modal-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 2px 2px 12px;
+  color: #1f2937;
+}
+
+.pv-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pv-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+
+  .pv-btn {
+    min-width: 110px;
+    padding: 0.6rem 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    &.pv-outline {
+      background: #eef2ff;
+      color: #374151;
+    }
+
+    &.pv-primary {
+      background: $primary-color;
+      color: #fff;
+    }
+
+    &.pv-danger {
+      background: #ef4444;
+      color: #fff;
+    }
+  }
+}
+
+/* 반응형 (모달) */
+@media (max-width: 640px) {
+  .pv-modal-card {
+    width: 100%;
+    border-radius: 10px;
+    padding: 14px;
+  }
+}

@@ -1,14 +1,16 @@
-// component/footer/js/Footer.js
-import React from 'react';
-import '../scss/Footer.scss';
+import React from "react";
+import "../scss/Footer.scss";
 
 function Footer() {
     return (
         <footer className="footer">
-            <div className="footer-content">
+            <div className="footer-container">
                 <div className="footer-section company">
                     <h3>AI Inviewer</h3>
-                    <p>AI 면접 연습 플랫폼<br/>당신의 면접을 더 스마트하게</p>
+                    <p>
+                        AI 면접 연습 플랫폼<br />
+                        당신의 면접을 더 스마트하게
+                    </p>
                 </div>
                 <div className="footer-section links">
                     <h4>바로가기</h4>
@@ -22,14 +24,14 @@ function Footer() {
                 <div className="footer-section social">
                     <h4>Follow us</h4>
                     <div className="social-icons">
-                        <a href="#"><img src="https://img.icons8.com/ios-filled/20/000000/facebook--v1.png" alt="Facebook"/></a>
-                        <a href="#"><img src="https://img.icons8.com/ios-filled/20/000000/instagram-new.png" alt="Instagram"/></a>
-                        <a href="#"><img src="https://img.icons8.com/ios-filled/20/000000/twitter.png" alt="Twitter"/></a>
+                        <a href="#"><img src="https://img.icons8.com/ios-filled/24/000000/facebook--v1.png" alt="Facebook"/></a>
+                        <a href="#"><img src="https://img.icons8.com/ios-filled/24/000000/instagram-new.png" alt="Instagram"/></a>
+                        <a href="#"><img src="https://img.icons8.com/ios-filled/24/000000/twitter.png" alt="Twitter"/></a>
                     </div>
                 </div>
             </div>
             <div className="footer-bottom">
-                <span className="copyright">ⓒ 2025 AI Inviewer. All rights reserved.</span>
+                <span>ⓒ 2025 AI Inviewer. All rights reserved.</span>
             </div>
         </footer>
     );

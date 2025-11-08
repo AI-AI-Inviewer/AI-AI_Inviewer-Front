@@ -1,8 +1,5 @@
-// component/header/js/Header.js
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useHeader } from "../context/HeaderContext";
-import { useTheme } from "../../common/js/ThemeContext";
 import "../scss/Header.scss";
 
 const AuthLink = ({ to, children, isLoggedIn, closeMenus }) => {
@@ -27,8 +24,6 @@ const AuthLink = ({ to, children, isLoggedIn, closeMenus }) => {
 
 const Header = ({ isLoggedIn, userNickname, onLogout }) => {
     const navigate = useNavigate();
-    const { setIsCheckHeader } = useHeader();
-    const { theme, toggleTheme } = useTheme();
 
     const [profileDropdown, setProfileDropdown] = useState(false);
     const [mainDropdown, setMainDropdown] = useState(false);
@@ -101,9 +96,6 @@ const Header = ({ isLoggedIn, userNickname, onLogout }) => {
                                 </button>
                                 <ul className="dropdown-menu">
                                     <li><AuthLink to="/mypage" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>마이페이지</AuthLink></li>
-                                    <li><button className="btn-darkmode-toggle" onClick={toggleTheme}>
-                                        {theme === "light" ? "다크모드" : "라이트모드"}
-                                    </button></li>
                                     <li><button className="btn-logout" onClick={handleLogout}>로그아웃</button></li>
                                 </ul>
                             </li>

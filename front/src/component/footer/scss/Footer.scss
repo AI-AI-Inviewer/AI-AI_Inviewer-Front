@@ -1,52 +1,65 @@
 .footer {
-  background-color: #2f3542;
-  color: #dfe4ea;
-  padding: 2rem 3rem;
-  text-align: center;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px;
+  flex-shrink: 0;
+  background-color: #111; // 진한 회색~검정 계열
+  color: #fff; // 폰트 색상 하얀색
 
-  .footer-content {
+  .footer-container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    flex-wrap: wrap;
     max-width: 1200px;
     margin: 0 auto;
-    flex-wrap: wrap;
-    gap: 2rem;
+    padding: 50px 20px;
+    gap: 30px;
 
     .footer-section {
       flex: 1;
-      min-width: 250px;
+      min-width: 220px;
 
       h3, h4 {
-        color: #70a1ff;
-        margin-bottom: 1rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        color: #fff;
       }
 
-      p, a, li {
-        color: #dfe4ea;
-        font-size: 0.95rem;
-        line-height: 1.5;
-      }
-
-      a:hover {
-        color: #70a1ff;
+      p, li, a, span {
+        font-weight: 500;
+        color: #fff;
       }
 
       ul {
         list-style: none;
         padding: 0;
+
+        li {
+          margin-bottom: 10px;
+
+          a {
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+
+            &:hover {
+              color: #f39c12;
+            }
+          }
+        }
       }
 
       .social-icons {
         display: flex;
-        gap: 1rem;
-        justify-content: center;
+        gap: 15px;
 
-        img {
-          opacity: 0.8;
-          transition: opacity 0.3s;
+        a img {
+          width: 24px;
+          height: 24px;
+          filter: brightness(0) invert(1);
+          transition: transform 0.3s;
+
           &:hover {
-            opacity: 1;
+            transform: scale(1.2);
           }
         }
       }
@@ -54,8 +67,22 @@
   }
 
   .footer-bottom {
-    margin-top: 2rem;
-    font-size: 0.85rem;
-    color: #a4b0be;
+    text-align: center;
+    padding: 15px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: #fff;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column;
+    text-align: center;
+
+    .footer-section {
+      margin-bottom: 25px;
+    }
   }
 }

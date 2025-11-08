@@ -2,9 +2,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./App.css";
 
-import { HeaderProvider } from './component/header/context/HeaderContext';
-import { ThemeProvider } from './component/common/js/ThemeContext';
-
 import Header from './component/header/js/Header';
 import Footer from './component/footer/js/Footer';
 
@@ -13,38 +10,25 @@ import SignIn from "./component/sign/js/SignIn";
 import SignUp from "./component/sign/js/SignUp";
 import Mypage from "./component/mypage/js/Mypage";
 import AiInviewer from './component/AIInviewer/js/AiInviewer';
-import CL from "./component/jasoseo/js/CL";
-import CLDetail from "./component/jasoseo/js/CLDetail";
-import FeedBack from "./component/community/js/FeedBack";
-import FeedBackWrite from "./component/community/js/FeedBack-write";
-import FeedBackDetail from "./component/community/js/FeedBackDetail";
-import FeedBackEdit from './component/community/js/FeedBackEdit';
-
-import PostScript from "./component/community/js/PostScript";
-import PostScriptWrite from "./component/community/js/PostScript-write";
-import PostScriptDetail from "./component/community/js/PostScriptDetail";
-import PostScriptEdit from "./component/community/js/PostScriptEdit"; // ✅ 추가
-
-import JobPosting from "./component/jobposting/js/JobPosting";
-import ScrollToTop from "./component/common/js/ScrollToTop";
-import AppLayout from './component/common/js/AppLayout';
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getMyInfo } from "./api/user";
-import Interview from "./component/interview/js/Interview";
-import VoiceInterview from "./component/interview/js/VoiceInterview";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [userNickname, setUserNickname] = useState("");
     const [currentUser, setCurrentUser] = useState(null);
+
+    // --- 북마크 상태 App에서 중앙 관리 ---
     const [aiBookmarks, setAiBookmarks] = useState(() => {
         const stored = localStorage.getItem('aiBookmarks');
         return stored ? JSON.parse(stored) : [];
     });
 
-    useEffect(() => { localStorage.setItem('aiBookmarks', JSON.stringify(aiBookmarks)); }, [aiBookmarks]);
+    useEffect(() => {
+        localStorage.setItem('aiBookmarks', JSON.stringify(aiBookmarks));
+    }, [aiBookmarks]);
 
     useEffect(() => {
         const token = localStorage.getItem("jwtToken");
@@ -70,51 +54,27 @@ function App() {
     }
 
     return (
-        <HeaderProvider>
-            <ThemeProvider>
-                <AppLayout>
-                    <BrowserRouter>
-                        <ScrollToTop />
-                        <Header
-                            isLoggedIn={isLoggedIn}
-                            userNickname={userNickname}
-                            onLogout={handleLogout}
-                        />
-                        <main style={{ flex: 1 }}>
-                            <Routes>
-                                <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
-                                <Route path="/AiInviewer" element={<AiInviewer bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />} />
-                                <Route path="/JobPosting" element={<JobPosting />} />
-                                <Route path="/Interview" element={<Interview />} />
-                                <Route path="/VoiceInterview" element={<VoiceInterview />} />
-
-                                <Route path="/CL" element={<CL />} />
-                                <Route path="/CL/:id" element={<CLDetail />} />
-
-                                {/* 자유게시판 */}
-                                <Route path="/feedback" element={<FeedBack isLoggedIn={isLoggedIn} />} />
-                                <Route path="/feedback/write" element={<FeedBackWrite isLoggedIn={isLoggedIn} userNickname={userNickname} />} />
-                                <Route path="/feedback/:communityNum" element={<FeedBackDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
-                                <Route path="/feedback/:communityNum/edit" element={<FeedBackEdit isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
-
-                                {/* 면접 후기 */}
-                                <Route path="/postscript" element={<PostScript isLoggedIn={isLoggedIn} />} />
-                                <Route path="/postscript/write" element={<PostScriptWrite isLoggedIn={isLoggedIn} />} />
-                                {/* 호환을 위해 두 파라미터 이름 모두 지원 */}
-                                <Route path="/postscript/:postscriptNum" element={<PostScriptDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
-                                <Route path="/postscript/:id" element={<PostScriptDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
-                                <Route path="/postscript/:postscriptNum/edit" element={<PostScriptEdit isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
-
-                                <Route path="/mypage" element={<Mypage />} />
-                                <Route path="/signin" element={<SignIn setIsLoggedIn={setIsLoggedIn} setUserNickname={setUserNickname} setCurrentUser={setCurrentUser} />} />
-                                <Route path="/signup" element={<SignUp />} />
-                            </Routes>
-                        </main>
-                        <Footer />
-                    </BrowserRouter>
-                </AppLayout>
-            </ThemeProvider>
-        </HeaderProvider>
+        <BrowserRouter>
+            <Header
+                isLoggedIn={isLoggedIn}
+                userNickname={userNickname}
+                onLogout={handleLogout}
+            />
+            <main style={{ flex: 1 }}>
+                <Routes>
+                    <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
+                    <Route path="/AiInviewer" element={
+                        <AiInviewer bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />
+                    } />
+                    <Route path="/mypage" element={
+                        <Mypage bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />
+                    } />
+                    <Route path="/signin" element={<SignIn setIsLoggedIn={setIsLoggedIn} setUserNickname={setUserNickname} setCurrentUser={setCurrentUser} />} />
+                    <Route path="/signup" element={<SignUp />} />
+                </Routes>
+            </main>
+            <Footer />
+        </BrowserRouter>
     );
 }
 

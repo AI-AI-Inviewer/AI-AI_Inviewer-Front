@@ -1,6 +1,7 @@
 import pic from "../../imgs/profile.jpg";
 import { useState, useEffect } from "react";
 import { updateUser, changePassword, logoutUser } from "../../../api/user";
+import "../scss/ProfileView.scss"
 
 /** 회원정보 수정 모달 */
 const EditProfileModal = ({
