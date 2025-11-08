@@ -2,17 +2,36 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./App.css";
 
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useState, useEffect } from "react";
+
 import Header from './component/header/js/Header';
 import Footer from './component/footer/js/Footer';
+import ScrollToTop from "./component/common/js/ScrollToTop";
 
-import Home from './component/main/js/Home';
+import Home from "./component/main/js/Home";
 import SignIn from "./component/sign/js/SignIn";
 import SignUp from "./component/sign/js/SignUp";
 import Mypage from "./component/mypage/js/Mypage";
 import AiInviewer from './component/AIInviewer/js/AiInviewer';
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { useState, useEffect } from "react";
+import CL from "./component/jasoseo/js/CL";
+import CLDetail from "./component/jasoseo/js/CLDetail";
+
+import FeedBack from "./component/community/js/FeedBack";
+import FeedBackWrite from "./component/community/js/FeedBack-write";
+import FeedBackDetail from "./component/community/js/FeedBackDetail";
+import FeedBackEdit from './component/community/js/FeedBackEdit';
+
+import PostScript from "./component/community/js/PostScript";
+import PostScriptWrite from "./component/community/js/PostScript-write";
+import PostScriptDetail from "./component/community/js/PostScriptDetail";
+import PostScriptEdit from "./component/community/js/PostScriptEdit";
+import JobPosting from "./component/jobposting/js/JobPosting";
+
+import Interview from "./component/interview/js/Interview";
+import VoiceInterview from "./component/interview/js/VoiceInterview";
+
 import { getMyInfo } from "./api/user";
 
 function App() {
@@ -20,7 +39,6 @@ function App() {
     const [userNickname, setUserNickname] = useState("");
     const [currentUser, setCurrentUser] = useState(null);
 
-    // --- 북마크 상태 App에서 중앙 관리 ---
     const [aiBookmarks, setAiBookmarks] = useState(() => {
         const stored = localStorage.getItem('aiBookmarks');
         return stored ? JSON.parse(stored) : [];
@@ -33,28 +51,24 @@ function App() {
     useEffect(() => {
         const token = localStorage.getItem("jwtToken");
         if (token) {
-            getMyInfo()
-                .then((data) => {
-                    setIsLoggedIn(true);
-                    setUserNickname(data.userNickname ?? "");
-                    setCurrentUser(data);
-                })
-                .catch(() => {
-                    localStorage.removeItem("jwtToken");
-                    setIsLoggedIn(false);
-                });
+            getMyInfo(token).then(user => {
+                setIsLoggedIn(true);
+                setUserNickname(user.nickname);
+                setCurrentUser(user);
+            });
         }
     }, []);
 
-    function handleLogout() {
+    const handleLogout = () => {
         localStorage.removeItem("jwtToken");
         setIsLoggedIn(false);
         setUserNickname("");
         setCurrentUser(null);
-    }
+    };
 
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <Header
                 isLoggedIn={isLoggedIn}
                 userNickname={userNickname}
@@ -63,12 +77,26 @@ function App() {
             <main style={{ flex: 1 }}>
                 <Routes>
                     <Route path="/" element={<Home isLoggedIn={isLoggedIn} />} />
-                    <Route path="/AiInviewer" element={
-                        <AiInviewer bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />
-                    } />
-                    <Route path="/mypage" element={
-                        <Mypage bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />
-                    } />
+                    <Route path="/AiInviewer" element={<AiInviewer bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />} />
+                    <Route path="/JobPosting" element={<JobPosting />} />
+                    <Route path="/Interview" element={<Interview />} />
+                    <Route path="/VoiceInterview" element={<VoiceInterview />} />
+
+                    <Route path="/CL" element={<CL />} />
+                    <Route path="/CL/:id" element={<CLDetail />} />
+
+                    <Route path="/feedback" element={<FeedBack isLoggedIn={isLoggedIn} />} />
+                    <Route path="/feedback/write" element={<FeedBackWrite isLoggedIn={isLoggedIn} userNickname={userNickname} />} />
+                    <Route path="/feedback/:communityNum" element={<FeedBackDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
+                    <Route path="/feedback/:communityNum/edit" element={<FeedBackEdit isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
+
+                    <Route path="/postscript" element={<PostScript isLoggedIn={isLoggedIn} />} />
+                    <Route path="/postscript/write" element={<PostScriptWrite isLoggedIn={isLoggedIn} />} />
+                    <Route path="/postscript/:postscriptNum" element={<PostScriptDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
+                    <Route path="/postscript/:id" element={<PostScriptDetail isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
+                    <Route path="/postscript/:postscriptNum/edit" element={<PostScriptEdit isLoggedIn={isLoggedIn} currentUser={currentUser} />} />
+
+                    <Route path="/mypage" element={<Mypage bookmarks={aiBookmarks} setBookmarks={setAiBookmarks} />} />
                     <Route path="/signin" element={<SignIn setIsLoggedIn={setIsLoggedIn} setUserNickname={setUserNickname} setCurrentUser={setCurrentUser} />} />
                     <Route path="/signup" element={<SignUp />} />
                 </Routes>
