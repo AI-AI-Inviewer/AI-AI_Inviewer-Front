@@ -1,3 +1,4 @@
+/* ResumeView.scss */
 .resume-view {
   font-family: 'Noto Sans KR', sans-serif;
   padding: 20px;
@@ -76,6 +77,106 @@
     }
   }
 
+  /* ===============================
+     ▼ 업로드 목록 + 버튼 전용 스타일 ▼
+     - .resume-view 범위에만 적용되어 다른 페이지 영향 X
+     =============================== */
+
+  /* 리스트 컨테이너 */
+  .resume-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  /* 개별 아이템 카드 */
+  .resume-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    background: #fff;
+    border: 1px solid #e5e7eb; /* gray-200 */
+    border-radius: 12px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.03);
+  }
+
+  /* 좌측 메타 정보 */
+  .resume-meta { flex: 1 1 auto; }
+  .resume-file {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-weight: 700;
+    color: #111827; /* gray-900 */
+  }
+  .resume-dot {
+    width: 6px; height: 6px;
+    background: #9ca3af; /* gray-400 */
+    border-radius: 999px;
+    display: inline-block;
+  }
+  .resume-sub {
+    display: block;
+    margin-top: 4px;
+    color: #6b7280; /* gray-500 */
+    font-size: .9rem;
+  }
+
+  /* 우측 버튼 영역 */
+  .resume-actions {
+    display: flex;
+    gap: .5rem;
+    flex: 0 0 auto;
+  }
+
+  /* 공통 버튼(소프트-필 스타일) */
+  .resume-btn {
+    --bg: #f6f8fb;
+    --bg-hover: #eef2f7;
+    --fg: #1f2937;     /* gray-800 */
+    --shadow: 0 1px 2px rgba(0,0,0,.06);
+
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    padding: .46rem .9rem;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--fg);
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: var(--shadow);
+    transition: transform .15s ease, background-color .15s ease, box-shadow .15s ease;
+    cursor: pointer;
+
+    svg {
+      width: 16px; height: 16px; flex: 0 0 auto;
+      display: block;
+    }
+
+    &:hover { background: var(--bg-hover); transform: translateY(-1px); }
+    &:active { transform: translateY(0); box-shadow: 0 0 0 rgba(0,0,0,0); }
+    &:focus-visible { outline: 3px solid rgba(59,130,246,.35); outline-offset: 2px; }
+  }
+
+  /* 다운로드 버튼 */
+  .resume-btn--primary {
+    --bg: #e9f2ff;
+    --bg-hover: #dfeaff;
+    --fg: #1d4ed8; /* indigo-700 */
+  }
+
+  /* 삭제 버튼 */
+  .resume-btn--danger {
+    --bg: #ffe9ea;
+    --bg-hover: #ffdfe1;
+    --fg: #dc2626; /* red-600 */
+  }
+
   @media (max-width: 768px) {
     padding: 15px;
 
@@ -84,6 +185,15 @@
         width: 100%;
         justify-content: center;
       }
+    }
+
+    .resume-item {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .resume-actions {
+      justify-content: flex-end;
     }
   }
 }
