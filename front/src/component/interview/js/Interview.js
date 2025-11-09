@@ -97,26 +97,37 @@ const fetchWithTimeout = (url, options, timeout = 15000) =>
 
 const MAX_RESUME_SIZE = 20000;
 
+const baseName = (s = '') => String(s).split(/[\\/]/).pop();
+
+// 사람이 보기 좋은 포맷
+const bytesFmt = (n) => {
+    if (n == null) return '-';
+    const units = ['B', 'KB', 'MB', 'GB'];
+    let i = 0, x = Number(n);
+    while (x >= 1024 && i < units.length - 1) { x /= 1024; i++; }
+    return `${x.toFixed(x < 10 ? 2 : 1)} ${units[i]}`;
+};
+const dateFmt = (iso) => {
+    if (!iso) return '-';
+    const d = new Date(iso);
+    const p = (v) => String(v).padStart(2, '0');
+    return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+};
+
 /** 이름 추출(ko/en 간단 패턴) */
 function extractNameFromResume(text) {
     if (!text) return null;
-
     const m1 = text.match(/(?:^|\n)\s*이름\s*[:：-]\s*([가-힣]{2,4})\s*(?:\n|$)/);
     if (m1) return m1[1];
-
     const m2 = text.match(/(?:저는\s*)?([가-힣]{2,4})\s*입니다/);
     if (m2) return m2[1];
-
     const m3 = text.match(/^\s*#\s*([가-힣]{2,4})(?:\s*(?:이력서|resume))?/m);
     if (m3) return m3[1];
-
     const m4 = text.match(/(?:^|\n)\s*name\s*[:：-]\s*([A-Za-z][A-Za-z.'-]+(?:\s+[A-Za-z.'-]+)*)/i);
     if (m4) return m4[1].trim();
-
     const firstLine = (text.split('\n')[0] || '').trim();
     const m5 = firstLine.match(/^([가-힣]{2,4})\b/);
     if (m5) return m5[1];
-
     return null;
 }
 
@@ -135,9 +146,7 @@ const useRecorder = () => {
         const mr = new MediaRecorder(stream, { mimeType });
         mediaRef.current = mr;
         chunksRef.current = [];
-        mr.ondataavailable = (e) => {
-            if (e.data && e.data.size > 0) chunksRef.current.push(e.data);
-        };
+        mr.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunksRef.current.push(e.data); };
         mr.onstop = () => setRecording(false);
         mr.start();
         setRecording(true);
@@ -150,9 +159,7 @@ const useRecorder = () => {
             mr.onstop = () => {
                 setRecording(false);
                 const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'audio/webm' });
-                try {
-                    mr.stream.getTracks().forEach((t) => t.stop());
-                } catch {}
+                try { mr.stream.getTracks().forEach((t) => t.stop()); } catch {}
                 resolve(blob);
             };
             mr.stop();
@@ -179,17 +186,13 @@ const speak = (text, { lang = 'ko-KR' } = {}) => {
 // ===== 질문 태그 추출 =====
 function extractQuestion(text) {
     if (!text) return '';
-
-    // 1) 태그 우선: <QUESTION> ... </QUESTION>
     const tag = text.match(/<\s*QUESTION\s*>([\s\S]*?)<\s*\/\s*QUESTION\s*>/i);
     if (tag && tag[1]) {
         let q = tag[1].trim();
-        q = q.replace(/^[\s\-–—•\d\.\)\(]+/, ''); // 앞머리 불릿/번호 제거
+        q = q.replace(/^[\s\-–—•\d\.\)\(]+/, '');
         if (!/[?？]$/.test(q) && q.length > 0) q += '?';
         return q;
     }
-
-    // 2) 폴백(보수적으로): 전체에서 ?로 끝나는 문장 중 마지막 1개
     const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
     const merged = lines.join(' ');
     const parts = merged.split(/(?<=[?？])/).map((s) => s.trim()).filter(Boolean);
@@ -197,20 +200,7 @@ function extractQuestion(text) {
     return lastQ || '';
 }
 
-// === 최종 평가용 TTS 요약 추출 ===
-function summarizeForTTS(evaluationText) {
-    if (!evaluationText) return '';
-    const scoreMatch = evaluationText.match(/최종\s*점수\s*[:：]\s*(\d{1,3})/);
-    const score = scoreMatch ? parseInt(scoreMatch[1], 10) : null;
-
-    const totalLineMatch = evaluationText.match(/총평\s*[:：]\s*([^\n]+)/);
-    const totalLine = totalLineMatch ? totalLineMatch[1].trim() : '';
-
-    const firstSentence = (totalLine.split(/(?<=[.?!])\s+/)[0] || '').trim();
-    return `최종 점수${score !== null ? `는 ${score}점` : ''}입니다. ${firstSentence || '평가 결과를 확인해 주세요.'}`;
-}
-
-// === 합격여부 문자열 파싱 (TTS/출력 안전화) ===
+// === 합격여부 문자열 파싱 ===
 function parseDecisionText(recText) {
     const raw = (recText || '').toString().trim();
     if (!raw) return { status: '', reason: '', raw };
@@ -237,11 +227,19 @@ const Interview = () => {
     const [resumeLoaded, setResumeLoaded] = useState(false);
     const [resumeLoadState, setResumeLoadState] = useState({ loading: false, error: '' });
 
+    // ✅ 내 업로드(서버)에서 가져오기
+    const [myResumes, setMyResumes] = useState([]);
+    const [resumeListState, setResumeListState] = useState({ loading: false, error: '' });
+    const [selectedResumeId, setSelectedResumeId] = useState('');
+    const [serverResumeState, setServerResumeState] = useState({
+        loading: false, error: '', truncated: false, success: false
+    });
+
     // 채팅
     const [chat, setChat] = useState([{ role: 'system', content: buildSystemPrompt(company, resumeSummary) }]);
     const [userInput, setUserInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [ended, setEnded] = useState(false); // ✅ 면접 종료 상태
+    const [ended, setEnded] = useState(false);
 
     const controllerRef = useRef(null);
     const bootedRef = useRef(false);
@@ -283,10 +281,7 @@ const Interview = () => {
         () => () => {
             if (controllerRef.current) controllerRef.current.abort();
             if (audioRef.current) {
-                try {
-                    audioRef.current.pause();
-                    URL.revokeObjectURL(audioRef.current.src);
-                } catch {}
+                try { audioRef.current.pause(); URL.revokeObjectURL(audioRef.current.src); } catch {}
             }
         },
         []
@@ -322,6 +317,28 @@ const Interview = () => {
             return token;
         }
         return null;
+    };
+
+    const authFetch = async (path, options = {}, timeout = 15000) => {
+        let token = getAccessToken();
+        if (!token) throw new Error('로그인이 필요합니다.');
+        const doCall = (bearer) =>
+            fetchWithTimeout(
+                `${API_ROOT}${path}`,
+                {
+                    ...options,
+                    headers: { ...(options.headers || {}), Authorization: `Bearer ${bearer}` },
+                    credentials: 'include',
+                },
+                timeout
+            );
+        let res = await doCall(token);
+        if (res.status === 401) {
+            const newToken = await refreshAccessToken();
+            if (!newToken) throw new Error('세션이 만료되었습니다. 다시 로그인해주세요.');
+            res = await doCall(newToken);
+        }
+        return res;
     };
 
     const callBackendChat = async (messages) => {
@@ -364,15 +381,12 @@ const Interview = () => {
     const buildWelcomeMessage = (opts = {}) => {
         const { companyName = company, personName = null, needResume = !resumeLoaded } = opts;
         const companyDisplay = sanitizeCompanyName(companyName);
-
         const headline = personName
             ? `안녕하세요 ${personName}님, ${companyDisplay || '미지정'} 회사 면접에 오신 것을 환영합니다.`
             : `안녕하세요! ${companyDisplay || '미지정'} 회사 면접에 오신 것을 환영합니다.`;
-
         const guideResume = needResume
-            ? `- 아직 이력서/깃허브가 연결되지 않았네요. 상단 입력칸에 GitHub 이력서 링크를 불러와 주세요.\n  (예: README.md / resume.md)\n`
+            ? `- 아직 이력서/깃허브가 연결되지 않았네요. 상단에서 GitHub 또는 '내 업로드' 중 하나를 불러와 주세요.\n`
             : '';
-
         return `${headline}
             - 진행 중에는 질문만 제시합니다.
             - 면접 종료 시 최종 평가와 점수표를 제공합니다.
@@ -388,10 +402,10 @@ const Interview = () => {
         (async () => {
             setLoading(true);
             try {
-                const selectedId = await loadVoices(); // ← 정렬+선택 완료, 선택 Voice ID 확보
+                const selectedId = await loadVoices();
                 const welcomeMsg = buildWelcomeMessage();
                 setChat((prev) => [...prev, { role: 'assistant', content: welcomeMsg }]);
-                await playTts(welcomeMsg, { voiceId: selectedId }); // ← 명시 전달로 레이스 차단
+                await playTts(welcomeMsg, { voiceId: selectedId });
             } catch (e) {
                 setChat((prev) => [...prev, { role: 'assistant', content: e?.message || '초기 인사 생성 실패' }]);
             } finally {
@@ -421,38 +435,24 @@ const Interview = () => {
 
         const json = await res.json().catch(async () => {
             const txt = await res.text();
-            try {
-                return JSON.parse(txt);
-            } catch {
-                return { voices: [] };
-            }
+            try { return JSON.parse(txt); } catch { return { voices: [] }; }
         });
         const raw = Array.isArray(json.voices) ? json.voices : [];
 
-        // 1) ID 고정(환경변수)이 있으면 최우선 → 2) 이름에 'alice' 포함 → 3) 그대로
         const byId = DEFAULT_VOICE_ID ? raw.find((v) => v.voice_id === DEFAULT_VOICE_ID) : null;
         const byName = raw.find((v) => (v.name || '').toLowerCase().includes(PREFERRED_VOICE_NAME));
 
         let ordered;
-        if (byId) {
-            ordered = [byId, ...raw.filter((v) => v.voice_id !== byId.voice_id)];
-        } else if (byName) {
-            ordered = [byName, ...raw.filter((v) => v.voice_id !== byName.voice_id)];
-        } else {
-            ordered = raw;
-        }
+        if (byId) ordered = [byId, ...raw.filter((v) => v.voice_id !== byId.voice_id)];
+        else if (byName) ordered = [byName, ...raw.filter((v) => v.voice_id !== byName.voice_id)];
+        else ordered = raw;
 
-        const prepared = ordered.map((v) => ({
-            id: v.voice_id,
-            name: v.name,
-            preview: v.preview_url,
-        }));
+        const prepared = ordered.map((v) => ({ id: v.voice_id, name: v.name, preview: v.preview_url }));
         setVoices(prepared);
 
-        // 최초 선택: 기존 선택값 없으면 첫 항목으로 고정
         const selected = voiceId ?? (prepared[0]?.id || null);
         setVoiceId(selected);
-        return selected; // ★ 호출처에 선택된 보이스 ID 반환
+        return selected;
     };
 
     // === GitHub 자기소개서 불러오기 ===
@@ -491,21 +491,13 @@ const Interview = () => {
                 cleaned = cleaned.slice(0, MAX_RESUME_SIZE) + '\n\n(요약: 길이 제한으로 일부가 생략되었습니다)';
             }
 
-            // 시스템 프롬프트 갱신
             setResumeSummary(cleaned);
             setChat([{ role: 'system', content: buildSystemPrompt(company, cleaned) }]);
 
-            // ✅ 이름 추출 → 개인화 환영 멘트
             const extractedName = extractNameFromResume(cleaned);
-            const welcomeMsg = buildWelcomeMessage({
-                companyName: company,
-                personName: extractedName,
-                needResume: false,
-            });
-
-            // 개인화 환영 멘트 출력
+            const welcomeMsg = buildWelcomeMessage({ companyName: company, personName: extractedName, needResume: false });
             setChat((prev) => [...prev, { role: 'assistant', content: welcomeMsg }]);
-            await playTts(welcomeMsg); // 현재 선택된 voiceId 사용
+            await playTts(welcomeMsg);
 
             setResumeLoadState({ loading: false, error: '' });
             setResumeLoaded(true);
@@ -515,9 +507,67 @@ const Interview = () => {
         }
     };
 
+    // === 내 업로드 목록 불러오기 ===
+    const fetchMyResumes = async () => {
+        setResumeListState({ loading: true, error: '' });
+        try {
+            const res = await authFetch('/resumes', { method: 'GET' }, 15000);
+            if (!res.ok) {
+                const msg = await res.text().catch(() => '');
+                throw new Error(`목록 조회 실패: ${res.status} ${msg || res.statusText}`);
+            }
+            const list = await res.json();
+            setMyResumes(Array.isArray(list) ? list : []);
+            if (Array.isArray(list) && list.length && !selectedResumeId) {
+                setSelectedResumeId(String(list[0].id));
+            }
+            setResumeListState({ loading: false, error: '' });
+        } catch (e) {
+            setResumeListState({ loading: false, error: e?.message || '목록을 불러오지 못했습니다.' });
+        }
+    };
+
+    useEffect(() => {
+        (async () => {
+            try {
+                if (getAccessToken()) await fetchMyResumes();
+            } catch {}
+        })();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // === 서버 자소서 텍스트 적용 (단일 '불러오기' 버튼) ===
+    const applyServerResume = async () => {
+        if (!selectedResumeId) return;
+        setServerResumeState({ loading: true, error: '', truncated: false, success: false });
+        try {
+            const res = await authFetch(`/resumes/${selectedResumeId}/text?limit=${MAX_RESUME_SIZE}`, { method: 'GET' }, 20000);
+            if (!res.ok) {
+                const msg = await res.text().catch(() => '');
+                throw new Error(`본문 추출 실패: ${res.status} ${msg || res.statusText}`);
+            }
+            const dto = await res.json();
+            const text = String(dto?.text || '').trim();
+
+            setResumeSummary(text || '기본 자기소개서');
+            setChat([{ role: 'system', content: buildSystemPrompt(company, text || '기본 자기소개서') }]);
+
+            const extractedName = extractNameFromResume(text);
+            const welcomeMsg = buildWelcomeMessage({ companyName: company, personName: extractedName, needResume: false });
+            setChat((prev) => [...prev, { role: 'assistant', content: welcomeMsg }]);
+            await playTts(welcomeMsg);
+
+            setServerResumeState({ loading: false, error: '', truncated: !!dto?.truncated, success: true });
+            setResumeLoaded(true);
+        } catch (e) {
+            setServerResumeState({ loading: false, error: e?.message || '불러오기 실패', truncated: false, success: false });
+            setResumeLoaded(false);
+        }
+    };
+
     // === 전송 ===
     const handleSend = async (overrideText) => {
-        if (ended) return; // 종료 후 입력 금지
+        if (ended) return;
         const text = (overrideText ?? userInput).trim();
         if (!text || loading) return;
 
@@ -528,17 +578,9 @@ const Interview = () => {
 
         try {
             const reply = await callBackendChat(updated);
-
-            // 질문만 파싱해서 보여주고 읽는다
             const q = extractQuestion(reply);
-            setChat((prev) => [
-                ...prev,
-                { role: 'assistant', content: q || '(질문을 생성하지 못했습니다. 다시 시도하세요.)' }
-            ]);
-
-            if (q) {
-                await playTts(q);
-            }
+            setChat((prev) => [...prev, { role: 'assistant', content: q || '(질문을 생성하지 못했습니다. 다시 시도하세요.)' }]);
+            if (q) await playTts(q);
         } catch (error) {
             setChat((prev) => [...prev, { role: 'assistant', content: error?.message || '오류가 발생했습니다.' }]);
         } finally {
@@ -580,7 +622,7 @@ const Interview = () => {
 
     // === 마이크 ===
     const handleMic = async () => {
-        if (ended) return; // 종료 후 입력 금지
+        if (ended) return;
         try {
             if (!recording) {
                 await recStart();
@@ -591,25 +633,18 @@ const Interview = () => {
                 await handleSend(text);
             }
         } catch (e) {
-            setChat((prev) => [
-                ...prev,
-                { role: 'assistant', content: e?.message || '음성 처리 중 오류가 발생했습니다.' },
-            ]);
+            setChat((prev) => [...prev, { role: 'assistant', content: e?.message || '음성 처리 중 오류가 발생했습니다.' }]);
         }
     };
 
     // === 서버 TTS ===
-    // override: { voiceId?: string, modelId?: string }
     const playTts = async (text, override = {}) => {
-        const maxSentences = Number(override.maxSentences ?? 2); // ← 필요시 확장 가능
+        const maxSentences = Number(override.maxSentences ?? 2);
         const trimmed = String(text).split(/(?<=[?？.!])\s+/).slice(0, maxSentences).join(' ').trim();
         if (!trimmed) return;
 
         let token = getAccessToken();
-        if (!token) {
-            speak(trimmed);
-            return;
-        }
+        if (!token) { speak(trimmed); return; }
 
         const payload = {
             text: trimmed,
@@ -624,10 +659,7 @@ const Interview = () => {
             fetch(`${API_ROOT}/chat/tts`, {
                 method: 'POST',
                 credentials: 'include',
-                headers: {
-                    Authorization: `Bearer ${bearer}`,
-                    'Content-Type': 'application/json',
-                },
+                headers: { Authorization: `Bearer ${bearer}`, 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             });
 
@@ -648,10 +680,7 @@ const Interview = () => {
             const url = URL.createObjectURL(blob);
 
             if (audioRef.current) {
-                try {
-                    audioRef.current.pause();
-                    URL.revokeObjectURL(audioRef.current.src);
-                } catch {}
+                try { audioRef.current.pause(); URL.revokeObjectURL(audioRef.current.src); } catch {}
             }
             audioRef.current = new Audio(url);
             audioRef.current.play().catch((err) => {
@@ -665,12 +694,11 @@ const Interview = () => {
     };
 
     // === 대화록 문자열 생성 ===
-    const buildTranscript = () => {
-        return chat
+    const buildTranscript = () =>
+        chat
             .filter((m) => m.role !== 'system')
             .map((m) => (m.role === 'user' ? `[후보자] ${m.content}` : `[AI] ${m.content}`))
             .join('\n');
-    };
 
     // === 면접 종료 & 최종 평가 ===
     const handleEndInterview = async () => {
@@ -678,25 +706,15 @@ const Interview = () => {
         setLoading(true);
 
         try {
-            // 1) 액세스 토큰 확보
             let token = getAccessToken();
             if (!token) throw new Error('로그인이 필요합니다.');
 
-            // 2) 평가 요청 페이로드
-            const payload = {
-                company: company || '미지정',
-                resumeSummary,
-                transcript: buildTranscript(),
-            };
+            const payload = { company: company || '미지정', resumeSummary, transcript: buildTranscript() };
 
-            // 3) 호출 함수 (401 시 갱신 후 재시도)
             const doEval = (bearer) =>
                 fetch(`${API_ROOT}/chat/eval`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${bearer}`,
-                    },
+                    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${bearer}` },
                     credentials: 'include',
                     body: JSON.stringify(payload),
                 });
@@ -713,12 +731,10 @@ const Interview = () => {
                 throw new Error(`평가 실패: ${res.status} ${msg || res.statusText}`);
             }
 
-            // 4) 결과 파싱
             const json = await res.json();
             const sc = json?.score || {};
             const toInt = (v, d = 0) => (typeof v === 'number' ? v : parseInt(String(v || d), 10) || d);
 
-            // 5) 보기 좋게 문자열 구성 ("입니다" 중복 방지)
             const recRaw = (json?.recommendation || '').toString().trim();
             const pretty =
                 `최종 점수: ${toInt(sc.총점)}/100\n` +
@@ -733,16 +749,14 @@ const Interview = () => {
                     ? `근거:\n${json.evidence.map((e) => `- ${e}`).join('\n')}`
                     : '');
 
-            // 6) 채팅에 출력
             setChat((prev) => [
                 ...prev,
                 { role: 'assistant', content: '✅ 면접을 종료합니다. 아래는 최종 평가 결과입니다.' },
                 { role: 'assistant', content: pretty },
             ]);
 
-            // 7) 총평 1문장 + 합격여부 1문장 읽어주기 (playTts는 기본 2문장까지만 읽음)
             const rawSummary = (json?.summary || '').toString().trim();
-            const summaryFirst = ((rawSummary.split(/(?<=[.?!])\s+/)[0] || rawSummary).trim());
+            const summaryFirst = (rawSummary.split(/(?<=[.?!])\s+/)[0] || rawSummary).trim();
 
             const { status, reason, raw } = parseDecisionText(recRaw);
             const stripPeriod = (s) => s.replace(/[.。]$/, '');
@@ -759,7 +773,7 @@ const Interview = () => {
             }
 
             const ttsLine = [s1, s2].filter(Boolean).join(' ');
-            if (ttsLine.trim()) await playTts(ttsLine); // ← 정확히 두 문장 우선 전달
+            if (ttsLine.trim()) await playTts(ttsLine);
 
             setEnded(true);
         } catch (e) {
@@ -807,6 +821,60 @@ const Interview = () => {
                         사설 Repo는 백엔드 프록시가 필요합니다.
                     </div>
                 </div>
+
+                {/* ✅ 내 업로드에서 선택 (단일 '불러오기' 버튼) */}
+                <div className="gh-import" style={{ marginTop: 16 }}>
+                    <label htmlFor="resume-select">
+                        <strong>내 업로드에서 선택</strong>
+                    </label>
+                    <div className="gh-row" style={{ gap: 8 }}>
+                        <select
+                            id="resume-select"
+                            value={selectedResumeId ?? ''}
+                            onChange={(e) => setSelectedResumeId(e.target.value)}
+                            style={{ flex: 1, padding: '12px 14px', border: '1px solid #cfd2dc', borderRadius: 10 }}
+                        >
+                            {myResumes.map((it) => (
+                                <option
+                                    key={it.id}
+                                    value={it.id}
+                                    title={`${it.fileName} — ${bytesFmt(it.fileSize)} — ${dateFmt(it.createdAt)}`}
+                                >
+                                    {baseName(it.fileName)}
+                                </option>
+                            ))}
+                        </select>
+
+                        <button
+                            type="button"
+                            onClick={applyServerResume}
+                            disabled={serverResumeState.loading || !selectedResumeId}
+                            title="선택한 자소서를 요약으로 적용합니다"
+                        >
+                            {serverResumeState.loading ? '불러오는 중...' : '불러오기'}
+                        </button>
+                    </div>
+
+                    {/* 상태 표시 */}
+                    {serverResumeState.success && !serverResumeState.loading && !serverResumeState.error && (
+                        <div className="gh-status ok">불러오기 완료</div>
+                    )}
+                    {resumeListState.error && (
+                        <div className="error" style={{ color: '#e11d48', marginTop: 6 }}>
+                            {resumeListState.error}
+                        </div>
+                    )}
+                    {serverResumeState.error && (
+                        <div className="error" style={{ color: '#e11d48', marginTop: 6 }}>
+                            {serverResumeState.error}
+                        </div>
+                    )}
+                    {serverResumeState.truncated && (
+                        <div className="gh-status" style={{ color: '#6b7280', marginTop: 6 }}>
+                            ※ 길이 제한으로 일부가 생략되었습니다.
+                        </div>
+                    )}
+                </div>
             </div>
 
             <div className="chat-section">
@@ -814,9 +882,7 @@ const Interview = () => {
 
                 {/* 🔊 음성/모델 선택 */}
                 <div className="voice-row" style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
-                    <label>
-                        <strong>읽어줄 목소리</strong>
-                    </label>
+                    <label><strong>읽어줄 목소리</strong></label>
                     <select value={voiceId || ''} onChange={(e) => setVoiceId(e.target.value)} disabled={ended}>
                         {voices.map((v) => (
                             <option key={v.id} value={v.id}>
@@ -825,9 +891,7 @@ const Interview = () => {
                         ))}
                     </select>
 
-                    <label style={{ marginLeft: 12 }}>
-                        <strong>모델</strong>
-                    </label>
+                    <label style={{ marginLeft: 12 }}><strong>모델</strong></label>
                     <select value={modelId} onChange={(e) => setModelId(e.target.value)} disabled={ended}>
                         <option value="eleven_flash_v2_5">eleven_flash_v2_5 (권장)</option>
                         <option value="eleven_multilingual_v2">eleven_multilingual_v2</option>
@@ -889,8 +953,6 @@ const Interview = () => {
                         >
                             {recording ? '■ 녹음 종료' : '🎤 녹음 시작'}
                         </button>
-
-                        {/* ✅ 면접 종료 버튼 */}
                         <button
                             type="button"
                             onClick={handleEndInterview}

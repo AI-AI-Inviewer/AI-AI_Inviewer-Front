@@ -291,3 +291,76 @@
   }
 }
 
+/* === 내 업로드 선택(UI 강화) : select + 새로고침 + 적용 === */
+.ai-interview-container .resume-section .gh-import .gh-row {
+  align-items: center;
+  flex-wrap: wrap; /* 좁은 화면에서 줄바꿈 허용 */
+}
+
+/* 드롭다운(내 업로드 목록) */
+.ai-interview-container .resume-section .gh-import .gh-row select {
+  flex: 1 1 60%;
+  min-width: 220px;
+  padding: 10px 40px 10px 12px; /* 우측 여백은 화살표 공간 */
+  border: 1px solid #cfd2dc;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: #fff;
+  transition: border-color .2s ease, box-shadow .2s ease;
+  appearance: none; /* 기본 화살표 제거 */
+  background-image: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c63ff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+}
+.ai-interview-container .resume-section .gh-import .gh-row select:focus {
+  outline: none;
+  border-color: #6c63ff;
+  box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+}
+
+/* 버튼 공통(해당 행 한정) — 세로로 눌려 보이던 문제 방지 */
+.ai-interview-container .resume-section .gh-import .gh-row button {
+  writing-mode: horizontal-tb;
+  white-space: nowrap;
+  height: 40px;
+  padding: 10px 14px;
+}
+
+/* select 다음 첫 버튼 = '목록 새로고침'을 연한 보라 아웃라인 느낌으로 */
+.ai-interview-container .resume-section .gh-import .gh-row select + button {
+  background: #f5f6ff;
+  color: #4f46e5;
+  border: 1px solid #c7ccff;
+}
+.ai-interview-container .resume-section .gh-import .gh-row select + button:hover:not(:disabled) {
+  background: #eef2ff;
+}
+
+/* 그 다음 버튼 = '선택 적용'을 메인 그라디언트 버튼으로 */
+.ai-interview-container .resume-section .gh-import .gh-row select + button + button {
+  background: linear-gradient(180deg, #6c63ff 0%, #5b53e6 100%);
+  box-shadow: 0 6px 14px rgba(108,99,255,0.25);
+}
+.ai-interview-container .resume-section .gh-import .gh-row select + button + button:hover:not(:disabled) {
+  filter: brightness(0.98);
+}
+
+/* 반응형: 좁은 화면에서 행이 예쁘게 접히게 */
+@media (max-width: 992px) {
+  .ai-interview-container .resume-section .gh-import .gh-row {
+    gap: 8px;
+  }
+  .ai-interview-container .resume-section .gh-import .gh-row select {
+    flex: 1 1 100%;
+  }
+  .ai-interview-container .resume-section .gh-import .gh-row select ~ button {
+    flex: 1 1 calc(50% - 4px);
+  }
+}
+@media (max-width: 520px) {
+  .ai-interview-container .resume-section .gh-import .gh-row select ~ button {
+    flex: 1 1 100%;
+  }
+}
