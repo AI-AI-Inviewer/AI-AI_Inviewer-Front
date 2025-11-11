@@ -1,14 +1,45 @@
-#root, html, body {
-  height: 100%;
-  margin: 0;
+html, body, #root { height: 100%; margin: 0; }
+
+:root{
+  --footer-peek: 50px;              /* 티저로 보일 푸터 높이 */
+}
+.page {
+  display: flex;
+  justify-content: center;
+  background: #fff;
 }
 
-.AppLayout {
+/* 📌 공용 폭 규칙: 퍼센트 기반 + 상한 */
+.page-shell {
+  width: 72%;
+  max-width: 1200px;      /* 너무 넓어지지 않게 상한 */
+  margin: 0 auto;
+}
+.AppLayout{
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100svh;
 }
 
-main {
-  flex: 1;
+/* ✅ 하단이 잘리지 않도록 '푸터 티저 높이만큼' 여유를 둠 */
+.AppLayout > .AppMain{
+  flex: 1 0 auto;
+  display: grid;
+  min-height: calc(100svh - var(--footer-peek));
+  background: #fff;
+  padding-bottom: calc(var(--footer-peek) + 24px);  /* ← 추가! */
 }
+
+/* 푸터 티저(순수 CSS 겹침) */
+footer.footer{
+  margin-top: calc(-1 * var(--footer-peek));
+  padding-top: var(--footer-peek);
+}
+
+@media (max-width: 768px){
+  :root{ --footer-peek: 54px; }
+}
+@media (max-width: 1280px) { .page-shell { width: 80%; } }
+@media (max-width: 1024px) { .page-shell { width: 88%; } }
+@media (max-width: 768px)  { .page-shell { width: 94%; } }
+@media (max-width: 480px)  { .page-shell { width: 100%; padding: 0 12px; } }

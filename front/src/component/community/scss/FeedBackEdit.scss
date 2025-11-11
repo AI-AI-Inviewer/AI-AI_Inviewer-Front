@@ -1,6 +1,7 @@
 .feedback-container,
 .feedback-detail-container {
-  max-width: 700px;
+  width: 72%;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 2rem;
   background: #ffffff;
@@ -72,28 +73,23 @@
       cursor: pointer;
       transition: background 0.2s;
 
-      &:hover {
-        background: #4c51bf;
-      }
-
-      &:active {
-        background: #434190;
-      }
+      &:hover { background: #4c51bf; }
+      &:active { background: #434190; }
     }
   }
 }
 
-@media (max-width: 640px) {
-  .feedback-container,
-  .feedback-detail-container {
-    padding: 1.5rem 1rem;
-
-    .feedback-form,
-    .edit-form {
-      button,
-      .btn {
-        width: 100%;
-      }
-    }
-  }
+/* 반응형 폭 */
+@media (max-width: 1280px) {
+  .feedback-container, .feedback-detail-container { width: 80%; }
+}
+@media (max-width: 1024px) {
+  .feedback-container, .feedback-detail-container { width: 88%; }
+}
+@media (max-width: 768px) {
+  .feedback-container, .feedback-detail-container { width: 94%; padding: 1.5rem 1rem; }
+}
+@media (max-width: 480px) {
+  .feedback-container, .feedback-detail-container { width: 100%; padding: 1.25rem 12px; }
+  .feedback-form button, .edit-form .btn, .edit-form button { width: 100%; }
 }

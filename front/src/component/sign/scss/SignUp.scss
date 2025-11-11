@@ -2,9 +2,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f0f2f5;
+  min-height: 100%;          /* 100vh 금지 */
+  place-self: center;        /* AppLayout > main이 grid일 때 중앙 배치 */
+  background-color: #fff;    /* ← 회색 제거: 흰색으로 통일 */
   font-family: 'Noto Sans KR', sans-serif;
+  padding: 40px 16px;
 
   .signup-card {
     background: #fff;
@@ -12,8 +14,10 @@
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
     width: 400px;
+    max-width: 100%;
     text-align: center;
     transition: transform 0.2s;
+
     &:hover { transform: translateY(-3px); }
 
     h2 {
@@ -42,6 +46,7 @@
           border: 1px solid #ddd;
           font-size: 14px;
           transition: border 0.2s;
+
           &:focus {
             border-color: #5b9fff;
             outline: none;
@@ -52,7 +57,9 @@
         .input-with-btn {
           display: flex;
           gap: 8px;
+
           input { flex: 1; }
+
           button {
             padding: 0 12px;
             border: none;
@@ -61,6 +68,7 @@
             color: #fff;
             cursor: pointer;
             transition: background 0.2s;
+
             &:hover { background-color: #4080ff; }
             &:disabled { background-color: #aaa; cursor: not-allowed; }
           }
@@ -77,7 +85,11 @@
         font-size: 16px;
         cursor: pointer;
         transition: background 0.2s, transform 0.2s;
-        &:hover { background-color: #4080ff; transform: translateY(-2px); }
+
+        &:hover {
+          background-color: #4080ff;
+          transform: translateY(-2px);
+        }
       }
     }
 
@@ -85,11 +97,19 @@
       margin-top: 20px;
       font-size: 14px;
       color: #555;
+
       a {
         color: #5b9fff;
         text-decoration: none;
+
         &:hover { text-decoration: underline; }
       }
     }
   }
+}
+
+/* (선택) 아주 작은 화면에서 여백 보정 */
+@media (max-width: 360px) {
+  .signup-container { padding: 24px 12px; }
+  .signup-card { padding: 28px 20px; }
 }

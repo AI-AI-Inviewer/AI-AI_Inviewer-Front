@@ -16,7 +16,8 @@
 }
 
 .feedback-detail-container {
-  max-width: 820px;
+  width: 72%;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 1.5rem 1.25rem;
   font-family: "Noto Sans KR", sans-serif;
@@ -54,9 +55,7 @@
   white-space: pre-wrap;
   transition: box-shadow 0.2s;
 
-  &:hover {
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-  }
+  &:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.1); }
 }
 
 .detail-actions.bottom-actions {
@@ -82,30 +81,15 @@
   font-size: 0.97rem;
 }
 
-.btn-slim {
-  padding: 0.4rem 0.75rem;
-  font-size: 0.9rem;
-  border-radius: 9px;
-}
+.btn-slim { padding: 0.4rem 0.75rem; font-size: 0.9rem; border-radius: 9px; }
 
-.btn-primary {
-  color: #fff;
-  background: var(--primary);
-  box-shadow: var(--shadow-sm);
-}
+.btn-primary { color: #fff; background: var(--primary); box-shadow: var(--shadow-sm); }
 .btn-primary:hover { background: var(--primary-d); }
 
-.btn-danger {
-  color: #fff;
-  background: var(--danger);
-  box-shadow: var(--shadow-sm);
-}
-.btn-danger:hover { background: var(--danger-d); }
+.btn-danger  { color: #fff; background: var(--danger); box-shadow: var(--shadow-sm); }
+.btn-danger:hover  { background: var(--danger-d); }
 
-.btn-soft {
-  background: linear-gradient(0deg, rgba(255,255,255,.08), rgba(255,255,255,.08)), var(--danger);
-  color: #fff;
-}
+.btn-soft { background: linear-gradient(0deg, rgba(255,255,255,.08), rgba(255,255,255,.08)), var(--danger); color: #fff; }
 
 .back-btn {
   color: #4a5568;
@@ -181,37 +165,17 @@
         .comment-time { font-variant-numeric: tabular-nums; }
       }
 
-      p {
-        margin: 0.25rem 0 0.5rem;
-        line-height: 1.55;
-        color: var(--text);
-      }
+      p { margin: 0.25rem 0 0.5rem; line-height: 1.55; color: var(--text); }
 
-      .comment-buttons {
-        display: flex;
-        justify-content: flex-end;
-        gap: 0.4rem;
-      }
+      .comment-buttons { display: flex; justify-content: flex-end; gap: 0.4rem; }
     }
   }
 }
 
-.btn-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1rem;
-}
+.btn-wrapper { display: flex; justify-content: flex-end; margin-top: 1rem; }
 
-@media (max-width: 640px) {
-  .detail-actions.bottom-actions {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .comment-section .comment-input {
-    flex-direction: column;
-
-    .btn { width: 100%; }
-  }
-}
+/* 반응형 폭 */
+@media (max-width: 1280px) { .feedback-detail-container { width: 80%; } }
+@media (max-width: 1024px) { .feedback-detail-container { width: 88%; } }
+@media (max-width: 768px)  { .feedback-detail-container { width: 94%; } }
+@media (max-width: 480px)  { .feedback-detail-container { width: 100%; padding: 1.25rem 12px; } }

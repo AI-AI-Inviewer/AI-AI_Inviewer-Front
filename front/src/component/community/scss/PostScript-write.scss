@@ -1,6 +1,7 @@
 .postscript-container {
   font-family: 'Noto Sans KR', sans-serif;
-  max-width: 700px;
+  width: 72%;
+  max-width: 1200px;
   margin: 40px auto;
   padding: 25px;
   background: #fff;
@@ -62,26 +63,14 @@
       cursor: pointer;
       transition: background 0.2s, transform 0.1s;
 
-      &:hover {
-        background: #115293;
-      }
-
-      &:active {
-        transform: scale(0.97);
-      }
+      &:hover { background: #115293; }
+      &:active { transform: scale(0.97); }
     }
   }
 }
 
-@media (max-width: 640px) {
-  .postscript-container {
-    padding: 20px;
-
-    .postscript-form {
-      button {
-        width: 100%;
-        align-self: stretch;
-      }
-    }
-  }
-}
+/* 반응형 폭 */
+@media (max-width: 1280px) { .postscript-container { width: 80%; } }
+@media (max-width: 1024px) { .postscript-container { width: 88%; } }
+@media (max-width: 768px)  { .postscript-container { width: 94%; padding: 20px; } }
+@media (max-width: 480px)  { .postscript-container { width: 100%; padding: 16px 12px; } }

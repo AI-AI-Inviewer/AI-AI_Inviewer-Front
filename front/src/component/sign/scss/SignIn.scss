@@ -2,9 +2,11 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-color: #f0f2f5;
+  min-height: 100%;          /* 100vh 금지 유지 */
+  place-self: center;        /* 중앙 정렬 그대로 */
+  background-color: #fff;    /* ✅ 회색 → 흰색 */
   font-family: 'Noto Sans KR', sans-serif;
+  padding: 40px 16px;
 
   .signin-card {
     background: #fff;
@@ -14,9 +16,8 @@
     width: 360px;
     text-align: center;
     transition: transform 0.2s;
-    &:hover {
-      transform: translateY(-3px);
-    }
+
+    &:hover { transform: translateY(-3px); }
 
     h2 {
       margin-bottom: 30px;
@@ -44,6 +45,7 @@
           border: 1px solid #ddd;
           font-size: 14px;
           transition: border 0.2s;
+
           &:focus {
             border-color: #5b9fff;
             outline: none;
@@ -78,17 +80,13 @@
           align-items: center;
           gap: 6px;
           cursor: pointer;
-          input {
-            cursor: pointer;
-          }
+          input { cursor: pointer; }
         }
 
         .move-signup {
           color: #5b9fff;
           text-decoration: none;
-          &:hover {
-            text-decoration: underline;
-          }
+          &:hover { text-decoration: underline; }
         }
       }
 
@@ -108,6 +106,7 @@
         font-weight: 500;
         cursor: pointer;
         transition: background 0.2s, transform 0.2s;
+
         &:hover {
           background-color: #4080ff;
           transform: translateY(-2px);
