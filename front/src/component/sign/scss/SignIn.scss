@@ -38,7 +38,10 @@
         color: #555;
         text-align: left;
 
+        /* 모든 인풋을 같은 폭으로 */
         input {
+          width: 100%;
+          box-sizing: border-box;
           margin-top: 6px;
           padding: 12px 14px;
           border-radius: 8px;
@@ -53,18 +56,39 @@
           }
         }
 
+        /* 비밀번호 래퍼: 같은 폭 + 토글 버튼 절대배치 */
         .password-wrapper {
           position: relative;
+          width: 100%;
+
+          input {
+            width: 100%;
+            padding-right: 44px; /* ▶️ 토글 버튼 자리 확보 */
+          }
 
           .toggle-password {
             position: absolute;
             top: 50%;
             right: 10px;
             transform: translateY(-50%);
+            display: grid;
+            place-items: center;
+            width: 28px;
+            height: 28px;
+            line-height: 1;
             border: none;
-            background: none;
+            background: transparent;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
+            color: #666;
+            border-radius: 6px;
+            user-select: none;
+
+            &:hover { background: #f3f6ff; color: #386bff; }
+            &:focus-visible {
+              outline: none;
+              box-shadow: 0 0 0 2px rgba(91,159,255,.3);
+            }
           }
         }
       }

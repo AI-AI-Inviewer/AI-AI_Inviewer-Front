@@ -1,3 +1,4 @@
+// src/component/sign/js/SignUp.jsx
 import React, { useState, useEffect } from 'react';
 import '../scss/SignUp.scss';
 import { registerUser, checkUserId, checkNickname, sendEmailCode, verifyEmailCode } from '../../../api/user';
@@ -26,7 +27,7 @@ const SignUp = () => {
 
     useEffect(() => {
         if (cooldown <= 0) return;
-        const t = setInterval(() => setCooldown(c => c - 1), 1000);
+        const t = setInterval(() => setCooldown((c) => c - 1), 1000);
         return () => clearInterval(t);
     }, [cooldown]);
 
@@ -41,7 +42,7 @@ const SignUp = () => {
             setEmailCode('');
         }
 
-        setForm(prev => ({ ...prev, [name]: v }));
+        setForm((prev) => ({ ...prev, [name]: v }));
 
         if (name === 'userId') setIsUserIdChecked(false);
         if (name === 'nickname') setIsNicknameChecked(false);
@@ -53,8 +54,8 @@ const SignUp = () => {
             const { available } = await checkUserId(form.userId);
             setIsUserIdChecked(!!available);
             alert(available ? '사용 가능한 아이디입니다.' : '이미 사용 중인 아이디입니다.');
-        } catch (err) {
-            alert(`아이디 중복 검사 실패`);
+        } catch {
+            alert('아이디 중복 검사 실패');
         }
     };
 
@@ -64,7 +65,7 @@ const SignUp = () => {
             const { available } = await checkNickname(form.nickname);
             setIsNicknameChecked(!!available);
             alert(available ? '사용 가능한 닉네임입니다.' : '이미 사용 중인 닉네임입니다.');
-        } catch (err) {
+        } catch {
             alert('닉네임 중복 검사 실패');
         }
     };
@@ -81,7 +82,7 @@ const SignUp = () => {
             } else {
                 alert(res?.message || '코드 전송 실패');
             }
-        } catch (err) {
+        } catch {
             alert('코드 전송 실패');
         }
     };
@@ -97,7 +98,7 @@ const SignUp = () => {
             } else {
                 alert(res?.message || '인증 실패');
             }
-        } catch (err) {
+        } catch {
             alert('인증 실패');
         }
     };
@@ -129,7 +130,7 @@ const SignUp = () => {
                     {/* 아이디 */}
                     <label className="input-label">
                         아이디
-                        <div className="input-with-btn">
+                        <div className="input-with-btn compact">
                             <input type="text" name="userId" value={form.userId} onChange={handleChange} placeholder="아이디를 입력하세요" />
                             <button type="button" onClick={handleUserIdCheck}>중복검사</button>
                         </div>
@@ -193,7 +194,7 @@ const SignUp = () => {
                     {/* 닉네임 */}
                     <label className="input-label">
                         닉네임
-                        <div className="input-with-btn">
+                        <div className="input-with-btn compact">
                             <input type="text" name="nickname" value={form.nickname} onChange={handleChange} placeholder="닉네임을 입력하세요" />
                             <button type="button" onClick={handleNicknameCheck}>중복검사</button>
                         </div>

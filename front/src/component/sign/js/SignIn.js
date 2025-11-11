@@ -86,6 +86,7 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
                             value={form.userId}
                             onChange={handleChange}
                             placeholder="아이디를 입력하세요"
+                            autoComplete="username"
                         />
                     </label>
 
@@ -98,13 +99,17 @@ const SignIn = ({ setIsLoggedIn, setUserNickname }) => {
                                 value={form.password}
                                 onChange={handleChange}
                                 placeholder="비밀번호를 입력하세요"
+                                autoComplete="current-password"
                             />
                             <button
                                 type="button"
                                 className="toggle-password"
-                                onClick={() => setShowPassword(!showPassword)}
+                                aria-label={showPassword ? '비밀번호 숨기기' : '비밀번호 보기'}
+                                aria-pressed={showPassword}
+                                onClick={() => setShowPassword((v) => !v)}
                             >
-                                {showPassword ? 'X' : 'O️'}
+                                {/* 원래 O/X가 숫자 0처럼 보이는 문제 방지를 위해 글리프 고정 */}
+                                {showPassword ? '😎' : '🙄'}
                             </button>
                         </div>
                     </label>

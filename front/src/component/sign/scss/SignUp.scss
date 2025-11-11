@@ -1,19 +1,28 @@
+/* src/component/sign/scss/SignUp.scss */
+* { box-sizing: border-box; }
+
 .signup-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100%;          /* 100vh 금지 */
-  place-self: center;        /* AppLayout > main이 grid일 때 중앙 배치 */
-  background-color: #fff;    /* ← 회색 제거: 흰색으로 통일 */
+  place-self: center;
+  background-color: #fff;
   font-family: 'Noto Sans KR', sans-serif;
   padding: 40px 16px;
 
   .signup-card {
+    /* 공통 변수 */
+    --control-h: 44px;   /* 입력/버튼 동일 높이 */
+    --gap: 8px;          /* 요소 간격 */
+    --btn-w: 120px;      /* 기본 버튼 폭 (이메일/코드 확인 등) */
+    --btn-w-sm: 88px;    /* 중복검사 전용 좁은 버튼 폭 */
+
     background: #fff;
     padding: 40px 30px;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    width: 400px;
+    width: 420px;
     max-width: 100%;
     text-align: center;
     transition: transform 0.2s;
@@ -39,9 +48,11 @@
         font-size: 14px;
         color: #555;
 
-        input {
+        > input {
+          width: 100%;
+          height: var(--control-h);
           margin-top: 6px;
-          padding: 12px 14px;
+          padding: 0 14px;
           border-radius: 8px;
           border: 1px solid #ddd;
           font-size: 14px;
@@ -52,37 +63,76 @@
             outline: none;
             box-shadow: 0 0 0 2px rgba(91, 159, 255, 0.2);
           }
+
+          &:disabled {
+            background: #f7f7f7;
+            color: #999;
+          }
         }
 
         .input-with-btn {
-          display: flex;
-          gap: 8px;
+          width: 100%;
+          margin-top: 6px;
+          display: grid;
+          grid-template-columns: 1fr var(--btn-w); /* 기본: 넓은 버튼 */
+          gap: var(--gap);
+          align-items: stretch;
 
-          input { flex: 1; }
+          input {
+            width: 100%;
+            height: var(--control-h);
+            padding: 0 14px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            transition: border 0.2s;
+
+            &:focus {
+              border-color: #5b9fff;
+              outline: none;
+              box-shadow: 0 0 0 2px rgba(91, 159, 255, 0.2);
+            }
+
+            &:disabled {
+              background: #f7f7f7;
+              color: #999;
+            }
+          }
 
           button {
-            padding: 0 12px;
+            width: 100%;
+            height: var(--control-h);
             border: none;
             border-radius: 8px;
             background-color: #5b9fff;
             color: #fff;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
 
             &:hover { background-color: #4080ff; }
+            &:active { transform: translateY(1px); }
             &:disabled { background-color: #aaa; cursor: not-allowed; }
+          }
+
+          /* 중복검사 줄만 더 좁게 */
+          &.compact {
+            grid-template-columns: 1fr var(--btn-w-sm);
           }
         }
       }
 
       .signup-btn {
         margin-top: 10px;
-        padding: 12px;
+        padding: 0 16px;
+        height: var(--control-h);
         border: none;
         border-radius: 8px;
         background-color: #5b9fff;
         color: #fff;
         font-size: 16px;
+        font-weight: 700;
         cursor: pointer;
         transition: background 0.2s, transform 0.2s;
 
@@ -108,8 +158,13 @@
   }
 }
 
-/* (선택) 아주 작은 화면에서 여백 보정 */
-@media (max-width: 360px) {
-  .signup-container { padding: 24px 12px; }
-  .signup-card { padding: 28px 20px; }
+/* 작은 화면에서는 버튼을 아래 줄로 내려 찌그러짐 방지 */
+@media (max-width: 380px) {
+  .signup-card {
+    width: 100%;
+    padding: 28px 20px;
+  }
+  .signup-card .input-with-btn {
+    grid-template-columns: 1fr !important;
+  }
 }
