@@ -11,7 +11,7 @@ const companies = [
     { name: "카카오페이 (kakaopay)", field: "프론트엔드개발자", stack: "Vue.js", logo: "#", region: "경기", description: "마음 놓고 금융하다" },
     { name: "카카오모빌리티 (kakaomobility)", field: "백엔드개발자", stack: "Go", logo: "#", region: "경기", description: "스마트 모빌리티의 모든 것" },
     { name: "카카오엔터테인먼트 (kakao Ent.)", field: "웹개발자", stack: "Next.js", logo: "#", region: "서울", description: "글로벌 콘텐츠 및 엔터테인먼트" },
-    { name: "쿠팡 (Coupang)", field: "백엔드개발자", stack: "Java", logo: "#", region: "서울", description: "고객이 와우하게 만드는 이커머스" },
+    { name: "SK 쉴더스 (SK shieldus)", field: "백엔드개발자", stack: "Java", logo: "#", region: "서울", description: "안녕을 지키는 기술" },
     { name: "우아한형제들 (Woowa Bros.)", field: "백엔드개발자", stack: "Java", logo: "#", region: "서울", description: "문 앞으로 배달되는 일상의 행복" },
     { name: "당근 (Karrot)", field: "백엔드개발자", stack: "Go", logo: "#", region: "서울", description: "당신 근처의 지역 생활 커뮤니티" },
     { name: "무신사 (MUSINSA)", field: "프론트엔드개발자", stack: "React", logo: "#", region: "서울", description: "대한민국 대표 온라인 패션 플랫폼" },
