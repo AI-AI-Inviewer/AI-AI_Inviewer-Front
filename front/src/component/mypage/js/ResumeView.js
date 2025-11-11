@@ -1,5 +1,4 @@
-// src/component/mypage/js/ResumeView.js
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { FaUpload, FaFilePdf, FaFileWord, FaDownload, FaTrash } from "react-icons/fa";
 import "../scss/ResumeView.scss";
 
@@ -27,7 +26,7 @@ const ResumeView = () => {
 
     const token = useMemo(() => localStorage.getItem("accessToken"), []);
 
-    const fetchList = async () => {
+    const fetchList = useCallback(async () => {
         setLoadingList(true);
         try {
             const res = await fetch("/api/resumes", {
@@ -43,9 +42,7 @@ const ResumeView = () => {
         } finally {
             setLoadingList(false);
         }
-    };
-
-    useEffect(() => { fetchList(); }, []); // 최초 진입 시 목록
+    }, [token]);
 
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];

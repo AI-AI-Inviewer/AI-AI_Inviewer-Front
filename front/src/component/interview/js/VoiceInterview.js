@@ -1,4 +1,3 @@
-// src/component/interview/js/VoiceInterview.jsx
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/VoiceInterview.scss';
@@ -48,9 +47,7 @@ const fetchWithTimeout = (url, options, timeout = 20000) =>
         new Promise((_, rej) => setTimeout(() => rej(new Error('요청 시간이 초과되었습니다.')), timeout)),
     ]);
 
-// ============ 간단 녹음 훅 ============
-// (동일)
-// ============ 간단 녹음 훅 ============
+
 const useRecorder = () => {
     const mediaRef = useRef(null);
     const chunksRef = useRef([]);
@@ -86,7 +83,7 @@ const useRecorder = () => {
     };
 
     return { start, stop, recording };
-    //
+
 };
 
 
@@ -112,7 +109,7 @@ const extractQuestion = (text) => {
     const tag = text.match(/<\s*QUESTION\s*>([\s\S]*?)<\s*\/\s*QUESTION\s*>/i);
     if (tag && tag[1]) {
         let q = tag[1].trim();
-        q = q.replace(/^[\s\-–—•\d\.\)\(]+/, '');
+        q = q.replace(/^[\s\-–—•\d(]+/, '');
         if (!/[?？]$/.test(q) && q.length > 0) q += '?';
         return q;
     }
@@ -187,9 +184,7 @@ const VoiceInterview = () => {
         return key ? AVATAR_BY_VOICE[key] : AVATAR_BY_VOICE.default;
     };
 
-    // ====== 초기화 (보이스/아바타 세션) ======
     useEffect(() => {
-        let mounted = true;
         (async () => {
             try {
                 const token = getToken();
@@ -197,7 +192,8 @@ const VoiceInterview = () => {
                 // 보이스 목록
                 if (token) {
                     const r = await fetch(`${API_ROOT}/chat/voices`, {
-                        headers: { Authorization: `Bearer ${token}` }, credentials: 'include'
+                        headers: { Authorization: `Bearer ${token}` },
+                        credentials: 'include'
                     });
                     const js = await r.json().catch(() => ({ voices: [] }));
                     const list = (Array.isArray(js.voices) ? js.voices : [])
@@ -208,13 +204,14 @@ const VoiceInterview = () => {
 
                 // 아바타 토큰
                 const at = await fetch(`${API_ROOT}/avatar/token`, {
-                    credentials: 'include', headers: token ? { Authorization: `Bearer ${token}` } : {}
+                    credentials: 'include',
+                    headers: token ? { Authorization: `Bearer ${token}` } : {}
                 }).then(r => r.json());
 
                 const clientToken = at?.token ?? at?.data?.token;
                 if (!clientToken) throw new Error('아바타 세션 토큰을 받지 못했습니다.');
 
-                // 아바타 시작 (초기 아바타는 기본값)
+                // 아바타 시작
                 const ctrl = await createAvatar({
                     videoEl: videoRef.current,
                     clientToken,
@@ -223,7 +220,6 @@ const VoiceInterview = () => {
                 });
                 avatarRef.current = ctrl;
 
-                // 간단 환영 멘트 (표시용/음성은 괄호 제거된 회사명 사용)
                 await avatarRef.current?.sayText(
                     `안녕하세요. ${sanitizeCompanyName(company)} AI 면접관입니다. 왼쪽에서 이력서를 불러온 뒤, 오른쪽의 '면접 시작' 버튼을 눌러 진행해 주세요.`
                 );
@@ -231,27 +227,33 @@ const VoiceInterview = () => {
                 console.warn('초기화 실패:', e);
             }
         })();
+
         return () => {
-            if (avatarRef.current) { destroyAvatar(avatarRef.current); avatarRef.current = null; }
+            if (avatarRef.current) {
+                destroyAvatar(avatarRef.current);
+                avatarRef.current = null;
+            }
             if (timerRef.current) clearInterval(timerRef.current);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [company]);
 
-    // ====== Timer 동작: 0초 도달 시 자동 종료(대화 중이면 대기) ======
+    const endInterviewRef = useRef(endInterview);
+    useEffect(() => {
+        endInterviewRef.current = endInterview;
+    });
+
     useEffect(() => {
         if (!started || ended) return;
         if (remain <= 0) {
             setRemain(0);
             if (!recording && !busy) {
-                endInterview();
+                endInterviewRef.current();
             } else {
                 autoEndRef.current = true;
             }
         }
     }, [remain, started, ended, recording, busy]);
 
-    // 바빠짐/녹음 종료되면 queued auto-end 처리
     useEffect(() => {
         if (autoEndRef.current && !recording && !busy && started && !ended && remain === 0) {
             autoEndRef.current = false;

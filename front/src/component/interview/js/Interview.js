@@ -1,4 +1,3 @@
-// src/component/interview/js/Interview.js
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/Interview.scss';
@@ -57,7 +56,7 @@ ${resumeSummary || '기본 자기소개서'}
 <QUESTION>여기에 다음 질문 한 문장?</QUESTION>
 `;
 
-const buildFinalEvalSystemPrompt = (company) => `
+/*const buildFinalEvalSystemPrompt = (company) => `
 당신은 '${company || '미지정'}' 회사의 면접관이자 최종 평가자입니다.
 사용자가 제공한 대화록을 바탕으로 최종 점수와 피드백을 작성하세요.
 
@@ -87,7 +86,7 @@ const buildFinalEvalSystemPrompt = (company) => `
 다음 준비 과제:
 - ...
 - ...
-`;
+`;*/
 
 const fetchWithTimeout = (url, options, timeout = 15000) =>
     Promise.race([
@@ -186,19 +185,26 @@ const speak = (text, { lang = 'ko-KR' } = {}) => {
 // ===== 질문 태그 추출 =====
 function extractQuestion(text) {
     if (!text) return '';
+
     const tag = text.match(/<\s*QUESTION\s*>([\s\S]*?)<\s*\/\s*QUESTION\s*>/i);
+
     if (tag && tag[1]) {
         let q = tag[1].trim();
-        q = q.replace(/^[\s\-–—•\d\.\)\(]+/, '');
+
+        q = q.replace(/^[\s\-–—•\d.(]+/, '');
+
         if (!/[?？]$/.test(q) && q.length > 0) q += '?';
         return q;
     }
+
     const lines = text.split('\n').map((l) => l.trim()).filter(Boolean);
     const merged = lines.join(' ');
     const parts = merged.split(/(?<=[?？])/).map((s) => s.trim()).filter(Boolean);
     const lastQ = [...parts].reverse().find((s) => /[?？]$/.test(s));
+
     return lastQ || '';
 }
+
 
 // === 합격여부 문자열 파싱 ===
 function parseDecisionText(recText) {
@@ -267,7 +273,7 @@ const Interview = () => {
     const handleChatScroll = () => {
         const el = chatBoxRef.current;
         if (!el) return;
-        const threshold = 40; // 하단 40px 이내면 바닥 고정
+        const threshold = 40;
         const distanceFromBottom = el.scrollHeight - el.clientHeight - el.scrollTop;
         stickToBottomRef.current = distanceFromBottom <= threshold;
     };
