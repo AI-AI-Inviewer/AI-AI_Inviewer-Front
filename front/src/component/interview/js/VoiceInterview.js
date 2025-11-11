@@ -47,7 +47,7 @@ const fetchWithTimeout = (url, options, timeout = 20000) =>
         new Promise((_, rej) => setTimeout(() => rej(new Error('요청 시간이 초과되었습니다.')), timeout)),
     ]);
 
-
+/** 마이크 녹음 훅 */
 const useRecorder = () => {
     const mediaRef = useRef(null);
     const chunksRef = useRef([]);
@@ -83,9 +83,7 @@ const useRecorder = () => {
     };
 
     return { start, stop, recording };
-
 };
-
 
 // ============ 프롬프트 ============
 const buildSystemPrompt = (company, resumeSummary) => `
@@ -184,6 +182,7 @@ const VoiceInterview = () => {
         return key ? AVATAR_BY_VOICE[key] : AVATAR_BY_VOICE.default;
     };
 
+    // 초기화 (보이스 목록, 아바타 토큰 받아서 아바타 시작)
     useEffect(() => {
         (async () => {
             try {
@@ -206,7 +205,7 @@ const VoiceInterview = () => {
                 const at = await fetch(`${API_ROOT}/avatar/token`, {
                     credentials: 'include',
                     headers: token ? { Authorization: `Bearer ${token}` } : {}
-                }).then(r => r.json());
+                }).then(r => r.json()).catch(() => ({}));
 
                 const clientToken = at?.token ?? at?.data?.token;
                 if (!clientToken) throw new Error('아바타 세션 토큰을 받지 못했습니다.');
@@ -237,23 +236,20 @@ const VoiceInterview = () => {
         };
     }, [company]);
 
-    const endInterviewRef = useRef(endInterview);
-    useEffect(() => {
-        endInterviewRef.current = endInterview;
-    });
-
+    // remain 변경에 따른 자동 종료 트리거
     useEffect(() => {
         if (!started || ended) return;
         if (remain <= 0) {
             setRemain(0);
             if (!recording && !busy) {
-                endInterviewRef.current();
+                endInterview(); // ✅ ref 없이 직접 호출
             } else {
                 autoEndRef.current = true;
             }
         }
     }, [remain, started, ended, recording, busy]);
 
+    // 녹음/요청이 끝나면 자동 종료 실행
     useEffect(() => {
         if (autoEndRef.current && !recording && !busy && started && !ended && remain === 0) {
             autoEndRef.current = false;
