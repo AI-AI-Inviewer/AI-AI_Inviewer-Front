@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/Interview.scss';
 
-// ✅ /api 프록시 기반 (Vite/CRA 모두 호환)
+// api 프록시 기반 (Vite/CRA 모두 호환)
 const API_ROOT = process.env.REACT_APP_API_BASE || '/api';
 const GH_TOKEN = process.env.REACT_APP_GH_TOKEN || null;
 
@@ -205,7 +205,6 @@ function extractQuestion(text) {
     return lastQ || '';
 }
 
-
 // === 합격여부 문자열 파싱 ===
 function parseDecisionText(recText) {
     const raw = (recText || '').toString().trim();
@@ -233,7 +232,7 @@ const Interview = () => {
     const [resumeLoaded, setResumeLoaded] = useState(false);
     const [resumeLoadState, setResumeLoadState] = useState({ loading: false, error: '' });
 
-    // ✅ 내 업로드(서버)에서 가져오기
+    // 내 업로드(서버)에서 가져오기
     const [myResumes, setMyResumes] = useState([]);
     const [resumeListState, setResumeListState] = useState({ loading: false, error: '' });
     const [selectedResumeId, setSelectedResumeId] = useState('');
@@ -253,7 +252,7 @@ const Interview = () => {
     // 녹음
     const { start: recStart, stop: recStop, recording } = useRecorder();
 
-    // 🔊 보이스 상태
+    // 보이스 상태
     const [voices, setVoices] = useState([]); // {id, name, preview}
     const PREFERRED_VOICE_NAME = (process.env.REACT_APP_PREFERRED_VOICE_NAME || 'alice').toLowerCase();
     const DEFAULT_VOICE_ID = process.env.REACT_APP_DEFAULT_VOICE_ID || null;
@@ -790,192 +789,130 @@ const Interview = () => {
     };
 
     return (
-        <div className="ai-interview-container">
-            <div className="resume-section">
-                <h3>자기소개서 요약</h3>
+        <div className="ai-interview-wrapper">
+            {/* 좌측: 이력서/GitHub 업로드 */}
+            <aside className="resume-panel">
+                <h3>자기소개서 / GitHub</h3>
 
-                {/* GitHub 링크 입력 */}
-                <div className="gh-import">
-                    <label htmlFor="gh-url">
-                        <strong>GitHub 링크</strong> (README.md, resume.md 등)
-                    </label>
-                    <div className="gh-row">
+                <div className="input-card">
+                    <label htmlFor="gh-url">GitHub 링크</label>
+                    <div className="input-row">
                         <input
                             id="gh-url"
                             type="url"
-                            placeholder="예) https://github.com/user/repo/blob/main/resume.md"
+                            placeholder="https://github.com/user/repo/blob/main/resume.md"
                             value={resumeUrl}
                             onChange={(e) => setResumeUrl(e.target.value)}
                             disabled={resumeLoadState.loading}
-                            style={{ flex: 1 }}
                         />
-                        <button onClick={loadResumeFromGithub} disabled={resumeLoadState.loading || !resumeUrl.trim()}>
+                        <button
+                            onClick={loadResumeFromGithub}
+                            disabled={resumeLoadState.loading || !resumeUrl.trim()}
+                        >
                             {resumeLoadState.loading ? '불러오는 중...' : '불러오기'}
                         </button>
                     </div>
-
                     {resumeLoaded && !resumeLoadState.error && !resumeLoadState.loading && (
-                        <div className="gh-status ok">불러오기 완료</div>
+                        <span className="status success">불러오기 완료</span>
                     )}
-                    {resumeLoadState.error && (
-                        <div className="error" style={{ color: '#e11d48', marginTop: 6 }}>
-                            {resumeLoadState.error}
-                        </div>
-                    )}
-                    <div className="gh-help">
-                        공개 Repo의 <code>raw.githubusercontent.com</code> 또는 <code>github.com/.../blob/...</code> 링크를 넣어주세요.
-                        사설 Repo는 백엔드 프록시가 필요합니다.
-                    </div>
+                    {resumeLoadState.error && <span className="status error">{resumeLoadState.error}</span>}
+                    <small className="help-text">
+                        공개 Repo의 <code>raw.githubusercontent.com</code> 또는 <code>blob/...</code> 링크 사용.
+                    </small>
                 </div>
 
-                {/* ✅ 내 업로드에서 선택 (단일 '불러오기' 버튼) */}
-                <div className="gh-import" style={{ marginTop: 16 }}>
-                    <label htmlFor="resume-select">
-                        <strong>내 업로드에서 선택</strong>
-                    </label>
-                    <div className="gh-row" style={{ gap: 8 }}>
+                <div className="input-card">
+                    <label htmlFor="resume-select">내 업로드에서 선택</label>
+                    <div className="input-row">
                         <select
                             id="resume-select"
                             value={selectedResumeId ?? ''}
                             onChange={(e) => setSelectedResumeId(e.target.value)}
-                            style={{ flex: 1, padding: '12px 14px', border: '1px solid #cfd2dc', borderRadius: 10 }}
                         >
                             {myResumes.map((it) => (
-                                <option
-                                    key={it.id}
-                                    value={it.id}
-                                    title={`${it.fileName} — ${bytesFmt(it.fileSize)} — ${dateFmt(it.createdAt)}`}
-                                >
+                                <option key={it.id} value={it.id} title={`${it.fileName} — ${bytesFmt(it.fileSize)}`}>
                                     {baseName(it.fileName)}
                                 </option>
                             ))}
                         </select>
-
                         <button
-                            type="button"
                             onClick={applyServerResume}
                             disabled={serverResumeState.loading || !selectedResumeId}
-                            title="선택한 자소서를 요약으로 적용합니다"
                         >
                             {serverResumeState.loading ? '불러오는 중...' : '불러오기'}
                         </button>
                     </div>
-
-                    {/* 상태 표시 */}
                     {serverResumeState.success && !serverResumeState.loading && !serverResumeState.error && (
-                        <div className="gh-status ok">불러오기 완료</div>
+                        <span className="status success">불러오기 완료</span>
                     )}
-                    {resumeListState.error && (
-                        <div className="error" style={{ color: '#e11d48', marginTop: 6 }}>
-                            {resumeListState.error}
-                        </div>
-                    )}
-                    {serverResumeState.error && (
-                        <div className="error" style={{ color: '#e11d48', marginTop: 6 }}>
-                            {serverResumeState.error}
-                        </div>
-                    )}
-                    {serverResumeState.truncated && (
-                        <div className="gh-status" style={{ color: '#6b7280', marginTop: 6 }}>
-                            ※ 길이 제한으로 일부가 생략되었습니다.
-                        </div>
-                    )}
+                    {serverResumeState.error && <span className="status error">{serverResumeState.error}</span>}
                 </div>
-            </div>
+            </aside>
 
-            <div className="chat-section">
+            {/* 우측: AI 면접 채팅 */}
+            <main className="chat-panel">
                 <h3>AI 면접 시뮬레이션{company ? ` — ${sanitizeCompanyName(company)}` : ''}</h3>
 
-                {/* 🔊 음성/모델 선택 */}
-                <div className="voice-row" style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
-                    <label><strong>읽어줄 목소리</strong></label>
-                    <select value={voiceId || ''} onChange={(e) => setVoiceId(e.target.value)} disabled={ended}>
-                        {voices.map((v) => (
-                            <option key={v.id} value={v.id}>
-                                {v.name} ({v.id.slice(0, 6)}…)
-                            </option>
-                        ))}
-                    </select>
+                <div className="settings-row">
+                    <div className="settings-item">
+                        <label>목소리 선택</label>
+                        <select value={voiceId || ''} onChange={(e) => setVoiceId(e.target.value)} disabled={ended}>
+                            {voices.map((v) => (
+                                <option key={v.id} value={v.id}>{v.name}</option>
+                            ))}
+                        </select>
+                        <button disabled= {ended}>▶ 미리듣기</button>
+                    </div>
 
-                    <label style={{ marginLeft: 12 }}><strong>모델</strong></label>
-                    <select value={modelId} onChange={(e) => setModelId(e.target.value)} disabled={ended}>
-                        <option value="eleven_flash_v2_5">eleven_flash_v2_5 (권장)</option>
-                        <option value="eleven_multilingual_v2">eleven_multilingual_v2</option>
-                        <option value="eleven_turbo_v2_5">eleven_turbo_v2_5</option>
-                    </select>
-
-                    {/* 미리듣기 */}
-                    <button
-                        type="button"
-                        onClick={() => {
-                            const v = voices.find((x) => x.id === voiceId);
-                            if (v?.preview) {
-                                try {
-                                    if (audioRef.current) audioRef.current.pause();
-                                    audioRef.current = new Audio(v.preview);
-                                    audioRef.current.play().catch((err) => console.warn('Preview play failed:', err));
-                                } catch {}
-                            }
-                        }}
-                        disabled={ended}
-                    >
-                        ▶ 미리듣기
-                    </button>
+                    <div className="settings-item">
+                        <label>모델 선택</label>
+                        <select value={modelId} onChange={(e) => setModelId(e.target.value)} disabled={ended}>
+                            <option value="eleven_flash_v2_5">eleven_flash_v2_5 (권장)</option>
+                            <option value="eleven_multilingual_v2">eleven_multilingual_v2</option>
+                            <option value="eleven_turbo_v2_5">eleven_turbo_v2_5</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div className="chat-box" ref={chatBoxRef} onScroll={handleChatScroll}>
-                    {chat
-                        .filter((m) => m.role !== 'system')
-                        .map((msg, index) => (
-                            <div key={index} className={`chat-message ${msg.role}`}>
-                                <strong>{msg.role === 'user' ? '나' : 'AI'}:</strong>{' '}
-                                <span style={{ whiteSpace: 'pre-wrap' }}>{msg.content}</span>
-                            </div>
-                        ))}
-                    {loading && (
-                        <div className="chat-message assistant typing">
-                            <strong>AI:</strong> 응답을 생성 중...
+                    {chat.filter((m) => m.role !== 'system').map((msg, idx) => (
+                        <div key={idx} className={`chat-message ${msg.role}`}>
+                            <strong>{msg.role === 'user' ? '나' : 'AI'}:</strong>
+                            <span>{msg.content}</span>
                         </div>
-                    )}
+                    ))}
+                    {loading && <div className="chat-message assistant typing"><strong>AI:</strong> 응답을 생성 중...</div>}
                 </div>
 
                 <div className="input-area">
-          <textarea
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              placeholder={ended ? '면접이 종료되었습니다.' : '답변을 입력하세요 (또는 마이크로 말하기)'}
-              disabled={loading || ended}
-          />
-                    <div className="input-actions" style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                        <button onClick={() => handleSend()} disabled={loading || !userInput.trim() || ended}>
+        <textarea
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+            placeholder={ended ? '면접 종료' : '답변 입력 또는 음성'}
+            disabled={loading || ended}
+        />
+                    <div className="input-actions">
+                        <button onClick={handleSend} disabled={loading || !userInput.trim() || ended}>
                             {loading ? '전송 중...' : '전송'}
                         </button>
                         <button
-                            type="button"
                             onClick={handleMic}
                             disabled={loading || ended}
-                            title={recording ? '말하기 종료' : '말하기 시작'}
                             className={`btn-mic${recording ? ' recording' : ''}`}
                         >
                             {recording ? '■ 녹음 종료' : '🎤 녹음 시작'}
                         </button>
-                        <button
-                            type="button"
-                            onClick={handleEndInterview}
-                            disabled={loading || ended}
-                            className="btn-end"
-                            title="최종 점수와 피드백을 생성합니다"
-                            style={{ marginLeft: 'auto' }}
-                        >
-                            🏁 면접 종료 (점수/피드백)
+                        <button onClick={handleEndInterview} disabled={loading || ended} className="btn-end">
+                            🏁 면접 종료
                         </button>
                     </div>
-                    {recording && !ended && <div className="recording-hint">🎤 녹음 중... (버튼을 눌러 종료하세요)</div>}
-                    {ended && <div className="recording-hint">✅ 면접이 종료되었습니다. 상단 결과를 확인하세요.</div>}
+                    {recording && !ended && <small className="recording-hint">🎤 녹음 중...</small>}
+                    {ended && <small className="recording-hint">✅ 면접 종료</small>}
                 </div>
-            </div>
+            </main>
         </div>
     );
+
 };
 
 export default Interview;

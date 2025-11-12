@@ -1,3 +1,4 @@
+// src/component/interview/js/VoiceInterview.jsx
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../scss/VoiceInterview.scss';
@@ -5,13 +6,6 @@ import { createAvatar, destroyAvatar } from '../../../lib/avatarClient';
 
 const API_ROOT = process.env.REACT_APP_API_BASE || '/api';
 const GH_TOKEN  = process.env.REACT_APP_GH_TOKEN || null;
-
-/** UI/TTS 표시용: 회사명에서 괄호(… ) 제거 */
-const sanitizeCompanyName = (name) =>
-    String(name || '')
-        .replace(/\s*\([^)]*\)\s*/g, ' ')
-        .replace(/\s{2,}/g, ' ')
-        .trim();
 
 const toRawGithubUrl = (url) => {
     try {
@@ -47,7 +41,7 @@ const fetchWithTimeout = (url, options, timeout = 20000) =>
         new Promise((_, rej) => setTimeout(() => rej(new Error('요청 시간이 초과되었습니다.')), timeout)),
     ]);
 
-
+// ============ 간단 녹음 훅 ============
 const useRecorder = () => {
     const mediaRef = useRef(null);
     const chunksRef = useRef([]);
@@ -57,15 +51,13 @@ const useRecorder = () => {
         if (recording) return;
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
         const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-            ? 'audio/webm;codecs=opus'
-            : 'audio/webm';
+            ? 'audio/webm;codecs=opus' : 'audio/webm';
         const mr = new MediaRecorder(stream, { mimeType });
         mediaRef.current = mr;
         chunksRef.current = [];
         mr.ondataavailable = (e) => { if (e.data && e.data.size > 0) chunksRef.current.push(e.data); };
         mr.onstop = () => setRecording(false);
-        mr.start();
-        setRecording(true);
+        mr.start(); setRecording(true);
     };
 
     const stop = async () => {
@@ -83,9 +75,7 @@ const useRecorder = () => {
     };
 
     return { start, stop, recording };
-
 };
-
 
 // ============ 프롬프트 ============
 const buildSystemPrompt = (company, resumeSummary) => `
@@ -109,7 +99,7 @@ const extractQuestion = (text) => {
     const tag = text.match(/<\s*QUESTION\s*>([\s\S]*?)<\s*\/\s*QUESTION\s*>/i);
     if (tag && tag[1]) {
         let q = tag[1].trim();
-        q = q.replace(/^[\s\-–—•\d(]+/, '');
+        q = q.replace(/^[\s\-–—•\d\.\)\(]+/, '');
         if (!/[?？]$/.test(q) && q.length > 0) q += '?';
         return q;
     }
@@ -141,8 +131,7 @@ const fmt = (sec) => {
 
 const VoiceInterview = () => {
     const location = useLocation();
-    const { company: companyFromState, companyName: companyNameFromState } = location.state || {};
-    const company = companyFromState || companyNameFromState || '미지정';
+    const { company = '미지정' } = location.state || {};
 
     const videoRef = useRef(null);
     const avatarRef = useRef(null);
@@ -170,7 +159,7 @@ const VoiceInterview = () => {
     const [voiceId, setVoiceId] = useState(null);
 
     const AVATAR_BY_VOICE = useMemo(() => ({
-        alice: 'Grace',
+        alice: 'Grace',   // 실제 HeyGen 공개 아바타 이름 예시
         bella: 'Sophia',
         rachel: 'Isabella',
         adam : 'Ethan',
@@ -184,7 +173,9 @@ const VoiceInterview = () => {
         return key ? AVATAR_BY_VOICE[key] : AVATAR_BY_VOICE.default;
     };
 
+    // ====== 초기화 (보이스/아바타 세션) ======
     useEffect(() => {
+        let mounted = true;
         (async () => {
             try {
                 const token = getToken();
@@ -192,8 +183,7 @@ const VoiceInterview = () => {
                 // 보이스 목록
                 if (token) {
                     const r = await fetch(`${API_ROOT}/chat/voices`, {
-                        headers: { Authorization: `Bearer ${token}` },
-                        credentials: 'include'
+                        headers: { Authorization: `Bearer ${token}` }, credentials: 'include'
                     });
                     const js = await r.json().catch(() => ({ voices: [] }));
                     const list = (Array.isArray(js.voices) ? js.voices : [])
@@ -204,56 +194,51 @@ const VoiceInterview = () => {
 
                 // 아바타 토큰
                 const at = await fetch(`${API_ROOT}/avatar/token`, {
-                    credentials: 'include',
-                    headers: token ? { Authorization: `Bearer ${token}` } : {}
+                    credentials: 'include', headers: token ? { Authorization: `Bearer ${token}` } : {}
                 }).then(r => r.json());
 
                 const clientToken = at?.token ?? at?.data?.token;
                 if (!clientToken) throw new Error('아바타 세션 토큰을 받지 못했습니다.');
 
-                // 아바타 시작
+                // 아바타 시작 (초기 아바타는 기본값)
                 const ctrl = await createAvatar({
                     videoEl: videoRef.current,
                     clientToken,
-                    avatarName: 'Grace',
+                    // mode는 SPEAK(텍스트를 그대로 읽기 전용)로 설정하는 래퍼 구현을 권장
+                    avatarName: 'Grace', // 시작 기본 아바타명
                     language: 'ko'
                 });
                 avatarRef.current = ctrl;
 
+                // 간단 환영 멘트
                 await avatarRef.current?.sayText(
-                    `안녕하세요. ${sanitizeCompanyName(company)} AI 면접관입니다. 왼쪽에서 이력서를 불러온 뒤, 오른쪽의 '면접 시작' 버튼을 눌러 진행해 주세요.`
+                    `안녕하세요. ${company} AI 면접관입니다. 왼쪽에서 이력서를 불러온 뒤, 오른쪽의 '면접 시작' 버튼을 눌러 진행해 주세요.`
                 );
             } catch (e) {
                 console.warn('초기화 실패:', e);
             }
         })();
-
         return () => {
-            if (avatarRef.current) {
-                destroyAvatar(avatarRef.current);
-                avatarRef.current = null;
-            }
+            if (avatarRef.current) { destroyAvatar(avatarRef.current); avatarRef.current = null; }
             if (timerRef.current) clearInterval(timerRef.current);
         };
-    }, [company]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    const endInterviewRef = useRef(endInterview);
-    useEffect(() => {
-        endInterviewRef.current = endInterview;
-    });
-
+    // ====== Timer 동작: 0초 도달 시 자동 종료(대화 중이면 대기) ======
     useEffect(() => {
         if (!started || ended) return;
         if (remain <= 0) {
             setRemain(0);
             if (!recording && !busy) {
-                endInterviewRef.current();
+                endInterview();
             } else {
                 autoEndRef.current = true;
             }
         }
     }, [remain, started, ended, recording, busy]);
 
+    // 바빠짐/녹음 종료되면 queued auto-end 처리
     useEffect(() => {
         if (autoEndRef.current && !recording && !busy && started && !ended && remain === 0) {
             autoEndRef.current = false;
@@ -424,7 +409,7 @@ const VoiceInterview = () => {
 
     return (
         <div className="vi-grid">
-            {/* 좌 — 이력서 영역 */}
+            {/* 좌(빨간) — 이력서 영역 */}
             <aside className="vi-left">
                 <h3>이력서 준비</h3>
 
@@ -450,14 +435,14 @@ const VoiceInterview = () => {
                 </div>
             </aside>
 
-            {/* 중앙 상단 — 아바타 스테이지 */}
+            {/* 중앙 상단(초록) — 아바타 스테이지 */}
             <section className="vi-stage">
                 <div className="stage-inner">
                     <video ref={videoRef} autoPlay playsInline />
                 </div>
             </section>
 
-            {/* 중앙 하단 — 대화 로그 */}
+            {/* 중앙 하단(파랑) — 대화 로그 */}
             <section className="vi-chat">
                 <h3>대화 기록</h3>
                 <div className="log">
@@ -471,7 +456,7 @@ const VoiceInterview = () => {
                 </div>
             </section>
 
-            {/* 우 — 컨트롤 & 타이머 */}
+            {/* 우(분홍) — 컨트롤 & 타이머 */}
             <aside className="vi-right">
                 <h3>컨트롤</h3>
                 <div className="vi-card">
