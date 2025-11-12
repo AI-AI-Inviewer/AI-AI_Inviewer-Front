@@ -179,7 +179,7 @@ $radius: 8px;
   justify-content: flex-end;
   align-items: center;
   margin-top: 2rem;
-  .result-count {color: $text-light-color; strong { color: $primary-color; } }
+  .result-count { color: $text-light-color; strong { color: $primary-color; } }
 }
 
 /* 기업 카드 그리드 */
@@ -314,13 +314,6 @@ $radius: 8px;
       }
     }
   }
-  .close {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    border: none;
-    background: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-  }
 }
+
+/* 닫기 버튼 관련 스타일은 제거됨 (.close, .mode-modal__close 없음) */

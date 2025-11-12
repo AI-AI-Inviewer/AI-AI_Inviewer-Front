@@ -1,5 +1,6 @@
 .feedback-container {
-  max-width: 700px;
+  width: 72%;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 1.5rem 2rem;
   background: #ffffff;
@@ -64,14 +65,14 @@
       cursor: pointer;
       transition: all 0.2s;
 
-      &:hover {
-        background: #4c51bf;
-      }
-
-      &:active {
-        background: #434190;
-        transform: translateY(1px);
-      }
+      &:hover { background: #4c51bf; }
+      &:active { background: #434190; transform: translateY(1px); }
     }
   }
 }
+
+/* 반응형 폭 */
+@media (max-width: 1280px) { .feedback-container { width: 80%; } }
+@media (max-width: 1024px) { .feedback-container { width: 88%; } }
+@media (max-width: 768px)  { .feedback-container { width: 94%; padding: 1.25rem 1rem; } }
+@media (max-width: 480px)  { .feedback-container { width: 100%; padding: 1rem 12px; } }

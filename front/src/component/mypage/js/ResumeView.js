@@ -1,4 +1,4 @@
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { FaUpload, FaFilePdf, FaFileWord, FaDownload, FaTrash } from "react-icons/fa";
 import "../scss/ResumeView.scss";
 
@@ -24,6 +24,7 @@ const ResumeView = () => {
     const [loadingList, setLoadingList] = useState(false);
     const [uploading, setUploading] = useState(false);
 
+    // 로그인 후 이미 토큰이 로컬스토리지에 있으면 이 값으로 요청 보냄
     const token = useMemo(() => localStorage.getItem("accessToken"), []);
 
     const fetchList = useCallback(async () => {
@@ -43,6 +44,11 @@ const ResumeView = () => {
             setLoadingList(false);
         }
     }, [token]);
+
+    // ✅ 처음 들어왔을 때 목록을 불러오도록
+    useEffect(() => {
+        fetchList();
+    }, [fetchList]);
 
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
@@ -78,7 +84,7 @@ const ResumeView = () => {
                 alert("파일 업로드 성공!");
                 setSelectedFile(null);
                 setPreviewUrl(null);
-                await fetchList();
+                await fetchList(); // 업로드 후 갱신
             } else if (res.status === 401) {
                 alert("로그인이 필요합니다.");
             } else if (res.status === 413) {

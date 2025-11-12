@@ -3,7 +3,9 @@
   font-size: 14px;
   flex-shrink: 0;
   background-color: #111; // 진한 회색~검정 계열
-  color: #fff; // 폰트 색상 하얀색
+  color: #fff;            // 폰트 색상 하얀색
+  margin-top: auto;       // 스티키 푸터 보장
+  width: 100%;
 
   .footer-container {
     display: flex;
@@ -11,7 +13,7 @@
     flex-wrap: wrap;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 50px 20px;
+    padding: 16px 16px 14px;
     gap: 30px;
 
     .footer-section {
@@ -41,9 +43,7 @@
             text-decoration: none;
             transition: color 0.3s;
 
-            &:hover {
-              color: #f39c12;
-            }
+            &:hover { color: #f39c12; }
           }
         }
       }
@@ -58,9 +58,7 @@
           filter: brightness(0) invert(1);
           transition: transform 0.3s;
 
-          &:hover {
-            transform: scale(1.2);
-          }
+          &:hover { transform: scale(1.2); }
         }
       }
     }
@@ -76,13 +74,14 @@
   }
 }
 
+/* 모바일 스코프를 .footer 내부로 한정 */
 @media (max-width: 768px) {
-  .footer-container {
-    flex-direction: column;
-    text-align: center;
+  .footer {
+    .footer-container {
+      flex-direction: column;
+      text-align: center;
 
-    .footer-section {
-      margin-bottom: 25px;
+      .footer-section { margin-bottom: 25px; }
     }
   }
 }

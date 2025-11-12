@@ -11,7 +11,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
 .mypage-wrapper {
   background-color: $background-color;
   padding: 2rem;
-  min-height: calc(100vh - 80px);
+  min-height: 100%;               /* 기존 calc(100vh - 80px) → 100% */
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -46,9 +46,7 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
 
-    .icon {
-      font-size: 1.2rem;
-    }
+    .icon { font-size: 1.2rem; }
 
     &:hover {
       background-color: #e9ecef;
@@ -164,13 +162,8 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
     gap: 1rem;
     color: $text-light-color;
 
-    .icon {
-      font-size: 4rem;
-    }
-    p {
-      font-size: 1.1rem;
-      font-weight: 500;
-    }
+    .icon { font-size: 4rem; }
+    p { font-size: 1.1rem; font-weight: 500; }
   }
 }
 
@@ -255,20 +248,9 @@ $shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
-    &.pv-outline {
-      background: #eef2ff;
-      color: #374151;
-    }
-
-    &.pv-primary {
-      background: $primary-color;
-      color: #fff;
-    }
-
-    &.pv-danger {
-      background: #ef4444;
-      color: #fff;
-    }
+    &.pv-outline { background: #eef2ff; color: #374151; }
+    &.pv-primary { background: $primary-color; color: #fff; }
+    &.pv-danger  { background: #ef4444; color: #fff; }
   }
 }
 

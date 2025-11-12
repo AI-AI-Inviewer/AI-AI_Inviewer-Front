@@ -1,21 +1,37 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../scss/AiInviewer.scss";
 import companies, { regions } from "../data/Companies.js";
 
-// 면접 방식 선택 모달
+// 면접 방식 선택 모달 (닫기 버튼 제거, ESC/배경 클릭으로만 종료)
 const ModeSelectModal = ({ open, company, onClose, onSelect }) => {
+    useEffect(() => {
+        if (!open) return;
+        const onKeyDown = (e) => {
+            if (e.key === "Escape") onClose();
+        };
+        document.addEventListener("keydown", onKeyDown);
+        return () => document.removeEventListener("keydown", onKeyDown);
+    }, [open, onClose]);
+
     if (!open) return null;
     return (
         <div className="mode-modal-backdrop" onClick={onClose}>
-            <div className="mode-modal" onClick={(e) => e.stopPropagation()}>
-                <h3>면접 방식 선택</h3>
-                <p><strong>{company?.name}</strong> 면접을 어떤 방식으로 진행할까요?</p>
+            <div
+                className="mode-modal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="mode-modal-title"
+                onClick={(e) => e.stopPropagation()}
+            >
+                <h3 id="mode-modal-title">면접 방식 선택</h3>
+                <p>
+                    <strong>{company?.name}</strong> 면접을 어떤 방식으로 진행할까요?
+                </p>
                 <div className="mode-actions">
                     <button onClick={() => onSelect('chat')}>💬 채팅 면접</button>
                     <button onClick={() => onSelect('voice')}>🎙️ 음성 아바타 면접</button>
                 </div>
-                <button className="close" onClick={onClose}>닫기</button>
             </div>
         </div>
     );
@@ -120,14 +136,30 @@ const AiInviewer = ({ bookmarks, setBookmarks }) => {
 
     return (
         <div className="aiinviewer-container">
-            <ModeSelectModal open={modeOpen} company={selectedCompany} onClose={() => setModeOpen(false)} onSelect={handleSelectMode} />
+            <ModeSelectModal
+                open={modeOpen}
+                company={selectedCompany}
+                onClose={() => setModeOpen(false)}
+                onSelect={handleSelectMode}
+            />
 
             <div className="search-reset-bar">
                 <div className="search-box-wrapper">
-                    <svg className="search-icon" viewBox="0 0 24 24"><path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A8 8 0 1 0 10 18zm0-14a6 6 0 1 1-6 6 6 6 0 0 1 6-6z"></path></svg>
-                    <input type="text" className="search-input" placeholder="기업명을 검색하세요" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                    <svg className="search-icon" viewBox="0 0 24 24">
+                        <path d="M10 18a7.952 7.952 0 0 0 4.897-1.688l4.396 4.396 1.414-1.414-4.396-4.396A8 8 0 1 0 10 18zm0-14a6 6 0 1 1-6 6 6 6 0 0 1 6-6z"></path>
+                    </svg>
+                    <input
+                        type="text"
+                        className="search-input"
+                        placeholder="기업명을 검색하세요"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
-                <button className={`bookmark-btn ${showOnlyBookmarks ? 'active' : ''}`} onClick={() => setShowOnlyBookmarks(v => !v)}>
+                <button
+                    className={`bookmark-btn ${showOnlyBookmarks ? 'active' : ''}`}
+                    onClick={() => setShowOnlyBookmarks(v => !v)}
+                >
                     {showOnlyBookmarks ? '★ 즐겨찾기만' : '⭐ 전체 보기'}
                 </button>
             </div>
@@ -140,20 +172,63 @@ const AiInviewer = ({ bookmarks, setBookmarks }) => {
             {tab === '직무' && (
                 <div className="filter-container">
                     <div className="category-column">
-                        <ul>{Object.keys(jobCategories).map(item => (<li key={item} className={selectedL1 === item ? "active" : ""} onClick={() => handleL1Select(item)}><span>{item}</span></li>))}</ul>
+                        <ul>
+                            {Object.keys(jobCategories).map(item => (
+                                <li
+                                    key={item}
+                                    className={selectedL1 === item ? "active" : ""}
+                                    onClick={() => handleL1Select(item)}
+                                >
+                                    <span>{item}</span>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                     <div className="category-column">
-                        {selectedL1 && jobCategories[selectedL1] && (<ul>{Object.keys(jobCategories[selectedL1]).map(item => (<li key={item} className={selectedL2 === item ? "active" : ""} onClick={() => handleL2Select(item)}><span>{item}</span><span className="count">{categoryCounts[item] || 0}</span></li>))}</ul>)}
+                        {selectedL1 && jobCategories[selectedL1] && (
+                            <ul>
+                                {Object.keys(jobCategories[selectedL1]).map(item => (
+                                    <li
+                                        key={item}
+                                        className={selectedL2 === item ? "active" : ""}
+                                        onClick={() => handleL2Select(item)}
+                                    >
+                                        <span>{item}</span>
+                                        <span className="count">{categoryCounts[item] || 0}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                     <div className="category-column">
-                        {selectedL2 && jobCategories[selectedL1]?.[selectedL2] && (<ul>{jobCategories[selectedL1][selectedL2].map(item => (<li key={item} className={selectedL3 === item ? "active" : ""} onClick={() => handleL3Select(item)}><span>{item}</span></li>))}</ul>)}
+                        {selectedL2 && jobCategories[selectedL1]?.[selectedL2] && (
+                            <ul>
+                                {jobCategories[selectedL1][selectedL2].map(item => (
+                                    <li
+                                        key={item}
+                                        className={selectedL3 === item ? "active" : ""}
+                                        onClick={() => handleL3Select(item)}
+                                    >
+                                        <span>{item}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
                     </div>
                 </div>
             )}
 
             {tab === '지역' && (
                 <div className="job-category-box">
-                    {regions.map((r) => (<button key={r} className={`job-btn ${selectedRegion === r ? 'active' : ''}`} onClick={() => handleRegionSelect(r)}>{r}</button>))}
+                    {regions.map((r) => (
+                        <button
+                            key={r}
+                            className={`job-btn ${selectedRegion === r ? 'active' : ''}`}
+                            onClick={() => handleRegionSelect(r)}
+                        >
+                            {r}
+                        </button>
+                    ))}
                 </div>
             )}
 
@@ -167,7 +242,11 @@ const AiInviewer = ({ bookmarks, setBookmarks }) => {
                 {filteredCompanies.length > 0 ? filteredCompanies.map(company => (
                     <div key={company.name} className="company-card">
                         <div className="company-top">
-                            <img src={company.logo} alt={company.name} onError={(e) => e.target.style.display = 'none'} />
+                            <img
+                                src={company.logo}
+                                alt={company.name}
+                                onError={(e) => e.target.style.display = 'none'}
+                            />
                             <div className="info">
                                 <h3>{company.name}</h3>
                                 <p>{company.description}</p>
@@ -177,11 +256,18 @@ const AiInviewer = ({ bookmarks, setBookmarks }) => {
                             <span className="badge">{company.region} · {company.field}</span>
                             <div className="actions">
                                 <button className="interview-btn" onClick={() => openModeModal(company)}>AI 면접 시작</button>
-                                <button className="bookmark-toggle" onClick={() => toggleBookmark(company.name)}>{bookmarks.includes(company.name) ? '★' : '☆'}</button>
+                                <button
+                                    className="bookmark-toggle"
+                                    onClick={() => toggleBookmark(company.name)}
+                                >
+                                    {bookmarks.includes(company.name) ? '★' : '☆'}
+                                </button>
                             </div>
                         </div>
                     </div>
-                )) : <p className="no-result">조건에 맞는 회사가 없습니다.</p>}
+                )) : (
+                    <p className="no-result">조건에 맞는 회사가 없습니다.</p>
+                )}
             </div>
         </div>
     );

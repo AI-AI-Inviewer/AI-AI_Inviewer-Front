@@ -18,7 +18,8 @@
 }
 
 .feedback-detail-container {
-  max-width: 820px;
+  width: 72%;
+  max-width: 1200px;
   margin: 2rem auto;
   padding: 0 1.25rem;
   font-family: "Noto Sans KR", sans-serif;
@@ -82,29 +83,11 @@
   &:active { transform: translateY(0); }
 }
 
-.btn-slim {
-  padding: 0.42rem 0.8rem;
-  font-size: 0.92rem;
-  border-radius: 9px;
-}
+.btn-slim { padding: 0.42rem 0.8rem; font-size: 0.92rem; border-radius: 9px; }
 
-.btn-primary {
-  background: var(--primary);
-  box-shadow: var(--shadow-sm);
-  &:hover { background: var(--primary-d); }
-}
-
-.btn-danger {
-  background: var(--danger);
-  box-shadow: var(--shadow-sm);
-  &:hover { background: var(--danger-d); }
-}
-
-.btn-soft {
-  color: #fff;
-  background: linear-gradient(0deg, rgba(255,255,255,0.08), rgba(255,255,255,0.08)), var(--danger);
-  &:hover { background: var(--danger-d); }
-}
+.btn-primary { background: var(--primary); box-shadow: var(--shadow-sm); &:hover { background: var(--primary-d); } }
+.btn-danger  { background: var(--danger);  box-shadow: var(--shadow-sm); &:hover { background: var(--danger-d); } }
+.btn-soft    { color: #fff; background: linear-gradient(0deg, rgba(255,255,255,0.08), rgba(255,255,255,0.08)), var(--danger); &:hover { background: var(--danger-d); } }
 
 .back-btn {
   color: #4a5568;
@@ -177,36 +160,17 @@
         .comment-time { font-variant-numeric: tabular-nums; }
       }
 
-      p {
-        margin: 0.25rem 0 0.55rem;
-        line-height: 1.55;
-        color: var(--text);
-      }
+      p { margin: 0.25rem 0 0.55rem; line-height: 1.55; color: var(--text); }
 
-      .comment-buttons {
-        display: flex;
-        justify-content: flex-end;
-      }
+      .comment-buttons { display: flex; justify-content: flex-end; }
     }
   }
 }
 
-.btn-wrapper {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 1rem;
-}
+.btn-wrapper { display: flex; justify-content: flex-end; margin-top: 1rem; }
 
-@media (max-width: 640px) {
-  .detail-actions.bottom-actions {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .comment-section .comment-input {
-    flex-direction: column;
-
-    .btn { width: 100%; }
-  }
-}
+/* 반응형 폭 */
+@media (max-width: 1280px) { .feedback-detail-container { width: 80%; } }
+@media (max-width: 1024px) { .feedback-detail-container { width: 88%; } }
+@media (max-width: 768px)  { .feedback-detail-container { width: 94%; } }
+@media (max-width: 480px)  { .feedback-detail-container { width: 100%; padding: 0 12px; } }

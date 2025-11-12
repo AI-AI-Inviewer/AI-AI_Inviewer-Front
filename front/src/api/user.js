@@ -1,17 +1,18 @@
+// src/api/user.js
 import api from './axiosInstance';
 
 const USER_BASE = '/user';
 
-// 정규화 헬퍼
+// --- helpers ---
 const normEmail = (e) => (e ?? '').trim().toLowerCase();
 const normCode  = (c) => (c ?? '').toString().replace(/\s+/g, '').trim();
 
-// ✅ 회원가입
+// ✅ 회원가입 (JSON)
 export const registerUser = async (form) => {
     const payload = {
         userId: form.userId ?? '',
         userPassword: form.password ?? '',
-        userEmail: normEmail(form.email),       // ← 정규화
+        userEmail: normEmail(form.email),
         userName: form.name ?? '',
         userNickname: form.nickname ?? '',
     };
@@ -19,7 +20,7 @@ export const registerUser = async (form) => {
     return data;
 };
 
-// ✅ 로그인 (쿠키 기반이지만 토큰을 주면 로컬에도 저장)
+// ✅ 로그인
 export const loginUser = async (credentials) => {
     const body = {
         userId: credentials.userId ?? '',
@@ -32,49 +33,50 @@ export const loginUser = async (credentials) => {
 
 // ✅ 로그아웃
 export const logoutUser = async () => {
-    try { await api.post(`${USER_BASE}/logout`, {}, { withCredentials: true }); } catch {}
-    localStorage.removeItem('jwtToken');
+    try {
+        await api.post(`${USER_BASE}/logout`, {}, { withCredentials: true });
+    } finally {
+        localStorage.removeItem('jwtToken');
+    }
 };
 
-// ✅ 아이디 중복 검사
+// ✅ 아이디/닉네임 중복 검사
 export const checkUserId = async (userId) => {
     const { data } = await api.get(`${USER_BASE}/check-id`, { params: { userId } });
-    return data;
+    return data; // { available: true/false, ... }
 };
 
-// ✅ 닉네임 중복 검사
 export const checkNickname = async (nickname) => {
     const { data } = await api.get(`${USER_BASE}/check-nickname`, { params: { nickname } });
-    return data;
+    return data; // { available: true/false, ... }
 };
 
-// ✅ 내 정보
+// ✅ 내 정보/수정
 export const getMyInfo = async () => {
     const { data } = await api.get(`${USER_BASE}/me`, { withCredentials: true });
     return data;
 };
 
-// ✅ 사용자 정보 수정
 export const updateUser = async (userData) => {
     const { data } = await api.put(`${USER_BASE}/update`, userData, { withCredentials: true });
     return data;
 };
 
-// ✅ 이메일 코드 전송
+// ✅ 이메일 코드 전송/검증 (JSON)
 export const sendEmailCode = async (email) => {
-    const { data } = await api.post(`${USER_BASE}/email-code/send`, { email: (email ?? '').trim() });
-    return data;
+    const { data } = await api.post(`${USER_BASE}/email-code/send`, { email: normEmail(email) });
+    return data; // { ok:true/false, message?:string, ... }
 };
 
-// ✅ 이메일 코드 검증
 export const verifyEmailCode = async (email, code) => {
     const { data } = await api.post(`${USER_BASE}/email-code/verify`, {
         email: normEmail(email),
-        code: normCode(code),                   // ← 공백/개행 제거 후 전송
+        code: normCode(code),
     });
-    return data; // { ok: true }
+    return data; // { ok:true/false, message?:string } 또는 true/false
 };
 
+// ✅ 비밀번호 변경
 export const changePassword = async ({ currentPassword, newPassword }) => {
     const payload = { currentPassword, newPassword };
     const { data } = await api.put(`${USER_BASE}/password`, payload, { withCredentials: true });
