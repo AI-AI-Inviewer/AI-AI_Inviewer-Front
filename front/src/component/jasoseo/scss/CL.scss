@@ -1,144 +1,248 @@
+:root {
+  --primary-color: #5A67D8;
+  --primary-light: #E9EAFB;
+  --secondary-color: #FFC107;
+  --text-color: #2d3748;
+  --text-light: #718096;
+  --bg-color: #f7fafc;
+  --card-bg: #ffffff;
+  --border-color: #e2e8f0;
+  --spacing-unit: 1rem;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --card-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.1);
+  --border-radius: 12px;
+}
+
+/* --- 믹스인 정의 --- */
+@mixin card-shadow {
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--card-shadow-hover);
+  }
+}
+
+@mixin form-control {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background-color: var(--bg-color);
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
+  }
+}
+
+/* --- 전체 레이아웃 --- */
 .cl-wrapper {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: var(--spacing-unit) * 2;
+  max-width: 1440px;
+  margin: var(--spacing-unit) * 2 auto;
+  padding: var(--spacing-unit);
+  background-color: var(--bg-color);
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* --- 사이드바 --- */
+.cl-sidebar {
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-unit) * 1.5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   display: flex;
-  gap: 1rem;
-  padding: 2rem;
-  font-family: 'Noto Sans KR', sans-serif;
+  flex-direction: column;
+  gap: var(--spacing-unit) * 1.5;
+  align-self: start;
+  position: sticky;
+  top: var(--spacing-unit) * 2;
+}
 
-  .cl-sidebar {
-    width: 250px;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.sidebar-search {
+  @include form-control;
+}
 
-    input.sidebar-search {
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      outline: none;
-      transition: border-color 0.3s;
+.category-select {
+  label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: var(--spacing-unit) * 0.5;
+  }
+  select {
+    @include form-control;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23718096' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='m19.5 8.25-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 16px;
+  }
+}
 
-      &:focus {
-        border-color: #6b5ddc;
-      }
-    }
+.bookmark-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--bg-color);
+  color: var(--text-light);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
-    .category-select {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-
-      select {
-        padding: 0.5rem;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        cursor: pointer;
-        transition: border-color 0.3s;
-
-        &:focus {
-          border-color: #6b5ddc;
-        }
-      }
-    }
-
-    .bookmark-btn {
-      padding: 0.5rem;
-      border-radius: 8px;
-      border: none;
-      background: #f0f0f0;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s;
-
-      &.active {
-        background: #ffe58a;
-      }
-
-      &:hover {
-        background: #e0e0e0;
-      }
-    }
+  &:hover {
+    background-color: #e9ecef;
   }
 
-  .cl-main {
-    flex: 1;
+  &.active {
+    background-color: var(--primary-color);
+    color: white;
+  }
+}
 
-    .cl-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
+/* --- 메인 콘텐츠 --- */
+.cl-main {
+  min-width: 0;
+}
 
-      .cl-card-wrapper {
-        .cl-card {
-          display: flex;
-          flex-direction: column;
-          background: #ffffff;
-          border-radius: 12px;
-          padding: 1rem;
-          box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-          text-decoration: none;
-          color: #333;
-          transition: transform 0.2s, box-shadow 0.2s;
+.cl-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-unit) * 1.5;
+}
 
-          &:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-          }
+/* --- 자소서 카드 --- */
+.cl-card {
+  @include card-shadow;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-unit) * 1.5;
+  text-decoration: none;
+  color: var(--text-color);
+}
 
-          .cl-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+.cl-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-unit);
+  margin-bottom: var(--spacing-unit);
+}
 
-            .cl-card-title {
-              font-size: 1.1rem;
-              font-weight: 600;
-              margin-bottom: 0.5rem;
-            }
+.cl-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-color);
+  margin: 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
-            .bookmark-toggle {
-              font-size: 1.2rem;
-              background: none;
-              border: none;
-              cursor: pointer;
-              transition: transform 0.2s;
+.bookmark-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 0;
+  color: var(--text-light);
+  transition: color 0.2s, transform 0.2s;
+  line-height: 1;
 
-              &:hover {
-                transform: scale(1.2);
-              }
+  &.bookmarked {
+    color: var(--secondary-color);
+  }
 
-              &.bookmarked {
-                color: #ffd700;
-              }
-            }
-          }
+  &:hover {
+    transform: scale(1.2);
+  }
+}
 
-          .cl-card-content {
-            font-size: 0.9rem;
-            margin-bottom: 0.8rem;
-            color: #666;
-          }
+.cl-card-content {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  line-height: 1.6;
+  margin-bottom: var(--spacing-unit) * 1.5;
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
 
-          .cl-card-footer {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #999;
+.cl-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  border-top: 1px solid var(--border-color);
+  padding-top: var(--spacing-unit);
+}
 
-            .cl-category {
-              background: #f5f5f5;
-              padding: 0.2rem 0.5rem;
-              border-radius: 6px;
-            }
-          }
-        }
-      }
+.cl-category {
+  background-color: var(--primary-light);
+  color: var(--primary-color);
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
 
-      .no-results {
-        grid-column: 1/-1;
-        text-align: center;
-        color: #999;
-        font-size: 1rem;
-      }
-    }
+/* --- 검색 결과 없음 --- */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: var(--spacing-unit) * 4;
+  color: var(--text-light);
+  font-size: 1.1rem;
+  font-weight: 500;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius);
+  border: 1px dashed var(--border-color);
+}
+
+/* --- 반응형 디자인 (태블릿 & 모바일) --- */
+@media (max-width: 900px) {
+  .cl-wrapper {
+    grid-template-columns: 1fr; /* 레이아웃을 세로로 쌓음 */
+    gap: var(--spacing-unit) * 1.5;
+  }
+
+  .cl-sidebar {
+    position: static;
+    top: auto;
+  }
+
+  .cl-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .cl-grid {
+    grid-template-columns: 1fr;
+  }
+  .cl-wrapper {
+    margin: var(--spacing-unit) auto;
+    padding: var(--spacing-unit) * 0.5;
   }
 }

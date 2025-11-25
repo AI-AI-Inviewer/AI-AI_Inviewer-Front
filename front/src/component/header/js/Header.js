@@ -77,13 +77,13 @@ const Header = ({ isLoggedIn, userNickname, onLogout }) => {
                         <li><AuthLink to="/" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>홈</AuthLink></li>
                         <li><AuthLink to="/AiInviewer" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>AI 면접연습</AuthLink></li>
                         <li><AuthLink to="/JobPosting" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>채용 공고</AuthLink></li>
-                        <li><AuthLink to="/CL" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>자소서</AuthLink></li>
+                        <li><AuthLink to="/CL" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>자기소개서</AuthLink></li>
 
                         <li className={`header-dropdown ${mainDropdown ? "open" : ""}`} ref={mainDropdownRef}>
                             <button className="dropdown-toggle" onMouseDown={toggleMainDropdownMouseDown} onClick={toggleMainDropdown}>전체 게시판</button>
                             <ul className="dropdown-menu">
                                 <li><AuthLink to="/feedback" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>자유 게시판</AuthLink></li>
-                                <li><AuthLink to="/postscript" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>면접 후기</AuthLink></li>
+                                <li><AuthLink to="/postscript" isLoggedIn={isLoggedIn} closeMenus={closeAllMenus}>면접 후기 게시판</AuthLink></li>
                             </ul>
                         </li>
                     </ul>
